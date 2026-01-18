@@ -23,16 +23,42 @@
   ];
 
   # https://devenv.sh/scripts/
-  scripts.hello.exec = ''
-    echo "Welcome to the $GREET!"
-    echo ""
-    echo "To start use devenv up"
-  '';
+  scripts = {
+    hello.exec = ''
+      echo "Welcome to the $GREET!"
+      echo ""
+      echo "To start use devenv up"
+    '';
+
+    backend-install.exec = ''
+      echo "Installing backend dependencies..."
+      cd ${config.git.root}/backend
+      ./mvnw install -DskipTests
+    '';
+
+    backend-clean-install.exec = ''
+      echo "Clean installing backend..."
+      cd ${config.git.root}/backend
+      ./mvnw clean install -DskipTests
+    '';
+
+    backend-compile.exec = ''
+      echo "Compiling backend..."
+      cd ${config.git.root}/backend
+      ./mvnw clean compile
+    '';
+
+    frontend-install.exec = ''
+      echo "Installing frontend dependencies..."
+      cd ${config.git.root}/frontend
+      npm install
+    '';
+  };
 
   languages = {
     java = {
-      java.enable = true;
-      java.jdk.package = pkgs.jdk21;
+      enable = true;
+      jdk.package = pkgs.jdk21;
     };
 
     javascript = {
@@ -41,17 +67,19 @@
     };
   };
 
-  processes = {
-    backend = {
-      exec = "./mvnw spring-boot:run";
-      cwd = "${config.git.root}/backend";
-    };
-
-    frontend = {
-      exec = "npm start";
-      cwd = "${config.git.root}/frontend";
-    };
-  };
+  # Disabled devenv processes due to task cache locking issues
+  # Use the 'start-services' script instead
+  # processes = {
+  #   backend = {
+  #     exec = "./mvnw spring-boot:run";
+  #     cwd = "${config.git.root}/backend";
+  #   };
+  #
+  #   frontend = {
+  #     exec = "npm start";
+  #     cwd = "${config.git.root}/frontend";
+  #   };
+  # };
 
   services.postgres = {
     enable = true;
@@ -68,11 +96,12 @@
     '';
   };
 
-  enterShell = ''
-    hello
-  '';
-
-  enterTest = ''
-    echo "Running tests"
-  '';
+  # Disable task-based hooks to avoid locking issues
+  # enterShell = ''
+  #   hello
+  # '';
+  #
+  # enterTest = ''
+  #   echo "Running tests"
+  # '';
 }

@@ -20,8 +20,47 @@ services:
     networks:
       - meeting-network
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ip6-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meetingdb
+      SPRING_DATASOURCE_USERNAME: meetinguser
+      SPRING_DATASOURCE_PASSWORD: meetingpass
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - maven-cache:/root/.m2
+    networks:
+      - meeting-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ip6-frontend
+    ports:
+      - "4200:4200"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - meeting-network
+
 volumes:
   postgres_data:
+    driver: local
+  maven-cache:
     driver: local
 
 networks:
