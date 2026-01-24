@@ -19,9 +19,6 @@
 
 # Java / Maven / Spring Boot
 backend/target/
-backend/.mvn/
-backend/mvnw
-backend/mvnw.cmd
 *.class
 *.jar
 *.war
