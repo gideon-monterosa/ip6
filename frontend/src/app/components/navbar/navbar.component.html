@@ -1,0 +1,11 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <h2>Meetings App</h2>
+    </div>
+    <div class="navbar-user" *ngIf="currentUser">
+      <span class="username">{{ currentUser.username }}</span>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</nav>

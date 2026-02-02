@@ -1,0 +1,12 @@
+<div class="home-container">
+  <div class="welcome-card">
+    <h1>Welcome to Meetings App</h1>
+    <div class="user-info" *ngIf="currentUser">
+      <p class="greeting">Hello, <strong>{{ currentUser.username }}</strong>!</p>
+      <p class="subtitle">You are successfully logged in.</p>
+    </div>
+    <div class="placeholder-content">
+      <p>Your dashboard will be available here soon.</p>
+    </div>
+  </div>
+</div>
