@@ -1,5 +1,6 @@
 package ch.fhnw.meeting.model;
 
+import ch.fhnw.meeting.model.calendar.AuthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -33,4 +34,8 @@ public class UserOAuthToken {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider provider;
 }
