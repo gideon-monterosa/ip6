@@ -1,9 +1,12 @@
 package ch.fhnw.meeting.service.calendar;
 
+import ch.fhnw.meeting.dto.calendar.EventDto;
+import ch.fhnw.meeting.model.calendar.AuthProvider;
 import ch.fhnw.meeting.model.User;
 import ch.fhnw.meeting.model.UserOAuthToken;
 import ch.fhnw.meeting.repository.UserOAuthTokenRepository;
 import ch.fhnw.meeting.repository.UserRepository;
+import ch.fhnw.meeting.service.calendar.factory.GoogleEventFactory;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -11,8 +14,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,10 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class GoogleCalendarService {
+public class GoogleCalendarService implements CalendarProvider{
 
     private final UserOAuthTokenRepository tokenRepository;
     private final UserRepository userRepository;
@@ -42,6 +49,15 @@ public class GoogleCalendarService {
     private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final String APPLICATION_NAME = "BachelorThesisApp";
 
+    private final GoogleEventFactory factory;
+
+    public GoogleCalendarService(UserOAuthTokenRepository tokenRepository, UserRepository userRepository,
+                                 GoogleEventFactory factory) {
+        this.tokenRepository = tokenRepository;
+        this.userRepository = userRepository;
+        this.factory = factory;
+    }
+
     private GoogleAuthorizationCodeFlow getFlow() {
         GoogleClientSecrets.Details web = new GoogleClientSecrets.Details();
         web.setClientId(clientId);
@@ -54,6 +70,11 @@ public class GoogleCalendarService {
             .setAccessType("offline")
             .setApprovalPrompt("force")
             .build();
+    }
+
+    @Override
+    public AuthProvider getProvider() {
+        return AuthProvider.GOOGLE;
     }
 
     public String getAuthorizationUrl() {
@@ -71,8 +92,11 @@ public class GoogleCalendarService {
             .setRedirectUri(redirectUri)
             .execute();
 
-        UserOAuthToken tokenEntity = tokenRepository.findByUserId(user.getId())
-            .orElse(UserOAuthToken.builder().user(user).build());
+        UserOAuthToken tokenEntity = tokenRepository.findByUserIdAndProvider(user.getId(), AuthProvider.GOOGLE)
+            .orElse(UserOAuthToken.builder()
+                .user(user)
+                .provider(AuthProvider.GOOGLE)
+                .build());
 
         tokenEntity.setAccessToken(response.getAccessToken());
         if (response.getRefreshToken() != null) {
@@ -83,11 +107,16 @@ public class GoogleCalendarService {
         tokenRepository.save(tokenEntity);
     }
 
-    public Calendar getCalendarClient(String username) throws IOException {
+    @Override
+    public List<EventDto> getEvents(String username) throws IOException {
+        return getUpcomingEvents(username);
+    }
+
+    public Calendar getCalendarClient(String username) {
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        UserOAuthToken tokenEntity = tokenRepository.findByUserId(user.getId())
+        UserOAuthToken tokenEntity = tokenRepository.findByUserIdAndProvider(user.getId(), AuthProvider.GOOGLE)
             .orElseThrow(() -> new IllegalStateException("User hat noch keinen Google Kalender verknüpft."));
 
         Credential credential = createCredentialFromToken(tokenEntity);
@@ -110,5 +139,27 @@ public class GoogleCalendarService {
             .setClientAuthentication(new com.google.api.client.auth.oauth2.ClientParametersAuthentication(clientId, clientSecret))
             .build()
             .setFromTokenResponse(tokenResponse);
+    }
+
+    private List<EventDto> getUpcomingEvents(String username) throws IOException {
+        Calendar calendarClient = getCalendarClient(username);
+
+        DateTime now = new DateTime(System.currentTimeMillis());
+
+        Events events = calendarClient.events().list("primary")
+            .setMaxResults(10)
+            .setTimeMin(now)
+            .setOrderBy("startTime")
+            .setSingleEvents(true)
+            .execute();
+
+        List<Event> items = events.getItems();
+        if (items.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return items.stream()
+            .map(factory::create)
+            .collect(Collectors.toList());
     }
 }
