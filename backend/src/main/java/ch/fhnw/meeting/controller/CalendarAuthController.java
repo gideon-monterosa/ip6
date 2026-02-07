@@ -1,39 +1,63 @@
 package ch.fhnw.meeting.controller;
 
-import ch.fhnw.meeting.service.calendar.GoogleCalendarService;
-import lombok.RequiredArgsConstructor;
+import ch.fhnw.meeting.dto.calendar.CalendarConnectionRequest;
+import ch.fhnw.meeting.dto.calendar.CalendarStatusResponse;
+import ch.fhnw.meeting.dto.calendar.CalendarUrlResponse;
+import ch.fhnw.meeting.model.calendar.AuthProvider;
+import ch.fhnw.meeting.service.calendar.CalendarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/calendar")
-@RequiredArgsConstructor
 public class CalendarAuthController {
 
-    private final GoogleCalendarService calendarService;
+    private final CalendarService calendarService;
+
+    public CalendarAuthController(CalendarService calendarService) {
+        this.calendarService = calendarService;
+    }
 
     @GetMapping("/connect")
-    public ResponseEntity<?> connectToGoogle() {
-        String url = calendarService.getAuthorizationUrl();
-        return ResponseEntity.ok(Map.of("url", url));
+    public ResponseEntity<?> connect(String provider) {
+        try {
+            AuthProvider authProvider = AuthProvider.valueOf(provider.toUpperCase());
+            String url = calendarService.getAuthorizationUrl(authProvider);
+
+            return ResponseEntity.ok(new CalendarUrlResponse(url));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Unbekannter Provider: " + provider);
+        }
     }
 
     @PostMapping("/callback")
-    public ResponseEntity<?> saveToken(@RequestBody Map<String, String> payload,
+    public ResponseEntity<?> saveToken(@RequestBody CalendarConnectionRequest request,
                                        @AuthenticationPrincipal UserDetails userDetails) {
-        String code = payload.get("code");
-        if (code == null) return ResponseEntity.badRequest().body("Code is missing");
+
+        if (request.getCode().isEmpty() || request.getCode().filter(String::isBlank).isEmpty()) {
+            return ResponseEntity.badRequest().body("Code is missing");
+        }
 
         try {
-            calendarService.exchangeCodeForToken(code, userDetails.getUsername());
-            return ResponseEntity.ok("Calendar connected successfully");
+            AuthProvider provider = AuthProvider.valueOf(request.getProvider().orElse(AuthProvider.GOOGLE).toString().toUpperCase());
+            calendarService.connect(provider, request.getCode().get(), userDetails.getUsername());
+
+            return ResponseEntity.ok(provider + " Calendar connected successfully");
+
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Google OAuth Error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("OAuth Error: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid Provider");
         }
     }
+
 }

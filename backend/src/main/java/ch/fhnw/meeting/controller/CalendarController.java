@@ -1,6 +1,7 @@
 package ch.fhnw.meeting.controller;
 
-import ch.fhnw.meeting.dto.EventDto;
+import ch.fhnw.meeting.dto.calendar.CalendarStatusResponse;
+import ch.fhnw.meeting.dto.calendar.EventDto;
 import ch.fhnw.meeting.service.calendar.CalendarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,12 @@ public class CalendarController {
             return ResponseEntity.ok(events);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(400).body(e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Fehler beim Abrufen der Kalenderdaten: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<CalendarStatusResponse> getStatus(@AuthenticationPrincipal UserDetails userDetails) {
+        CalendarStatusResponse status = calendarService.getConnectionStatus(userDetails.getUsername());
+        return ResponseEntity.ok(status);
     }
 }
