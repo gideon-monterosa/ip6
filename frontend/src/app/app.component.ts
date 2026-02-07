@@ -1,23 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { AuthService } from './services/auth.service';
-import { User } from './models/auth.model';
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterOutlet, Router, NavigationEnd } from "@angular/router";
+import { NavbarComponent } from "./components/navbar/navbar.component";
+import { HSStaticMethods } from "preline/preline";
+import { AuthService } from "./services/auth.service";
+import { User } from "./models/auth.model";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   imports: [CommonModule, RouterOutlet, NavbarComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  templateUrl: "./app.component.html",
+  styleUrl: "./app.component.css",
 })
 export class AppComponent implements OnInit {
-  title = 'meetings';
+  title = "meetings";
   isAuthenticated = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        setTimeout(() => {
+          HSStaticMethods.autoInit();
+        }, 100);
+      }
+    });
+
     this.authService.currentUser.subscribe((user: User | null) => {
       this.isAuthenticated = user !== null;
     });

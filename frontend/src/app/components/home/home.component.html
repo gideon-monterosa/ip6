@@ -1,12 +1,59 @@
-<div class="home-container">
-  <div class="welcome-card">
-    <h1>Welcome to Meetings App</h1>
-    <div class="user-info" *ngIf="currentUser">
-      <p class="greeting">Hello, <strong>{{ currentUser.username }}</strong>!</p>
-      <p class="subtitle">You are successfully logged in.</p>
+<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    @if (currentUser()) {
+      <h1 class="text-2xl font-bold text-gray-800">
+        Welcome back, {{ currentUser()!.username }}
+      </h1>
+      <p class="text-sm text-gray-500 mt-1">Here's your meeting activity overview.</p>
+    }
+  </div>
+
+  <!-- Stat Cards -->
+  @if (summary()) {
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+      <app-stat-card
+        title="Meetings This Week"
+        [value]="'' + summary()!.thisWeek"
+        [change]="percentChange(summary()!.thisWeek, summary()!.lastWeek)"
+      />
+      <app-stat-card
+        title="Hours in Meetings"
+        [value]="summary()!.totalHoursThisWeek + 'h'"
+        [change]="percentChange(summary()!.totalHoursThisWeek, summary()!.totalHoursLastWeek)"
+      />
+      <app-stat-card
+        title="Avg Duration"
+        [value]="summary()!.avgDurationMinutes + ' min'"
+        [change]="percentChange(summary()!.avgDurationMinutes, summary()!.avgDurationLastWeek)"
+      />
+      <app-stat-card
+        title="Total Attendees"
+        [value]="'' + summary()!.totalAttendees"
+        [change]="percentChange(summary()!.totalAttendees, summary()!.totalAttendeesLastWeek)"
+      />
     </div>
-    <div class="placeholder-content">
-      <p>Your dashboard will be available here soon.</p>
-    </div>
+  }
+
+  <!-- Charts Row -->
+  <div class="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
+    @if (weeks().length) {
+      <app-meetings-trend-chart [weeks]="weeks()" />
+    }
+    @if (days().length) {
+      <app-meetings-by-day-chart [days]="days()" />
+    }
+  </div>
+
+  <!-- Duration + Upcoming -->
+  <div class="grid lg:grid-cols-3 gap-4 sm:gap-6">
+    @if (durations().length) {
+      <app-duration-breakdown-chart [breakdown]="durations()" />
+    }
+    @if (upcomingMeetings().length) {
+      <div class="lg:col-span-2">
+        <app-upcoming-meetings [meetings]="upcomingMeetings()" />
+      </div>
+    }
   </div>
 </div>

@@ -1,0 +1,7 @@
+{
+  "breakdown": [
+    { "label": "Short (< 30 min)", "count": 5 },
+    { "label": "Medium (30-60 min)", "count": 6 },
+    { "label": "Long (> 60 min)", "count": 3 }
+  ]
+}
