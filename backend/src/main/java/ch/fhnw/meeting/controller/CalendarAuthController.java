@@ -43,13 +43,16 @@ public class CalendarAuthController {
     public ResponseEntity<?> saveToken(@RequestBody CalendarConnectionRequest request,
                                        @AuthenticationPrincipal UserDetails userDetails) {
 
-        if (request.getCode().isEmpty() || request.getCode().filter(String::isBlank).isEmpty()) {
+        if (request.getCode() == null || request.getCode().isBlank()) {
             return ResponseEntity.badRequest().body("Code is missing");
         }
 
         try {
-            AuthProvider provider = AuthProvider.valueOf(request.getProvider().orElse(AuthProvider.GOOGLE).toString().toUpperCase());
-            calendarService.connect(provider, request.getCode().get(), userDetails.getUsername());
+            AuthProvider provider = request.getProvider() != null
+                ? request.getProvider()
+                : AuthProvider.GOOGLE;
+
+            calendarService.connect(provider, request.getCode(), userDetails.getUsername());
 
             return ResponseEntity.ok(provider + " Calendar connected successfully");
 
