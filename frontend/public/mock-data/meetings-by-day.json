@@ -1,0 +1,9 @@
+{
+  "days": [
+    { "day": "Mon", "count": 4 },
+    { "day": "Tue", "count": 3 },
+    { "day": "Wed", "count": 2 },
+    { "day": "Thu", "count": 3 },
+    { "day": "Fri", "count": 2 }
+  ]
+}
