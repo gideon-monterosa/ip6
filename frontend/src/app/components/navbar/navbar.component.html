@@ -3,6 +3,7 @@
     <a class="text-xl font-semibold text-gray-800" href="#">Meetings</a>
     @if (currentUser) {
       <div class="flex items-center gap-x-4">
+        <a routerLink="/settings" class="text-sm font-medium text-gray-600 hover:text-blue-600">Settings</a>
         <span class="text-sm text-gray-600">{{ currentUser.username }}</span>
         <button
           type="button"
