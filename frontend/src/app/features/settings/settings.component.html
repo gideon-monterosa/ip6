@@ -23,12 +23,13 @@
     <div class="sm:col-span-9">
       <!-- Placeholder Setting -->
       <div class="max-w-sm">
-        <label for="placeholder-input" class="block text-sm font-medium mb-2 text-muted-foreground-2">Placeholder</label>
-        <input type="text" id="placeholder-input"
-               class="py-3 px-4 block w-full border-border rounded-lg text-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none"
-               [ngModel]="placeholder()"
-               (ngModelChange)="placeholder.set($event)"
-               placeholder="Enter value">
+        <app-input
+          label="Placeholder"
+          type="text"
+          id="placeholder-input"
+          placeholder="Enter value"
+          [control]="placeholderControl"
+        />
       </div>
     </div>
   </div>

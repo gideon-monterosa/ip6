@@ -1,51 +1,48 @@
-<div class="login-container">
-  <div class="login-card">
-    <h2>Login</h2>
+<app-auth-layout>
+  <h2 class="text-2xl font-bold text-center mb-6 text-foreground">Login</h2>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          formControlName="username"
-          class="form-control"
-          [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
-        />
-        <div class="error-message" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
-          Username is required
-        </div>
-      </div>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <app-input
+        label="Username"
+        type="text"
+        id="username"
+        [control]="loginForm.get('username')!"
+        [required]="true"
+      />
+    </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="form-control"
-          [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-        />
-        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          Password is required
-        </div>
-      </div>
+    <div class="mb-4">
+      <app-input
+        label="Password"
+        type="password"
+        id="password"
+        [control]="loginForm.get('password')!"
+        [required]="true"
+      />
+    </div>
 
-      <div class="error-message" *ngIf="error">
+    @if (error) {
+      <div class="text-destructive text-sm mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
         {{ error }}
       </div>
+    }
 
-      <button
-        type="submit"
-        class="btn-primary"
-        [disabled]="loading || loginForm.invalid"
-      >
-        {{ loading ? 'Logging in...' : 'Login' }}
-      </button>
-    </form>
+    <app-button
+      type="submit"
+      variant="primary"
+      [disabled]="loginForm.invalid"
+      [loading]="loading"
+      [fullWidth]="true"
+    >
+      {{ loading ? 'Logging in...' : 'Login' }}
+    </app-button>
+  </form>
 
-    <div class="register-link">
-      Don't have an account? <a routerLink="/register">Register here</a>
-    </div>
+  <div class="text-center mt-6 text-sm text-muted-foreground">
+    Don't have an account?
+    <a routerLink="/register" class="text-primary hover:text-primary-hover font-medium transition-colors">
+      Register here
+    </a>
   </div>
-</div>
+</app-auth-layout>
