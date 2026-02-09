@@ -1,23 +1,23 @@
 import { Component, OnInit, signal } from "@angular/core";
-import { AuthService } from "../../services/auth.service";
-import { DashboardService } from "../../services/dashboard.service";
-import { User } from "../../models/auth.model";
+import { AuthService } from "../../core/services/auth.service";
+import { DashboardService } from "./services/dashboard.service";
+import { User } from "../../core/models/auth.model";
 import {
   WeekData,
   MeetingSummary,
   DayData,
   DurationData,
   UpcomingMeeting,
-} from "../../models/dashboard.model";
-import { StatCardComponent } from "../dashboard/stat-card.component";
-import { MeetingsTrendChartComponent } from "../dashboard/meetings-trend-chart.component";
-import { MeetingsByDayChartComponent } from "../dashboard/meetings-by-day-chart.component";
-import { DurationBreakdownChartComponent } from "../dashboard/duration-breakdown-chart.component";
-import { UpcomingMeetingsComponent } from "../dashboard/upcoming-meetings.component";
+} from "./models/dashboard.model";
+import { StatCardComponent } from "./components/stat-card.component";
+import { MeetingsTrendChartComponent } from "./components/meetings-trend-chart.component";
+import { MeetingsByDayChartComponent } from "./components/meetings-by-day-chart.component";
+import { DurationBreakdownChartComponent } from "./components/duration-breakdown-chart.component";
+import { UpcomingMeetingsComponent } from "./components/upcoming-meetings.component";
 import { forkJoin } from "rxjs";
 
 @Component({
-  selector: "app-home",
+  selector: "app-dashboard",
   standalone: true,
   imports: [
     StatCardComponent,
@@ -26,10 +26,10 @@ import { forkJoin } from "rxjs";
     DurationBreakdownChartComponent,
     UpcomingMeetingsComponent,
   ],
-  templateUrl: "./home.component.html",
-  styleUrl: "./home.component.css",
+  templateUrl: "./dashboard.component.html",
+  styleUrl: "./dashboard.component.css",
 })
-export class HomeComponent implements OnInit {
+export class DashboardComponent implements OnInit {
   currentUser = signal<User | null>(null);
   weeks = signal<WeekData[]>([]);
   summary = signal<MeetingSummary | null>(null);

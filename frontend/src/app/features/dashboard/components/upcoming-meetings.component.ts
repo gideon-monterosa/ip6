@@ -1,6 +1,6 @@
 import { Component, input } from "@angular/core";
 import { DatePipe } from "@angular/common";
-import { UpcomingMeeting } from "../../models/dashboard.model";
+import { UpcomingMeeting } from "../models/dashboard.model";
 
 @Component({
   selector: "app-upcoming-meetings",

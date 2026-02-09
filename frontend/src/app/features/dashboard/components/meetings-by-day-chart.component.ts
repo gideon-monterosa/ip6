@@ -1,7 +1,7 @@
 import { Component, input, effect } from "@angular/core";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { DayData } from "../../models/dashboard.model";
-import { CHART_PRIMARY, CHART_GRID_BORDER } from "../../theme.constants";
+import { DayData } from "../models/dashboard.model";
+import { CHART_PRIMARY, CHART_GRID_BORDER } from "../../../theme.constants";
 import {
   ApexAxisChartSeries,
   ApexChart,

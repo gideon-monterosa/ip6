@@ -1,21 +1,21 @@
-import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { HomeComponent } from './components/home/home.component';
-import { CalendarCallbackComponent } from './components/calendar-callback/calendar-callback.component';
-import { SettingsComponent } from './components/settings/settings.component';
-import { authGuard } from './guards/auth.guard';
-import { guestGuard } from './guards/guest.guard';
+import { Routes } from "@angular/router";
+import { LoginComponent } from "./features/auth/login/login.component";
+import { RegisterComponent } from "./features/auth/register/register.component";
+import { DashboardComponent } from "./features/dashboard/dashboard.component";
+import { CalendarCallbackComponent } from "./features/calendar/calendar-callback/calendar-callback.component";
+import { SettingsComponent } from "./features/settings/settings.component";
+import { authGuard } from "./core/guards/auth.guard";
+import { guestGuard } from "./core/guards/guest.guard";
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
-  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
-  { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
+  { path: "login", component: LoginComponent, canActivate: [guestGuard] },
+  { path: "register", component: RegisterComponent, canActivate: [guestGuard] },
+  { path: "home", component: DashboardComponent, canActivate: [authGuard] },
+  { path: "settings", component: SettingsComponent, canActivate: [authGuard] },
   {
-    path: 'calendar-callback',
+    path: "calendar-callback",
     component: CalendarCallbackComponent,
     canActivate: [authGuard],
   },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: "", redirectTo: "/home", pathMatch: "full" },
 ];

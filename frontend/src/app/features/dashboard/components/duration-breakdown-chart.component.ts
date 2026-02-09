@@ -1,7 +1,7 @@
 import { Component, input, effect } from "@angular/core";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { DurationData } from "../../models/dashboard.model";
-import { CHART_COLORS, CHART_PRIMARY } from "../../theme.constants";
+import { DurationData } from "../models/dashboard.model";
+import { CHART_COLORS, CHART_PRIMARY } from "../../../theme.constants";
 import {
   ApexNonAxisChartSeries,
   ApexChart,

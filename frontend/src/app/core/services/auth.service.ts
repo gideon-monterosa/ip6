@@ -1,15 +1,20 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { LoginRequest, RegisterRequest, AuthResponse, User } from '../models/auth.model';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { BehaviorSubject, Observable, tap } from "rxjs";
+import {
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  User,
+} from "../models/auth.model";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
-  private tokenKey = 'auth_token';
-  private userKey = 'current_user';
+  private apiUrl = "http://localhost:8080/api/auth";
+  private tokenKey = "auth_token";
+  private userKey = "current_user";
 
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
@@ -17,7 +22,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
     const storedUser = localStorage.getItem(this.userKey);
     this.currentUserSubject = new BehaviorSubject<User | null>(
-      storedUser ? JSON.parse(storedUser) : null
+      storedUser ? JSON.parse(storedUser) : null,
     );
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -27,15 +32,15 @@ export class AuthService {
   }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
-      tap(response => this.handleAuthResponse(response))
-    );
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/register`, request)
+      .pipe(tap((response) => this.handleAuthResponse(response)));
   }
 
   login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap(response => this.handleAuthResponse(response))
-    );
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, request)
+      .pipe(tap((response) => this.handleAuthResponse(response)));
   }
 
   logout(): void {
@@ -56,7 +61,7 @@ export class AuthService {
     localStorage.setItem(this.tokenKey, response.token);
     const user: User = {
       username: response.username,
-      email: response.email
+      email: response.email,
     };
     localStorage.setItem(this.userKey, JSON.stringify(user));
     this.currentUserSubject.next(user);
