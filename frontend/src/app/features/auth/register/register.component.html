@@ -1,58 +1,69 @@
-<app-auth-layout>
-  <h2 class="text-2xl font-bold text-center mb-6 text-foreground">Register</h2>
+<div class="register-container">
+  <div class="register-card">
+    <h2>Register</h2>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="mb-4">
-      <app-input
-        label="Username"
-        type="text"
-        id="username"
-        [control]="registerForm.get('username')!"
-        [required]="true"
-      />
-    </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="form-control"
+          [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+          <span *ngIf="registerForm.get('username')?.errors?.['required']">Username is required</span>
+          <span *ngIf="registerForm.get('username')?.errors?.['minlength']">Username must be at least 3 characters</span>
+          <span *ngIf="registerForm.get('username')?.errors?.['maxlength']">Username must not exceed 50 characters</span>
+        </div>
+      </div>
 
-    <div class="mb-4">
-      <app-input
-        label="Email"
-        type="email"
-        id="email"
-        [control]="registerForm.get('email')!"
-        [required]="true"
-      />
-    </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Email must be valid</span>
+        </div>
+      </div>
 
-    <div class="mb-4">
-      <app-input
-        label="Password"
-        type="password"
-        id="password"
-        [control]="registerForm.get('password')!"
-        [required]="true"
-      />
-    </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
 
-    @if (error) {
-      <div class="text-destructive text-sm mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+      <div class="error-message" *ngIf="error">
         {{ error }}
       </div>
-    }
 
-    <app-button
-      type="submit"
-      variant="primary"
-      [disabled]="registerForm.invalid"
-      [loading]="loading"
-      [fullWidth]="true"
-    >
-      {{ loading ? 'Registering...' : 'Register' }}
-    </app-button>
-  </form>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading || registerForm.invalid"
+      >
+        {{ loading ? 'Registering...' : 'Register' }}
+      </button>
+    </form>
 
-  <div class="text-center mt-6 text-sm text-muted-foreground">
-    Already have an account?
-    <a routerLink="/login" class="text-primary hover:text-primary-hover font-medium transition-colors">
-      Login here
-    </a>
+    <div class="login-link">
+      Already have an account? <a routerLink="/login">Login here</a>
+    </div>
   </div>
-</app-auth-layout>
+</div>
