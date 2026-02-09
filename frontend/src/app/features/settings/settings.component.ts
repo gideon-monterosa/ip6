@@ -1,14 +1,19 @@
-import { Component, signal } from "@angular/core";
+import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormControl } from "@angular/forms";
+import { InputComponent } from "../../shared/components/input/input.component";
 
 @Component({
   selector: "app-settings",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputComponent
+  ],
   templateUrl: "./settings.component.html",
   styleUrl: "./settings.component.css",
 })
 export class SettingsComponent {
-  placeholder = signal("");
+  placeholderControl = new FormControl('');
 }
