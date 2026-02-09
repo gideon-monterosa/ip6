@@ -5,12 +5,10 @@ import {
   AbstractControl,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-input",
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: "./input.component.html",
   providers: [
     {

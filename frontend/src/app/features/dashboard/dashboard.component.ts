@@ -1,7 +1,6 @@
-import { Component, OnInit, signal } from "@angular/core";
+import { Component, OnInit, computed, inject } from "@angular/core";
 import { AuthService } from "../../core/services/auth.service";
 import { DashboardService } from "./services/dashboard.service";
-import { User } from "../../core/models/auth.model";
 import {
   WeekData,
   MeetingSummary,
@@ -14,11 +13,11 @@ import { MeetingsTrendChartComponent } from "./components/meetings-trend-chart.c
 import { MeetingsByDayChartComponent } from "./components/meetings-by-day-chart.component";
 import { DurationBreakdownChartComponent } from "./components/duration-breakdown-chart.component";
 import { UpcomingMeetingsComponent } from "./components/upcoming-meetings.component";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { forkJoin } from "rxjs";
 
 @Component({
   selector: "app-dashboard",
-  standalone: true,
   imports: [
     StatCardComponent,
     MeetingsTrendChartComponent,
@@ -30,35 +29,39 @@ import { forkJoin } from "rxjs";
   styleUrl: "./dashboard.component.css",
 })
 export class DashboardComponent implements OnInit {
-  currentUser = signal<User | null>(null);
-  weeks = signal<WeekData[]>([]);
-  summary = signal<MeetingSummary | null>(null);
-  days = signal<DayData[]>([]);
-  durations = signal<DurationData[]>([]);
-  upcomingMeetings = signal<UpcomingMeeting[]>([]);
+  // Use inject() for dependency injection
+  private authService = inject(AuthService);
+  private dashboardService = inject(DashboardService);
 
-  constructor(
-    private authService: AuthService,
-    private dashboardService: DashboardService,
-  ) {}
+  // Consume currentUser signal directly from AuthService
+  currentUser = this.authService.currentUser;
 
-  ngOnInit(): void {
-    this.authService.currentUser.subscribe((user: User | null) => {
-      this.currentUser.set(user);
-    });
-
+  // Use toSignal to convert Observable to Signal
+  dashboardData = toSignal(
     forkJoin({
       weekly: this.dashboardService.getWeeklyMeetings(),
       byDay: this.dashboardService.getMeetingsByDay(),
       duration: this.dashboardService.getMeetingsDuration(),
       upcoming: this.dashboardService.getUpcomingMeetings(),
-    }).subscribe(({ weekly, byDay, duration, upcoming }) => {
-      this.weeks.set(weekly.weeks);
-      this.summary.set(weekly.summary);
-      this.days.set(byDay.days);
-      this.durations.set(duration.breakdown);
-      this.upcomingMeetings.set(upcoming.meetings);
-    });
+    }),
+    { initialValue: null },
+  );
+
+  // Computed signals derived from dashboard data
+  weeks = computed<WeekData[]>(() => this.dashboardData()?.weekly.weeks ?? []);
+  summary = computed<MeetingSummary | null>(
+    () => this.dashboardData()?.weekly.summary ?? null,
+  );
+  days = computed<DayData[]>(() => this.dashboardData()?.byDay.days ?? []);
+  durations = computed<DurationData[]>(
+    () => this.dashboardData()?.duration.breakdown ?? [],
+  );
+  upcomingMeetings = computed<UpcomingMeeting[]>(
+    () => this.dashboardData()?.upcoming.meetings ?? [],
+  );
+
+  ngOnInit(): void {
+    // No subscriptions needed - all data is managed via signals
   }
 
   percentChange(current: number, previous: number): number {

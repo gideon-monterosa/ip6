@@ -20,7 +20,6 @@ import {
 
 @Component({
   selector: "app-meetings-trend-chart",
-  standalone: true,
   imports: [NgApexchartsModule],
   template: `
     <div

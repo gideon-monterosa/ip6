@@ -15,7 +15,6 @@ import {
 
 @Component({
   selector: "app-meetings-by-day-chart",
-  standalone: true,
   imports: [NgApexchartsModule],
   template: `
     <div

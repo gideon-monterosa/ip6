@@ -13,7 +13,6 @@ import { InputComponent } from "../../../shared/components/input/input.component
 
 @Component({
   selector: "app-register",
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     RouterModule,
@@ -22,6 +21,7 @@ import { InputComponent } from "../../../shared/components/input/input.component
     InputComponent,
   ],
   templateUrl: "./register.component.html",
+  styleUrl: "./register.component.css",
 })
 export class RegisterComponent {
   registerForm: FormGroup;

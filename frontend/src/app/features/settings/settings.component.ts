@@ -4,7 +4,6 @@ import { InputComponent } from "../../shared/components/input/input.component";
 
 @Component({
   selector: "app-settings",
-  standalone: true,
   imports: [ReactiveFormsModule, InputComponent],
   templateUrl: "./settings.component.html",
   styleUrl: "./settings.component.css",

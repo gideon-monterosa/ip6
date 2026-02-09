@@ -1,12 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CalendarService } from "../services/calendar.service";
 import { AuthProvider } from "../models/calendar.model";
 
 @Component({
   selector: "app-calendar-callback",
-  imports: [CommonModule],
+  imports: [],
   templateUrl: "./calendar-callback.component.html",
   styleUrl: "./calendar-callback.component.css",
 })

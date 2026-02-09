@@ -13,7 +13,6 @@ import {
 
 @Component({
   selector: "app-duration-breakdown-chart",
-  standalone: true,
   imports: [NgApexchartsModule],
   template: `
     <div

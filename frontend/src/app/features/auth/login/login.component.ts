@@ -13,7 +13,6 @@ import { InputComponent } from "../../../shared/components/input/input.component
 
 @Component({
   selector: "app-login",
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     RouterModule,
@@ -22,6 +21,7 @@ import { InputComponent } from "../../../shared/components/input/input.component
     InputComponent,
   ],
   templateUrl: "./login.component.html",
+  styleUrl: "./login.component.css",
 })
 export class LoginComponent {
   loginForm: FormGroup;

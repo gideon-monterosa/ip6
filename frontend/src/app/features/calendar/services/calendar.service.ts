@@ -7,12 +7,13 @@ import {
   CalendarStatusResponse,
   CalendarUrlResponse,
 } from "../models/calendar.model";
+import { environment } from "../../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class CalendarService {
-  private apiUrl = "http://localhost:8080/api/calendar";
+  private apiUrl = `${environment.apiUrl}/api/calendar`;
 
   constructor(private http: HttpClient) {}
 
