@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet, Router, NavigationEnd } from "@angular/router";
 import { NavbarComponent } from "./components/navbar/navbar.component";
-import { HSStaticMethods } from "preline/preline";
 import { AuthService } from "./services/auth.service";
 import { User } from "./models/auth.model";
 
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         setTimeout(() => {
-          HSStaticMethods.autoInit();
+          window.HSStaticMethods.autoInit();
         }, 100);
       }
     });

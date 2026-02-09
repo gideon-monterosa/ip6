@@ -2,10 +2,10 @@
   <!-- Header -->
   <div class="mb-8">
     @if (currentUser()) {
-      <h1 class="text-2xl font-bold text-gray-800">
+      <h1 class="text-2xl font-bold text-foreground">
         Welcome back, {{ currentUser()!.username }}
       </h1>
-      <p class="text-sm text-gray-500 mt-1">Here's your meeting activity overview.</p>
+      <p class="text-sm text-muted-foreground-1 mt-1">Here's your meeting activity overview.</p>
     }
   </div>
 

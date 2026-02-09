@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Router, RouterModule } from "@angular/router";
+import { Router, RouterModule, RouterLinkActive } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { User } from "../../models/auth.model";
 
 @Component({
   selector: "app-navbar",
-  standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, RouterLinkActive],
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.css",
 })

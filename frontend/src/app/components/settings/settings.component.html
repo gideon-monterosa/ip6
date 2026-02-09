@@ -1,21 +1,21 @@
 <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
   <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-800">
+    <h1 class="text-2xl font-bold text-foreground">
       Settings
     </h1>
-    <p class="text-sm text-gray-500 mt-1">
+    <p class="text-sm text-muted-foreground-1 mt-1">
       Manage your application preferences and configurations.
     </p>
   </div>
 
   <!-- Divider -->
-  <hr class="border-gray-200 my-6">
+  <hr class="border-border my-6">
 
   <!-- Provider Category -->
   <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
     <div class="sm:col-span-3">
-      <h2 class="text-lg font-semibold text-gray-800">
+      <h2 class="text-lg font-semibold text-foreground">
         Provider
       </h2>
     </div>
@@ -23,9 +23,9 @@
     <div class="sm:col-span-9">
       <!-- Placeholder Setting -->
       <div class="max-w-sm">
-        <label for="placeholder-input" class="block text-sm font-medium mb-2 text-gray-700">Placeholder</label>
+        <label for="placeholder-input" class="block text-sm font-medium mb-2 text-muted-foreground-2">Placeholder</label>
         <input type="text" id="placeholder-input"
-               class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+               class="py-3 px-4 block w-full border-border rounded-lg text-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none"
                [ngModel]="placeholder()"
                (ngModelChange)="placeholder.set($event)"
                placeholder="Enter value">
