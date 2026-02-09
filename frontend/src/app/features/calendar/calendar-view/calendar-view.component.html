@@ -1,0 +1,102 @@
+<div class="flex flex-col h-[calc(100vh-80px)] max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ currentMonthLabel() }}</h1>
+      <p class="text-sm text-gray-500">Weekly Overview</p>
+    </div>
+
+    <div class="flex items-center gap-x-2">
+      <button (click)="previousWeek()" type="button" class="p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
+        <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+
+      <button (click)="today()" type="button" class="py-2 px-3 inline-flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
+        Today
+      </button>
+
+      <button (click)="nextWeek()" type="button" class="p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
+        <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm">
+      <div class="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <div class="flex flex-col flex-1 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+
+    <div class="flex border-b border-gray-200">
+      <div class="w-16 flex-shrink-0 border-r border-gray-100 bg-gray-50"></div>
+
+      <div class="grid grid-cols-7 flex-1">
+        @for (day of weekDays(); track day) {
+          <div class="px-2 py-3 text-center border-r border-gray-100 last:border-r-0"
+               [class.bg-blue-50]="isToday(day)">
+            <div class="text-xs uppercase font-medium"
+                 [class.text-blue-600]="isToday(day)"
+                 [class.text-gray-500]="!isToday(day)">
+              {{ day | date:'EEE' }}
+            </div>
+            <div class="text-lg font-semibold mt-1"
+                 [class.text-blue-700]="isToday(day)"
+                 [class.text-gray-800]="!isToday(day)">
+              {{ day | date:'d' }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto relative custom-scrollbar">
+      <div class="flex min-h-[1440px]"> <div class="w-16 flex-shrink-0 border-r border-gray-100 bg-gray-50 select-none">
+        @for (hour of hours; track hour) {
+          <div class="h-[60px] border-b border-gray-100 relative">
+              <span class="absolute -top-3 right-2 text-xs text-gray-400">
+                {{ hour }}:00
+              </span>
+          </div>
+        }
+      </div>
+
+        <div class="grid grid-cols-7 flex-1 relative">
+          <div class="absolute inset-0 grid grid-cols-7 pointer-events-none">
+            @for (day of weekDays(); track day) {
+              <div class="border-r border-gray-100 h-full last:border-r-0">
+                @for (hour of hours; track hour) {
+                  <div class="h-[60px] border-b border-gray-50"></div>
+                }
+              </div>
+            }
+          </div>
+
+          @for (day of weekDays(); track day) {
+            <div class="relative h-full">
+              @for (event of getEventsForDay(day); track event.id) {
+                <div
+                  class="absolute inset-x-1 rounded px-2 py-1 text-xs overflow-hidden cursor-pointer hover:opacity-90 hover:z-10 transition-all shadow-sm group"
+                  [ngStyle]="getEventStyle(event)"
+                  [title]="event.title + ' (' + (event.start | date:'shortTime') + ' - ' + (event.end | date:'shortTime') + ')'">
+
+                  <div class="font-semibold truncate">{{ event.title }}</div>
+                  <div class="truncate opacity-75">
+                    {{ event.start | date:'shortTime' }} - {{ event.end | date:'shortTime' }}
+                  </div>
+
+                  @if (event.link) {
+                    <a [href]="event.link" target="_blank" class="hidden group-hover:block mt-1 underline">Join</a>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

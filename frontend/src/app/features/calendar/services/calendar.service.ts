@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import {
   AuthProvider,
   CalendarConnectionRequest,
   CalendarStatusResponse,
   CalendarUrlResponse,
+  CalendarEvent
 } from "../models/calendar.model";
 
 @Injectable({
@@ -29,5 +30,13 @@ export class CalendarService {
 
   getStatus(): Observable<CalendarStatusResponse> {
     return this.http.get<CalendarStatusResponse>(`${this.apiUrl}/status`);
+  }
+
+  getEvents(start: Date, end: Date): Observable<CalendarEvent[]> {
+    const params = new HttpParams()
+      .set('start', start.toISOString())
+      .set('end', end.toISOString());
+
+    return this.http.get<CalendarEvent[]>(`${this.apiUrl}/events`, { params });
   }
 }
