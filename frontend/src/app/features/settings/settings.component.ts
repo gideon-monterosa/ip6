@@ -1,16 +1,15 @@
-import { Component, signal, effect } from "@angular/core";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
-import { InputComponent } from "../../shared/components/input/input.component";
+import { Component, signal, effect } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { InputComponent } from '../../shared/components/input/input.component';
 
 @Component({
-  selector: "app-settings",
+  selector: 'app-settings',
   imports: [ReactiveFormsModule, InputComponent],
-  templateUrl: "./settings.component.html",
-  styleUrl: "./settings.component.css",
+  templateUrl: './settings.component.html',
 })
 export class SettingsComponent {
-  placeholder = signal("");
-  placeholderControl = new FormControl("");
+  placeholder = signal('');
+  placeholderControl = new FormControl('');
 
   constructor() {
     // Sync FormControl value to signal

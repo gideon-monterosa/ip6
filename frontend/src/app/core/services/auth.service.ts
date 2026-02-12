@@ -1,21 +1,21 @@
-import { Injectable, signal, computed } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable, tap } from "rxjs";
+import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import {
   LoginRequest,
   RegisterRequest,
   AuthResponse,
   User,
-} from "../models/auth.model";
-import { environment } from "../../../environments/environment";
+} from '../models/auth.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/api/auth`;
-  private tokenKey = "auth_token";
-  private userKey = "current_user";
+  private tokenKey = 'auth_token';
+  private userKey = 'current_user';
 
   // Signal-based state management
   private currentUserSignal = signal<User | null>(this.getStoredUser());

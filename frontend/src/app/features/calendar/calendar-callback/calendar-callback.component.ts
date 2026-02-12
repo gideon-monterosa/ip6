@@ -1,13 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { CalendarService } from "../services/calendar.service";
-import { AuthProvider } from "../models/calendar.model";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CalendarService } from '../services/calendar.service';
+import { AuthProvider } from '../models/calendar.model';
 
 @Component({
-  selector: "app-calendar-callback",
+  selector: 'app-calendar-callback',
   imports: [],
-  templateUrl: "./calendar-callback.component.html",
-  styleUrl: "./calendar-callback.component.css",
+  templateUrl: './calendar-callback.component.html',
 })
 export class CalendarCallbackComponent implements OnInit {
   constructor(
@@ -17,24 +16,23 @@ export class CalendarCallbackComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const code = this.route.snapshot.queryParams["code"];
-    const providerStr = localStorage.getItem("pending_calendar_provider");
+    const code = this.route.snapshot.queryParams['code'];
+    const providerStr = localStorage.getItem('pending_calendar_provider');
 
     if (code && providerStr) {
       const provider = providerStr as AuthProvider;
 
       this.calendarService.connect(code, provider).subscribe({
         next: () => {
-          localStorage.removeItem("pending_calendar_provider");
-          this.router.navigate(["/home"]);
+          localStorage.removeItem('pending_calendar_provider');
+          this.router.navigate(['/home']);
         },
-        error: (err) => {
-          console.error("Fehler beim Verbinden:", err);
-          this.router.navigate(["/home"]);
+        error: () => {
+          this.router.navigate(['/home']);
         },
       });
     } else {
-      this.router.navigate(["/home"]);
+      this.router.navigate(['/home']);
     }
   }
 }

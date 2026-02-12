@@ -1,23 +1,23 @@
-import { Component, OnInit, computed, inject } from "@angular/core";
-import { AuthService } from "../../core/services/auth.service";
-import { DashboardService } from "./services/dashboard.service";
+import { Component, OnInit, computed, inject } from '@angular/core';
+import { AuthService } from '../../core/services/auth.service';
+import { DashboardService } from './services/dashboard.service';
 import {
   WeekData,
   MeetingSummary,
   DayData,
   DurationData,
   UpcomingMeeting,
-} from "./models/dashboard.model";
-import { StatCardComponent } from "./components/stat-card.component";
-import { MeetingsTrendChartComponent } from "./components/meetings-trend-chart.component";
-import { MeetingsByDayChartComponent } from "./components/meetings-by-day-chart.component";
-import { DurationBreakdownChartComponent } from "./components/duration-breakdown-chart.component";
-import { UpcomingMeetingsComponent } from "./components/upcoming-meetings.component";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { forkJoin } from "rxjs";
+} from './models/dashboard.model';
+import { StatCardComponent } from './components/stat-card.component';
+import { MeetingsTrendChartComponent } from './components/meetings-trend-chart.component';
+import { MeetingsByDayChartComponent } from './components/meetings-by-day-chart.component';
+import { DurationBreakdownChartComponent } from './components/duration-breakdown-chart.component';
+import { UpcomingMeetingsComponent } from './components/upcoming-meetings.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: "app-dashboard",
+  selector: 'app-dashboard',
   imports: [
     StatCardComponent,
     MeetingsTrendChartComponent,
@@ -25,8 +25,8 @@ import { forkJoin } from "rxjs";
     DurationBreakdownChartComponent,
     UpcomingMeetingsComponent,
   ],
-  templateUrl: "./dashboard.component.html",
-  styleUrl: "./dashboard.component.css",
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
   // Use inject() for dependency injection

@@ -1,16 +1,16 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import {
   AuthProvider,
   CalendarConnectionRequest,
   CalendarStatusResponse,
   CalendarUrlResponse,
-} from "../models/calendar.model";
-import { environment } from "../../../../environments/environment";
+} from '../models/calendar.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class CalendarService {
   private apiUrl = `${environment.apiUrl}/api/calendar`;

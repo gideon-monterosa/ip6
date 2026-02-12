@@ -1,17 +1,16 @@
-import { Component, OnInit } from "@angular/core";
-import { RouterOutlet, Router, NavigationEnd } from "@angular/router";
-import { NavbarComponent } from "./layout/navbar/navbar.component";
-import { AuthService } from "./core/services/auth.service";
-import { inject } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { NavbarComponent } from './layout/navbar/navbar.component';
+import { AuthService } from './core/services/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
-  selector: "app-root",
+  selector: 'app-root',
   imports: [RouterOutlet, NavbarComponent],
-  templateUrl: "./app.component.html",
-  styleUrl: "./app.component.css",
+  templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  title = "meetings";
+  title = 'meetings';
 
   // Use inject() for dependency injection
   private authService = inject(AuthService);

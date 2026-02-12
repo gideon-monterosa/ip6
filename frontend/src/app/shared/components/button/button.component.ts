@@ -1,35 +1,35 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: "app-button",
+  selector: 'app-button',
   imports: [],
-  templateUrl: "./button.component.html",
+  templateUrl: './button.component.html',
 })
 export class ButtonComponent {
-  @Input() type: "button" | "submit" | "reset" = "button";
-  @Input() variant: "primary" | "secondary" | "destructive" = "primary";
+  @Input() type: 'button' | 'submit' | 'reset' = 'button';
+  @Input() variant: 'primary' | 'secondary' | 'destructive' = 'primary';
   @Input() disabled = false;
   @Input() loading = false;
   @Input() fullWidth = false;
 
   get buttonClasses(): string {
     const baseClasses =
-      "px-4 py-3 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
-    const widthClass = this.fullWidth ? "w-full" : "";
+      'px-4 py-3 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+    const widthClass = this.fullWidth ? 'w-full' : '';
 
-    let variantClasses = "";
+    let variantClasses = '';
     switch (this.variant) {
-      case "primary":
+      case 'primary':
         variantClasses =
-          "bg-primary text-primary-foreground hover:bg-primary-hover disabled:hover:bg-primary";
+          'bg-primary text-primary-foreground hover:bg-primary-hover disabled:hover:bg-primary';
         break;
-      case "secondary":
+      case 'secondary':
         variantClasses =
-          "bg-secondary text-secondary-foreground border border-border hover:bg-secondary-hover disabled:hover:bg-secondary";
+          'bg-secondary text-secondary-foreground border border-border hover:bg-secondary-hover disabled:hover:bg-secondary';
         break;
-      case "destructive":
+      case 'destructive':
         variantClasses =
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:hover:bg-destructive";
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:hover:bg-destructive';
         break;
     }
 

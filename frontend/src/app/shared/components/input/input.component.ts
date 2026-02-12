@@ -1,15 +1,15 @@
-import { Component, Input, forwardRef } from "@angular/core";
+import { Component, Input, forwardRef } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   AbstractControl,
   ReactiveFormsModule,
-} from "@angular/forms";
+} from '@angular/forms';
 
 @Component({
-  selector: "app-input",
+  selector: 'app-input',
   imports: [ReactiveFormsModule],
-  templateUrl: "./input.component.html",
+  templateUrl: './input.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -20,14 +20,14 @@ import {
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() label?: string;
-  @Input() type: "text" | "email" | "password" | "number" = "text";
-  @Input() placeholder = "";
+  @Input() type: 'text' | 'email' | 'password' | 'number' = 'text';
+  @Input() placeholder = '';
   @Input() hint?: string;
   @Input() id?: string;
   @Input() control?: AbstractControl;
   @Input() required = false;
 
-  value = "";
+  value = '';
   disabled = false;
   touched = false;
 
@@ -56,28 +56,28 @@ export class InputComponent implements ControlValueAccessor {
     const errors: string[] = [];
     const errorObj = this.control.errors;
 
-    if (errorObj["required"]) {
-      errors.push(`${this.label || "This field"} is required`);
+    if (errorObj['required']) {
+      errors.push(`${this.label || 'This field'} is required`);
     }
-    if (errorObj["email"]) {
-      errors.push("Email must be valid");
+    if (errorObj['email']) {
+      errors.push('Email must be valid');
     }
-    if (errorObj["minlength"]) {
-      const minLength = errorObj["minlength"].requiredLength;
+    if (errorObj['minlength']) {
+      const minLength = errorObj['minlength'].requiredLength;
       errors.push(`Must be at least ${minLength} characters`);
     }
-    if (errorObj["maxlength"]) {
-      const maxLength = errorObj["maxlength"].requiredLength;
+    if (errorObj['maxlength']) {
+      const maxLength = errorObj['maxlength'].requiredLength;
       errors.push(`Must not exceed ${maxLength} characters`);
     }
-    if (errorObj["min"]) {
-      errors.push(`Must be at least ${errorObj["min"].min}`);
+    if (errorObj['min']) {
+      errors.push(`Must be at least ${errorObj['min'].min}`);
     }
-    if (errorObj["max"]) {
-      errors.push(`Must not exceed ${errorObj["max"].max}`);
+    if (errorObj['max']) {
+      errors.push(`Must not exceed ${errorObj['max'].max}`);
     }
-    if (errorObj["pattern"]) {
-      errors.push("Invalid format");
+    if (errorObj['pattern']) {
+      errors.push('Invalid format');
     }
 
     return errors;
@@ -85,7 +85,7 @@ export class InputComponent implements ControlValueAccessor {
 
   // ControlValueAccessor implementation
   writeValue(value: string): void {
-    this.value = value || "";
+    this.value = value || '';
   }
 
   registerOnChange(fn: (value: string) => void): void {
