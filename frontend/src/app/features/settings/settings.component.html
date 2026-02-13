@@ -1,0 +1,36 @@
+<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-foreground">
+      Settings
+    </h1>
+    <p class="text-sm text-muted-foreground-1 mt-1">
+      Manage your application preferences and configurations.
+    </p>
+  </div>
+
+  <!-- Divider -->
+  <hr class="border-border my-6">
+
+  <!-- Provider Category -->
+  <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
+    <div class="sm:col-span-3">
+      <h2 class="text-lg font-semibold text-foreground">
+        Provider
+      </h2>
+    </div>
+
+    <div class="sm:col-span-9">
+      <!-- Placeholder Setting -->
+      <div class="max-w-sm">
+        <app-input
+          label="Placeholder"
+          type="text"
+          id="placeholder-input"
+          placeholder="Enter value"
+          [control]="placeholderControl"
+        />
+      </div>
+    </div>
+  </div>
+</div>

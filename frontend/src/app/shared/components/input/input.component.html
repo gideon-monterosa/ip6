@@ -1,0 +1,37 @@
+<div class="w-full">
+  @if (label) {
+    <label [for]="inputId" class="block mb-2 text-sm font-medium text-foreground">
+      {{ label }}
+      @if (required) {
+        <span class="text-destructive">*</span>
+      }
+    </label>
+  }
+
+  <input
+    [type]="type"
+    [id]="inputId"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    class="w-full px-3 py-2 border rounded-lg bg-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    [class.border-destructive]="showError"
+    [class.border-border]="!showError"
+  />
+
+  @if (hint && !showError) {
+    <p class="text-sm text-muted-foreground-1 mt-1">
+      {{ hint }}
+    </p>
+  }
+
+  @if (showError) {
+    <div class="text-destructive text-sm mt-1">
+      @for (error of errorMessages; track error) {
+        <div>{{ error }}</div>
+      }
+    </div>
+  }
+</div>
