@@ -1,0 +1,10 @@
+{
+  "impacts": [
+    { "type": "Stand-up", "avgEfficiency": 4.1, "avgEmotional": 0.6, "avgEnergy": 3.9, "avgDisruption": 1.0 },
+    { "type": "Planning", "avgEfficiency": 3.3, "avgEmotional": 0.1, "avgEnergy": 3.0, "avgDisruption": 3.0 },
+    { "type": "Retrospective", "avgEfficiency": 3.5, "avgEmotional": 0.3, "avgEnergy": 3.0, "avgDisruption": 3.0 },
+    { "type": "1:1", "avgEfficiency": 4.3, "avgEmotional": 0.8, "avgEnergy": 4.2, "avgDisruption": 1.8 },
+    { "type": "Ad-hoc", "avgEfficiency": 2.5, "avgEmotional": -0.5, "avgEnergy": 2.3, "avgDisruption": 3.8 },
+    { "type": "Other", "avgEfficiency": 1.8, "avgEmotional": -0.9, "avgEnergy": 1.5, "avgDisruption": 4.3 }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "focusBlocks": [
+    { "date": "2026-02-02", "blocks60min": 3, "blocks90min": 2, "blocks120min": 1 },
+    { "date": "2026-02-03", "blocks60min": 2, "blocks90min": 1, "blocks120min": 1 },
+    { "date": "2026-02-04", "blocks60min": 2, "blocks90min": 1, "blocks120min": 0 },
+    { "date": "2026-02-05", "blocks60min": 3, "blocks90min": 2, "blocks120min": 1 },
+    { "date": "2026-02-06", "blocks60min": 4, "blocks90min": 3, "blocks120min": 2 },
+    { "date": "2026-02-09", "blocks60min": 2, "blocks90min": 1, "blocks120min": 0 },
+    { "date": "2026-02-10", "blocks60min": 3, "blocks90min": 2, "blocks120min": 1 },
+    { "date": "2026-02-11", "blocks60min": 2, "blocks90min": 1, "blocks120min": 1 },
+    { "date": "2026-02-12", "blocks60min": 3, "blocks90min": 2, "blocks120min": 2 }
+  ]
+}

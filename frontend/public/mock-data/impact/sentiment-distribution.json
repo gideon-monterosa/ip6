@@ -1,0 +1,7 @@
+{
+  "distribution": [
+    { "sentiment": "stressed", "count": 21, "percentage": 23.3 },
+    { "sentiment": "neutral", "count": 33, "percentage": 36.7 },
+    { "sentiment": "motivated", "count": 36, "percentage": 40.0 }
+  ]
+}
