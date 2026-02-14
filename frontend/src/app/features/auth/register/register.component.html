@@ -7,6 +7,7 @@
         label="Username"
         type="text"
         id="username"
+        formControlName="username"
         [control]="registerForm.get('username')!"
         [required]="true"
       />
@@ -17,6 +18,7 @@
         label="Email"
         type="email"
         id="email"
+        formControlName="email"
         [control]="registerForm.get('email')!"
         [required]="true"
       />
@@ -27,6 +29,7 @@
         label="Password"
         type="password"
         id="password"
+        formControlName="password"
         [control]="registerForm.get('password')!"
         [required]="true"
       />
