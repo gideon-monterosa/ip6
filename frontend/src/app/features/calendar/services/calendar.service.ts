@@ -6,6 +6,7 @@ import {
   CalendarConnectionRequest,
   CalendarStatusResponse,
   CalendarUrlResponse,
+  CalendarEvent
 } from '../models/calendar.model';
 import { environment } from '../../../../environments/environment';
 
@@ -29,6 +30,15 @@ export class CalendarService {
   }
 
   getStatus(): Observable<CalendarStatusResponse> {
-    return this.http.get<CalendarStatusResponse>(`${this.apiUrl}/status`);
+    return this.http.get<CalendarStatusResponse>(`${this.apiUrl}/status`);2
+  }
+
+  getEvents(start: Date, end: Date): Observable<CalendarEvent[]> {
+    return this.http.get<CalendarEvent[]>(`${this.apiUrl}/events`, {
+      params: {
+        start: start.toISOString(),
+        end: end.toISOString()
+      }
+    });
   }
 }
