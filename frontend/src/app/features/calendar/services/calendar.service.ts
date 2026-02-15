@@ -30,7 +30,7 @@ export class CalendarService {
   }
 
   getStatus(): Observable<CalendarStatusResponse> {
-    return this.http.get<CalendarStatusResponse>(`${this.apiUrl}/status`);2
+    return this.http.get<CalendarStatusResponse>(`${this.apiUrl}/status`);
   }
 
   getEvents(start: Date, end: Date): Observable<CalendarEvent[]> {
