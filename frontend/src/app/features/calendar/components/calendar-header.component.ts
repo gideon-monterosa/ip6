@@ -1,0 +1,50 @@
+import { Component, input, output, computed } from '@angular/core';
+import { DatePipe } from '@angular/common';
+
+@Component({
+  selector: 'app-calendar-header',
+  standalone: true,
+  imports: [DatePipe],
+  template: `
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-foreground">
+          {{ currentDate() | date:'MMMM yyyy' }}
+        </h1>
+        <p class="text-sm text-muted-foreground-1">Weekly Overview</p>
+      </div>
+
+      <div class="flex items-center gap-x-2 bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+        <button
+          (click)="previous.emit()"
+          type="button"
+          class="p-2 inline-flex justify-center items-center gap-x-2 rounded-md hover:bg-gray-100 text-gray-800 disabled:opacity-50 transition-colors"
+          aria-label="Previous week">
+          <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+
+        <button
+          (click)="today.emit()"
+          type="button"
+          class="py-1.5 px-4 inline-flex justify-center items-center rounded-md text-sm font-medium text-gray-800 hover:bg-gray-100 transition-colors">
+          Today
+        </button>
+
+        <button
+          (click)="next.emit()"
+          type="button"
+          class="p-2 inline-flex justify-center items-center gap-x-2 rounded-md hover:bg-gray-100 text-gray-800 disabled:opacity-50 transition-colors"
+          aria-label="Next week">
+          <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  `
+})
+export class CalendarHeaderComponent {
+  currentDate = input.required<Date>();
+
+  previous = output<void>();
+  next = output<void>();
+  today = output<void>();
+}
