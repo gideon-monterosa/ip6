@@ -1,7 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
-import { CalendarEvent } from '../../models/calendar.model';
-import { CalendarEventCardComponent } from '../calendar-event-card/calendar-event-card.component';
+import { CalendarEvent } from '../models/calendar.model';
+import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
 
 @Component({
   selector: 'app-calendar-grid',

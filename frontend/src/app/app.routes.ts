@@ -36,6 +36,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'calendar',
+    loadComponent: () =>
+      import('./features/calendar/components/calendar-view.component').then(
+        (m) => m.CalendarViewComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'calendar-callback',
     loadComponent: () =>
       import('./features/calendar/calendar-callback/calendar-callback.component').then(

@@ -1,6 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { DatePipe, NgStyle } from '@angular/common';
-import { CalendarEvent, AuthProvider } from '../../models/calendar.model';
+import { CalendarEvent, AuthProvider } from '../models/calendar.model';
 
 @Component({
   selector: 'app-calendar-event-card',

@@ -1,8 +1,8 @@
 import { Component, inject, signal, effect, computed } from '@angular/core';
 import { CalendarService } from '../services/calendar.service';
 import { CalendarEvent } from '../models/calendar.model';
-import { CalendarHeaderComponent } from '../components/calendar-header/calendar-header.component';
-import { CalendarGridComponent } from '../components/calendar-grid/calendar-grid.component';
+import { CalendarHeaderComponent } from '../components/calendar-header.component';
+import { CalendarGridComponent } from '../components/calendar-grid.component';
 
 @Component({
   selector: 'app-calendar-view',
