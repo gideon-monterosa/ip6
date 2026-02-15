@@ -16,6 +16,7 @@ import { CalendarGridComponent } from '../components/calendar-grid.component';
         (previous)="onPreviousWeek()"
         (next)="onNextWeek()"
         (today)="onToday()"
+        (refresh)="onRefresh()"
       />
 
       <div class="relative flex-1 min-h-0">
@@ -89,5 +90,18 @@ export class CalendarViewComponent {
 
   onToday(): void {
     this.currentDate.set(new Date());
+  }
+
+  onRefresh(): void {
+    this.isLoading.set(true);
+    this.calendarService.sync().subscribe({
+      next: () => {
+        this.loadEventsForWeek(this.currentDate());
+      },
+      error: (err) => {
+        console.error('Sync failed', err);
+        this.isLoading.set(false);
+      }
+    });
   }
 }
