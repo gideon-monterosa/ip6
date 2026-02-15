@@ -38,6 +38,16 @@
             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
             Dashboard
           </a>
+          <a routerLink="/feedback"
+            routerLinkActive="font-medium text-primary-active"
+            class="relative text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
+            Feedback
+            @if (pendingCount() > 0) {
+              <span class="absolute -top-2 -right-4 inline-flex items-center justify-center size-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                {{ pendingCount() }}
+              </span>
+            }
+          </a>
           <a routerLink="/settings"
             routerLinkActive="font-medium text-primary-active"
             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
