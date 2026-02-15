@@ -4,6 +4,7 @@ import ch.fhnw.meeting.dto.calendar.EventDto;
 import ch.fhnw.meeting.model.calendar.AuthProvider;
 import ch.fhnw.meeting.model.User;
 import ch.fhnw.meeting.model.UserOAuthToken;
+import ch.fhnw.meeting.repository.EventRepository;
 import ch.fhnw.meeting.repository.UserOAuthTokenRepository;
 import ch.fhnw.meeting.repository.UserRepository;
 import ch.fhnw.meeting.service.calendar.factory.GoogleEventFactory;
@@ -26,7 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,11 +55,14 @@ public class GoogleCalendarService implements CalendarProvider{
 
     private final GoogleEventFactory factory;
 
+    private final EventRepository eventRepository;
+
     public GoogleCalendarService(UserOAuthTokenRepository tokenRepository, UserRepository userRepository,
-                                 GoogleEventFactory factory) {
+                                 GoogleEventFactory factory, EventRepository eventRepository) {
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.factory = factory;
+        this.eventRepository = eventRepository;
     }
 
     private GoogleAuthorizationCodeFlow getFlow() {
@@ -130,15 +137,28 @@ public class GoogleCalendarService implements CalendarProvider{
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(tokenEntity.getAccessToken());
         tokenResponse.setRefreshToken(tokenEntity.getRefreshToken());
-        tokenResponse.setExpiresInSeconds((tokenEntity.getExpirationTimeMillis() - System.currentTimeMillis()) / 1000);
+
+        long expiresSeconds = (tokenEntity.getExpirationTimeMillis() - System.currentTimeMillis()) / 1000;
+        tokenResponse.setExpiresInSeconds(Math.max(expiresSeconds, 0));
 
         return new Credential.Builder(com.google.api.client.auth.oauth2.BearerToken.authorizationHeaderAccessMethod())
-            .setTransport(HTTP_TRANSPORT)
-            .setJsonFactory(JSON_FACTORY)
-            .setTokenServerUrl(new com.google.api.client.http.GenericUrl("https://oauth2.googleapis.com/token"))
-            .setClientAuthentication(new com.google.api.client.auth.oauth2.ClientParametersAuthentication(clientId, clientSecret))
-            .build()
-            .setFromTokenResponse(tokenResponse);
+                .setTransport(HTTP_TRANSPORT)
+                .setJsonFactory(JSON_FACTORY)
+                .setTokenServerUrl(new com.google.api.client.http.GenericUrl("https://oauth2.googleapis.com/token"))
+                .setClientAuthentication(new com.google.api.client.auth.oauth2.ClientParametersAuthentication(clientId, clientSecret))
+                .addRefreshListener(new com.google.api.client.auth.oauth2.CredentialRefreshListener() {
+                    @Override
+                    public void onTokenResponse(Credential credential, TokenResponse response) {
+                        updateAccessToken(tokenEntity.getUser().getId(), response);
+                    }
+
+                    @Override
+                    public void onTokenErrorResponse(Credential credential, com.google.api.client.auth.oauth2.TokenErrorResponse tokenErrorResponse) {
+                        System.err.println("Kritisch: Refresh Token ungültig. User muss sich neu verbinden.");
+                    }
+                })
+                .build()
+                .setFromTokenResponse(tokenResponse);
     }
 
     private List<EventDto> getUpcomingEvents(String username) throws IOException {
@@ -161,5 +181,50 @@ public class GoogleCalendarService implements CalendarProvider{
         return items.stream()
             .map(factory::create)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventDto> getEventsInRange(String username, LocalDateTime start, LocalDateTime end) throws IOException {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        UserOAuthToken tokenEntity = tokenRepository.findByUserIdAndProvider(user.getId(), AuthProvider.GOOGLE)
+            .orElseThrow(() -> new IllegalStateException("No Google Calendar connected"));
+
+        Calendar calendarClient = getCalendarClient(username); // Nutzt intern createCredentialFromToken
+
+        // Wichtig: Umwandlung von LocalDateTime (Java) zu DateTime (Google)
+        // Wir nehmen die System-Zone an. In Produktion ggf. User-Timezone beachten.
+        DateTime timeMin = new DateTime(java.util.Date.from(start.atZone(java.time.ZoneId.systemDefault()).toInstant()));
+        DateTime timeMax = new DateTime(java.util.Date.from(end.atZone(java.time.ZoneId.systemDefault()).toInstant()));
+
+        Events events = calendarClient.events().list("primary")
+            .setMaxResults(500) // Genug Puffer für einen Monat
+            .setTimeMin(timeMin)
+            .setTimeMax(timeMax)
+            .setOrderBy("startTime")
+            .setSingleEvents(true) // Wichtig: Löst wiederkehrende Termine in Einzeltermine auf!
+            .execute();
+
+        List<com.google.api.services.calendar.model.Event> items = events.getItems();
+        if (items == null || items.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return items.stream()
+            .map(factory::create)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateAccessToken(Long userId, TokenResponse tokenResponse) {
+        tokenRepository.findByUserIdAndProvider(userId, AuthProvider.GOOGLE).ifPresent(token -> {
+            token.setAccessToken(tokenResponse.getAccessToken());
+            long expiresInSeconds = tokenResponse.getExpiresInSeconds();
+            token.setExpirationTimeMillis(System.currentTimeMillis() + (expiresInSeconds * 1000));
+
+            tokenRepository.save(token);
+            System.out.println("Access Token für User " + userId + " aktualisiert.");
+        });
     }
 }
