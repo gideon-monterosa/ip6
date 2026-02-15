@@ -1,58 +1,22 @@
-import { Component, OnInit, signal, computed } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ReactiveFormsModule, FormControl } from "@angular/forms";
-import { InputComponent } from "../../shared/components/input/input.component";
-import { CalendarService } from "../calendar/services/calendar.service";
-import { AuthProvider } from "../calendar/models/calendar.model";
+import { Component, signal, effect } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { InputComponent } from '../../shared/components/input/input.component';
 
 @Component({
-  selector: "app-settings",
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputComponent
-  ],
-  templateUrl: "./settings.component.html",
-  styleUrl: "./settings.component.css",
+  selector: 'app-settings',
+  imports: [ReactiveFormsModule, InputComponent],
+  templateUrl: './settings.component.html',
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
+  placeholder = signal('');
   placeholderControl = new FormControl('');
 
-  isGoogleConnected = signal(false);
-  isMicrosoftConnected = signal(false);
-  isLoading = signal(false);
-
-  hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected());
-  readonly AuthProvider = AuthProvider;
-
-  constructor(private calendarService: CalendarService) {}
-
-  ngOnInit(): void {
-    this.isLoading.set(true);
-    this.calendarService.getStatus().subscribe({
-      next: (status) => {
-        this.isGoogleConnected.set(status.googleConnected);
-        this.isMicrosoftConnected.set(status.microsoftConnected);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
-  }
-
-  connectCalendar(provider: AuthProvider): void {
-    if (this.hasConnection()) return;
-
-    this.isLoading.set(true);
-    this.calendarService.getAuthUrl(provider).subscribe({
-      next: (response) => {
-        localStorage.setItem('pending_calendar_provider', provider);
-        window.location.href = response.url;
-      },
-      error: () => {
-        this.isLoading.set(false);
+  constructor() {
+    // Sync FormControl value to signal
+    effect(() => {
+      const value = this.placeholderControl.value;
+      if (value !== null) {
+        this.placeholder.set(value);
       }
     });
   }

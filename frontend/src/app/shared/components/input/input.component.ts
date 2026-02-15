@@ -5,12 +5,10 @@ import {
   AbstractControl,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-input",
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: "./input.component.html",
   providers: [
     {
@@ -31,25 +29,24 @@ export class InputComponent implements ControlValueAccessor {
 
   value = "";
   disabled = false;
-  touched = false;
 
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
-  // Generate unique ID if not provided
   get inputId(): string {
     return this.id || `input-${Math.random().toString(36).substring(2, 9)}`;
   }
 
-  // Check if field has been touched and is invalid
   get showError(): boolean {
     if (this.control) {
-      return !!(this.control.invalid && this.control.touched);
+      return !!(
+        this.control.invalid &&
+        (this.control.touched || this.control.dirty)
+      );
     }
     return false;
   }
 
-  // Get error messages
   get errorMessages(): string[] {
     if (!this.control || !this.control.errors) {
       return [];
@@ -85,7 +82,6 @@ export class InputComponent implements ControlValueAccessor {
     return errors;
   }
 
-  // ControlValueAccessor implementation
   writeValue(value: string): void {
     this.value = value || "";
   }
@@ -109,12 +105,7 @@ export class InputComponent implements ControlValueAccessor {
     this.onChange(this.value);
   }
 
-  // Handle blur event
   onBlur(): void {
-    this.touched = true;
     this.onTouched();
-    if (this.control) {
-      this.control.markAsTouched();
-    }
   }
 }

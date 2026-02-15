@@ -1,18 +1,18 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import {
   WeeklyMeetings,
   MeetingsByDay,
   MeetingsDuration,
   UpcomingMeetingsResponse,
-} from "../models/dashboard.model";
+} from '../models/dashboard.model';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class DashboardService {
-  private basePath = "mock-data";
+  private basePath = 'mock-data';
 
   constructor(private http: HttpClient) {}
 

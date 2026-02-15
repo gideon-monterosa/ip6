@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    @if (currentUser) {
+    @if (currentUser()) {
       <div id="hs-navbar-menu"
            class="hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow sm:block"
            aria-labelledby="hs-navbar-collapse"
@@ -49,7 +49,7 @@
             Settings
           </a>
 
-          <span class="text-sm text-muted-foreground-1">{{ currentUser.username }}</span>
+          <span class="text-sm text-muted-foreground-1">{{ currentUser()?.username }}</span>
 
           <button
             type="button"

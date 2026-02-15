@@ -1,31 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { Router, RouterModule, RouterLinkActive } from "@angular/router";
-import { AuthService } from "../../core/services/auth.service";
-import { User } from "../../core/models/auth.model";
+import { Component } from '@angular/core';
+import { Router, RouterModule, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
-  selector: "app-navbar",
-  imports: [CommonModule, RouterModule, RouterLinkActive],
-  templateUrl: "./navbar.component.html",
-  styleUrl: "./navbar.component.css",
+  selector: 'app-navbar',
+  imports: [RouterModule, RouterLinkActive],
+  templateUrl: './navbar.component.html',
 })
-export class NavbarComponent implements OnInit {
-  currentUser: User | null = null;
+export class NavbarComponent {
+  // Use inject() for dependency injection
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
-
-  ngOnInit(): void {
-    this.authService.currentUser.subscribe((user: User | null) => {
-      this.currentUser = user;
-    });
-  }
+  // Consume signal directly from AuthService
+  currentUser = this.authService.currentUser;
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(["/login"]);
+    this.router.navigate(['/login']);
   }
 }

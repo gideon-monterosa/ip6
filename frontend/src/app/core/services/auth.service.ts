@@ -1,34 +1,40 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable, tap } from "rxjs";
+import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import {
   LoginRequest,
   RegisterRequest,
   AuthResponse,
   User,
-} from "../models/auth.model";
+} from '../models/auth.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = "http://localhost:8080/api/auth";
-  private tokenKey = "auth_token";
-  private userKey = "current_user";
+  private apiUrl = `${environment.apiUrl}/api/auth`;
+  private tokenKey = 'auth_token';
+  private userKey = 'current_user';
 
-  private currentUserSubject: BehaviorSubject<User | null>;
-  public currentUser: Observable<User | null>;
+  // Signal-based state management
+  private currentUserSignal = signal<User | null>(this.getStoredUser());
 
-  constructor(private http: HttpClient) {
+  // Public read-only signal
+  public readonly currentUser = this.currentUserSignal.asReadonly();
+
+  // Computed signal for authentication status
+  public readonly isAuthenticated = computed(() => this.currentUser() !== null);
+
+  constructor(private http: HttpClient) {}
+
+  private getStoredUser(): User | null {
     const storedUser = localStorage.getItem(this.userKey);
-    this.currentUserSubject = new BehaviorSubject<User | null>(
-      storedUser ? JSON.parse(storedUser) : null,
-    );
-    this.currentUser = this.currentUserSubject.asObservable();
+    return storedUser ? JSON.parse(storedUser) : null;
   }
 
   public get currentUserValue(): User | null {
-    return this.currentUserSubject.value;
+    return this.currentUserSignal();
   }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
@@ -46,15 +52,11 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
-    this.currentUserSubject.next(null);
+    this.currentUserSignal.set(null);
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.getToken();
   }
 
   private handleAuthResponse(response: AuthResponse): void {
@@ -64,6 +66,6 @@ export class AuthService {
       email: response.email,
     };
     localStorage.setItem(this.userKey, JSON.stringify(user));
-    this.currentUserSubject.next(user);
+    this.currentUserSignal.set(user);
   }
 }

@@ -1,10 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-button',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './button.component.html',
 })
 export class ButtonComponent {
@@ -15,19 +13,23 @@ export class ButtonComponent {
   @Input() fullWidth = false;
 
   get buttonClasses(): string {
-    const baseClasses = 'px-4 py-3 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseClasses =
+      'px-4 py-3 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
     const widthClass = this.fullWidth ? 'w-full' : '';
 
     let variantClasses = '';
     switch (this.variant) {
       case 'primary':
-        variantClasses = 'bg-primary text-primary-foreground hover:bg-primary-hover disabled:hover:bg-primary';
+        variantClasses =
+          'bg-primary text-primary-foreground hover:bg-primary-hover disabled:hover:bg-primary';
         break;
       case 'secondary':
-        variantClasses = 'bg-secondary text-secondary-foreground border border-border hover:bg-secondary-hover disabled:hover:bg-secondary';
+        variantClasses =
+          'bg-secondary text-secondary-foreground border border-border hover:bg-secondary-hover disabled:hover:bg-secondary';
         break;
       case 'destructive':
-        variantClasses = 'bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:hover:bg-destructive';
+        variantClasses =
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:hover:bg-destructive';
         break;
     }
 
