@@ -19,7 +19,7 @@ public class CalendarSyncScheduler {
     private final UserRepository userRepository;
     private final CalendarService calendarService;
 
-    @Scheduled(fixedRate = 900000) // Alle 15 Minuten
+    @Scheduled(fixedRate = 600000) // Alle 10 Minuten
     public void syncAllCalendars() {
         log.info("Starte periodischen Kalender-Sync für alle User...");
         List<User> users = userRepository.findAll();
