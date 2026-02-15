@@ -41,4 +41,8 @@ export class CalendarService {
       }
     });
   }
+
+  sync(): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/sync`, {});
+  }
 }
