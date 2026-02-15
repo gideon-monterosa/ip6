@@ -137,15 +137,28 @@ public class GoogleCalendarService implements CalendarProvider{
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(tokenEntity.getAccessToken());
         tokenResponse.setRefreshToken(tokenEntity.getRefreshToken());
-        tokenResponse.setExpiresInSeconds((tokenEntity.getExpirationTimeMillis() - System.currentTimeMillis()) / 1000);
+
+        long expiresSeconds = (tokenEntity.getExpirationTimeMillis() - System.currentTimeMillis()) / 1000;
+        tokenResponse.setExpiresInSeconds(Math.max(expiresSeconds, 0));
 
         return new Credential.Builder(com.google.api.client.auth.oauth2.BearerToken.authorizationHeaderAccessMethod())
-            .setTransport(HTTP_TRANSPORT)
-            .setJsonFactory(JSON_FACTORY)
-            .setTokenServerUrl(new com.google.api.client.http.GenericUrl("https://oauth2.googleapis.com/token"))
-            .setClientAuthentication(new com.google.api.client.auth.oauth2.ClientParametersAuthentication(clientId, clientSecret))
-            .build()
-            .setFromTokenResponse(tokenResponse);
+                .setTransport(HTTP_TRANSPORT)
+                .setJsonFactory(JSON_FACTORY)
+                .setTokenServerUrl(new com.google.api.client.http.GenericUrl("https://oauth2.googleapis.com/token"))
+                .setClientAuthentication(new com.google.api.client.auth.oauth2.ClientParametersAuthentication(clientId, clientSecret))
+                .addRefreshListener(new com.google.api.client.auth.oauth2.CredentialRefreshListener() {
+                    @Override
+                    public void onTokenResponse(Credential credential, TokenResponse response) {
+                        updateAccessToken(tokenEntity.getUser().getId(), response);
+                    }
+
+                    @Override
+                    public void onTokenErrorResponse(Credential credential, com.google.api.client.auth.oauth2.TokenErrorResponse tokenErrorResponse) {
+                        System.err.println("Kritisch: Refresh Token ungültig. User muss sich neu verbinden.");
+                    }
+                })
+                .build()
+                .setFromTokenResponse(tokenResponse);
     }
 
     private List<EventDto> getUpcomingEvents(String username) throws IOException {
@@ -201,5 +214,17 @@ public class GoogleCalendarService implements CalendarProvider{
         return items.stream()
             .map(factory::create)
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateAccessToken(Long userId, TokenResponse tokenResponse) {
+        tokenRepository.findByUserIdAndProvider(userId, AuthProvider.GOOGLE).ifPresent(token -> {
+            token.setAccessToken(tokenResponse.getAccessToken());
+            long expiresInSeconds = tokenResponse.getExpiresInSeconds();
+            token.setExpirationTimeMillis(System.currentTimeMillis() + (expiresInSeconds * 1000));
+
+            tokenRepository.save(token);
+            System.out.println("Access Token für User " + userId + " aktualisiert.");
+        });
     }
 }
