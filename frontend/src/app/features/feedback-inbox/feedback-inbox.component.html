@@ -1,0 +1,126 @@
+<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+    <div>
+      <div class="flex items-center gap-2">
+        <h1 class="text-2xl font-bold text-foreground">Feedback Inbox</h1>
+        @if (feedbackService.pendingCount() > 0) {
+          <span class="inline-flex items-center justify-center size-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
+            {{ feedbackService.pendingCount() }}
+          </span>
+        }
+      </div>
+      <p class="text-sm text-muted-foreground-1 mt-1">Provide feedback on your recent meetings</p>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="flex items-center justify-between mb-4 p-3 rounded-lg bg-layer border border-layer-line">
+    <span class="text-xs text-muted-foreground-1">
+      <svg class="inline-block size-3.5 mr-1 align-text-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h4"/><path d="M11 8h7"/><path d="M11 12h10"/></svg>
+      Most recent first
+    </span>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <span class="text-sm text-foreground">Show dismissed</span>
+      <div class="relative inline-flex">
+        <input
+          type="checkbox"
+          [checked]="feedbackService.showDismissed()"
+          (change)="feedbackService.toggleShowDismissed()"
+          class="peer sr-only"
+          aria-label="Toggle show dismissed meetings"
+        />
+        <div
+          class="w-11 h-6 bg-gray-200 rounded-full transition-colors peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2"
+        ></div>
+        <div
+          class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"
+        ></div>
+      </div>
+    </label>
+  </div>
+
+  <!-- Loading state -->
+  @if (feedbackService.loading()) {
+    <div class="space-y-3" aria-label="Loading meetings">
+      @for (i of skeletonItems; track i) {
+        <div class="bg-card border border-border rounded-lg p-5 animate-pulse">
+          <div class="flex items-center gap-3">
+            <div class="flex-1 space-y-2">
+              <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+              <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+            </div>
+            <div class="flex gap-2">
+              <div class="h-9 w-28 bg-gray-200 rounded-lg"></div>
+              <div class="h-9 w-20 bg-gray-200 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Meetings list -->
+  @if (!feedbackService.loading()) {
+    @if (feedbackService.filteredMeetings().length > 0) {
+      <div class="space-y-3" role="list" aria-label="Meetings requiring feedback">
+        @for (meeting of feedbackService.filteredMeetings(); track meeting.meeting_id) {
+          <app-feedback-card
+            [meeting]="meeting"
+            (giveFeedback)="onGiveFeedback($event)"
+            (dismissMeeting)="onDismissMeeting($event)"
+            role="listitem"
+          />
+        }
+      </div>
+    } @else {
+      <!-- Empty state -->
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <div class="size-16 rounded-full bg-layer border border-layer-line flex items-center justify-center mb-4">
+          <svg class="size-8 text-muted-foreground-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-foreground mb-1">You're all caught up!</h3>
+        <p class="text-sm text-muted-foreground-1">No meetings need your feedback right now.</p>
+      </div>
+    }
+  }
+</div>
+
+<!-- Survey modal -->
+@if (selectedMeeting()) {
+  <app-feedback-survey-modal
+    [meeting]="selectedMeeting()!"
+    (submitFeedback)="onSubmitFeedback($event)"
+    (categoryChange)="onCategoryChange($event)"
+    (close)="onCloseModal()"
+  />
+}
+
+<!-- Undo toast -->
+@if (showUndoToast()) {
+  <div
+    class="fixed bottom-4 right-4 z-50 flex items-center gap-3 py-3 px-4 bg-card border border-border rounded-lg shadow-lg animate-slide-in"
+    role="alert"
+    aria-live="polite"
+  >
+    <svg class="shrink-0 size-4 text-muted-foreground-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+    <span class="text-sm text-foreground">Meeting dismissed.</span>
+    <button
+      type="button"
+      class="text-sm font-medium text-primary hover:text-primary-hover focus:outline-hidden focus:underline transition"
+      (click)="onUndoDismiss()"
+    >
+      Undo
+    </button>
+    <button
+      type="button"
+      class="shrink-0 size-6 inline-flex items-center justify-center rounded text-muted-foreground-1 hover:text-foreground transition"
+      (click)="clearUndoToast()"
+      aria-label="Close notification"
+    >
+      <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+}

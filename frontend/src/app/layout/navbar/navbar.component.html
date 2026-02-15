@@ -6,12 +6,12 @@
       </a>
       <div class="sm:hidden">
         <button type="button"
-                class="hs-collapse-toggle relative size-9 flex justify-center items-center gap-x-2 rounded-lg bg-layer border border-layer-line text-layer-foreground shadow-2xs hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus disabled:opacity-50 disabled:pointer-events-none"
-                id="hs-navbar-collapse"
-                aria-expanded="false"
-                aria-controls="hs-navbar-menu"
-                aria-label="Toggle navigation"
-                data-hs-collapse="#hs-navbar-menu">
+          class="hs-collapse-toggle relative size-9 flex justify-center items-center gap-x-2 rounded-lg bg-layer border border-layer-line text-layer-foreground shadow-2xs hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus disabled:opacity-50 disabled:pointer-events-none"
+          id="hs-navbar-collapse"
+          aria-expanded="false"
+          aria-controls="hs-navbar-menu"
+          aria-label="Toggle navigation"
+          data-hs-collapse="#hs-navbar-menu">
           <svg class="hs-collapse-open:hidden shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" x2="21" y1="6" y2="6"/>
             <line x1="3" x2="21" y1="12" y2="12"/>
@@ -28,24 +28,29 @@
 
     @if (currentUser()) {
       <div id="hs-navbar-menu"
-           class="hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow sm:block"
-           aria-labelledby="hs-navbar-collapse"
-           role="region">
+        class="hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow sm:block"
+        aria-labelledby="hs-navbar-collapse"
+        role="region">
         <div class="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:ps-5">
           <a routerLink="/home"
-             routerLinkActive="font-medium text-primary-active"
-             [routerLinkActiveOptions]="{ exact: true }"
-             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
+            routerLinkActive="font-medium text-primary-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
             Dashboard
           </a>
-          <a routerLink="/calendar"
-             routerLinkActive="font-medium text-primary-active"
-             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
-            Calendar
+          <a routerLink="/feedback"
+            routerLinkActive="font-medium text-primary-active"
+            class="relative text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
+            Feedback
+            @if (pendingCount() > 0) {
+              <span class="absolute -top-2 -right-4 inline-flex items-center justify-center size-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                {{ pendingCount() }}
+              </span>
+            }
           </a>
           <a routerLink="/settings"
-             routerLinkActive="font-medium text-primary-active"
-             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
+            routerLinkActive="font-medium text-primary-active"
+            class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
             Settings
           </a>
 
