@@ -97,18 +97,35 @@ public class CalendarService {
             LocalDateTime startTime = parseDate(dto.getStart());
             LocalDateTime endTime = dto.getEnd() != null ? parseDate(dto.getEnd()) : startTime.plusHours(1);
 
-            Event event = Event.builder()
-                .externalId(dto.getId())
-                .title(dto.getTitle())
-                .description(dto.getDescription())
-                .link(dto.getLink())
-                .provider(provider)
-                .user(user)
-                .startTime(startTime)
-                .endTime(endTime)
-                .build();
+            Optional<Event> existingEventOpt = eventRepository.findByExternalIdAndProviderAndUserId(
+                    dto.getId(),
+                    provider,
+                    user.getId()
+            );
+
+            Event event;
+            if (existingEventOpt.isPresent()) {
+                event = existingEventOpt.get();
+                event.setTitle(dto.getTitle());
+                event.setDescription(dto.getDescription());
+                event.setLink(dto.getLink());
+                event.setStartTime(startTime);
+                event.setEndTime(endTime);
+            } else {
+                event = Event.builder()
+                        .externalId(dto.getId())
+                        .title(dto.getTitle())
+                        .description(dto.getDescription())
+                        .link(dto.getLink())
+                        .provider(provider)
+                        .user(user)
+                        .startTime(startTime)
+                        .endTime(endTime)
+                        .build();
+            }
 
             eventRepository.save(event);
+
         } catch (Exception e) {
             log.warn("Konnte Event {} nicht speichern: {}", dto.getTitle(), e.getMessage());
         }
