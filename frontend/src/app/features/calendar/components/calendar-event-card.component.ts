@@ -32,14 +32,6 @@ import { FeedbackStatus } from '../../feedback-inbox/models/feedback.model';
         {{ event().start | date:'shortTime' }} - {{ event().end | date:'shortTime' }}
       </div>
 
-      @if (event().link) {
-        <a [href]="event().link"
-           target="_blank"
-           (click)="$event.stopPropagation()"
-           class="hidden group-hover:block mt-auto pt-1 underline font-bold truncate">
-          Join
-        </a>
-      }
     </div>
   `
 })
