@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import {
   AuthProvider,
   CalendarConnectionRequest,
@@ -47,6 +47,11 @@ export class CalendarService {
 
   sync(): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/sync`, {});
+  }
+
+  dismissEvent(eventId: string): Observable<void> {
+    // Wir simulieren hier nur den API-Call
+    return of(void 0);
   }
 
   private enrichEventWithMockData(event: CalendarEvent): CalendarEvent {

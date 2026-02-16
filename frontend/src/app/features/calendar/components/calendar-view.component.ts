@@ -1,13 +1,21 @@
-import { Component, inject, signal, effect, computed } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { CalendarService } from '../services/calendar.service';
 import { CalendarEvent } from '../models/calendar.model';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
+import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
+import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
+import { FeedbackableMeeting, FeedbackStatus, MeetingFeedback, MeetingType } from '../../feedback-inbox/models/feedback.model';
 
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CalendarHeaderComponent, CalendarGridComponent],
+  imports: [
+    CalendarHeaderComponent,
+    CalendarGridComponent,
+    CalendarEventPopoverComponent,
+    FeedbackSurveyModalComponent
+  ],
   template: `
     <div class="flex flex-col h-[calc(100vh-80px)] max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
@@ -21,19 +29,35 @@ import { CalendarGridComponent } from '../components/calendar-grid.component';
 
       <div class="relative flex-1 min-h-0">
         @if (isLoading()) {
-          <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-xs rounded-xl transition-all">
-            <div class="animate-spin inline-block size-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
-              <span class="sr-only">Loading...</span>
-            </div>
+          <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-xs rounded-xl">
+            <div class="animate-spin inline-block size-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"></div>
           </div>
         }
 
         <app-calendar-grid
           [currentDate]="currentDate()"
           [events]="events()"
+          (eventClick)="onEventSelected($event)"
         />
       </div>
     </div>
+
+    @if (selectedEvent(); as event) {
+      <app-calendar-event-popover
+        [event]="event"
+        (close)="selectedEvent.set(null)"
+        (dismiss)="onDismissEvent(event)"
+        (giveFeedback)="onOpenFeedback(event)"
+      />
+    }
+
+    @if (feedbackMeeting(); as meeting) {
+      <app-feedback-survey-modal
+        [meeting]="meeting"
+        (submitFeedback)="onSubmitFeedback($event)"
+        (close)="feedbackMeeting.set(null)"
+      />
+    }
   `
 })
 export class CalendarViewComponent {
@@ -42,6 +66,10 @@ export class CalendarViewComponent {
   currentDate = signal(new Date());
   events = signal<CalendarEvent[]>([]);
   isLoading = signal(false);
+
+  selectedEvent = signal<CalendarEvent | null>(null);
+
+  feedbackMeeting = signal<FeedbackableMeeting | null>(null);
 
   constructor() {
     effect(() => {
@@ -103,5 +131,47 @@ export class CalendarViewComponent {
         this.isLoading.set(false);
       }
     });
+  }
+
+  onEventSelected(event: CalendarEvent): void {
+    this.selectedEvent.set(event);
+  }
+
+  onDismissEvent(event: CalendarEvent): void {
+    this.calendarService.dismissEvent(event.id).subscribe(() => {
+      this.events.update(currentEvents =>
+        currentEvents.map(e =>
+          e.id === event.id ? { ...e, feedbackStatus: FeedbackStatus.DISMISSED } : e
+        )
+      );
+      this.selectedEvent.set(null);
+    });
+  }
+
+  onOpenFeedback(event: CalendarEvent): void {
+    const meetingForFeedback: FeedbackableMeeting = {
+      meeting_id: event.id,
+      title: event.title,
+      start_time: event.start,
+      end_time: event.end,
+      duration_minutes: (new Date(event.end).getTime() - new Date(event.start).getTime()) / 60000,
+      meeting_type: event.meetingType || 'Ad-hoc',
+      feedback_status: FeedbackStatus.PENDING
+    };
+
+    this.selectedEvent.set(null);
+    this.feedbackMeeting.set(meetingForFeedback);
+  }
+
+  onSubmitFeedback(feedback: MeetingFeedback): void {
+    console.log('Feedback submitted from calendar:', feedback);
+
+    this.events.update(currentEvents =>
+      currentEvents.map(e =>
+        e.id === feedback.meeting_id ? { ...e, feedbackStatus: FeedbackStatus.SUBMITTED } : e
+      )
+    );
+
+    this.feedbackMeeting.set(null);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, output } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
 import { CalendarEvent } from '../models/calendar.model';
 import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
@@ -76,7 +76,10 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
             @for (day of weekDays(); track day) {
               <div class="relative h-full">
                 @for (event of getEventsForDay(day); track event.id) {
-                  <app-calendar-event-card [event]="event" />
+                  <app-calendar-event-card
+                    [event]="event"
+                    (click)="onEventClick(event, $event)"
+                  />
                 }
               </div>
             }
@@ -89,6 +92,8 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
 export class CalendarGridComponent {
   currentDate = input.required<Date>();
   events = input.required<CalendarEvent[]>();
+
+  eventClick = output<CalendarEvent>();
 
   readonly hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -129,5 +134,10 @@ export class CalendarGridComponent {
         eventDate.getMonth() === date.getMonth() &&
         eventDate.getFullYear() === date.getFullYear();
     });
+  }
+
+  onEventClick(event: CalendarEvent, e: MouseEvent): void {
+    e.stopPropagation(); // Verhindert Bubbling falls nötig
+    this.eventClick.emit(event);
   }
 }
