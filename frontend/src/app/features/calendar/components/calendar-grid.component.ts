@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, output } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
 import { CalendarEvent } from '../models/calendar.model';
 import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
@@ -20,9 +20,9 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
     }
   `],
   template: `
-    <div class="flex flex-col h-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div class="flex flex-col h-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm overflow-hidden">
 
-      <div class="flex border-b border-gray-200">
+      <div class="flex border-b border-gray-200 bg-white">
         <div class="w-16 flex-shrink-0 border-r border-gray-100 bg-gray-50/50"></div>
 
         <div class="grid grid-cols-7 flex-1">
@@ -44,12 +44,14 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto relative custom-scrollbar">
+      <div class="flex-1 overflow-y-auto relative custom-scrollbar bg-white">
         <div class="flex min-h-[1440px]">
 
           <div class="w-16 flex-shrink-0 border-r border-gray-100 bg-gray-50/50 select-none">
             @for (hour of hours; track hour) {
-              <div class="h-[60px] border-b border-gray-100 relative">
+              <div class="h-[60px] border-b border-gray-100 relative"
+                   [class.bg-white]="isWorkingHour(hour)"
+                   [class.bg-gray-50]="!isWorkingHour(hour)">
                 <span class="absolute -top-3 right-2 text-xs text-gray-400 font-medium font-mono">
                   {{ hour }}:00
                 </span>
@@ -62,7 +64,10 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
               @for (day of weekDays(); track day) {
                 <div class="border-r border-gray-100 h-full last:border-r-0">
                   @for (hour of hours; track hour) {
-                    <div class="h-[60px] border-b border-gray-50"></div>
+                    <div class="h-[60px] border-b border-gray-50"
+                         [class.bg-white]="isWorkingHour(hour)"
+                         [class.bg-gray-50]="!isWorkingHour(hour)">
+                    </div>
                   }
                 </div>
               }
@@ -71,7 +76,10 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
             @for (day of weekDays(); track day) {
               <div class="relative h-full">
                 @for (event of getEventsForDay(day); track event.id) {
-                  <app-calendar-event-card [event]="event" />
+                  <app-calendar-event-card
+                    [event]="event"
+                    (click)="onEventClick(event, $event)"
+                  />
                 }
               </div>
             }
@@ -85,7 +93,12 @@ export class CalendarGridComponent {
   currentDate = input.required<Date>();
   events = input.required<CalendarEvent[]>();
 
+  eventClick = output<CalendarEvent>();
+
   readonly hours = Array.from({ length: 24 }, (_, i) => i);
+
+  readonly WORK_START = 9; // 09:00
+  readonly WORK_END = 18;  // 18:00
 
   weekDays = computed(() => {
     const curr = new Date(this.currentDate());
@@ -110,6 +123,10 @@ export class CalendarGridComponent {
       date.getFullYear() === today.getFullYear();
   }
 
+  isWorkingHour(hour: number): boolean {
+    return hour >= this.WORK_START && hour < this.WORK_END;
+  }
+
   getEventsForDay(date: Date): CalendarEvent[] {
     return this.events().filter(event => {
       const eventDate = new Date(event.start);
@@ -117,5 +134,10 @@ export class CalendarGridComponent {
         eventDate.getMonth() === date.getMonth() &&
         eventDate.getFullYear() === date.getFullYear();
     });
+  }
+
+  onEventClick(event: CalendarEvent, e: MouseEvent): void {
+    e.stopPropagation(); // Verhindert Bubbling falls nötig
+    this.eventClick.emit(event);
   }
 }

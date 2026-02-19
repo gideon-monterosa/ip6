@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import {
   AuthProvider,
   CalendarConnectionRequest,
@@ -9,6 +9,7 @@ import {
   CalendarEvent
 } from '../models/calendar.model';
 import { environment } from '../../../../environments/environment';
+import { FeedbackStatus, MeetingType, MEETING_TYPES } from '../../feedback-inbox/models/feedback.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,10 +40,54 @@ export class CalendarService {
         start: start.toISOString(),
         end: end.toISOString()
       }
-    });
+    }).pipe(
+      map(events => events.map(event => this.enrichEventWithMockData(event)))
+    );
   }
 
   sync(): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/sync`, {});
+  }
+
+  dismissEvent(eventId: string): Observable<void> {
+    // Wir simulieren hier nur den API-Call
+    return of(void 0);
+  }
+
+  private enrichEventWithMockData(event: CalendarEvent): CalendarEvent {
+    const now = new Date();
+    const eventEnd = new Date(event.end);
+    const isPast = eventEnd < now;
+
+    let type: MeetingType = 'Ad-hoc';
+    const titleLower = event.title.toLowerCase();
+
+    if (titleLower.includes('standup') || titleLower.includes('daily')) type = 'Stand-up';
+    else if (titleLower.includes('planning')) type = 'Planning';
+    else if (titleLower.includes('retro')) type = 'Retrospective';
+    else if (titleLower.includes('1:1') || titleLower.includes('one-on-one')) type = '1:1';
+    else {
+      type = MEETING_TYPES[Math.floor(Math.random() * MEETING_TYPES.length)];
+    }
+
+    let status: FeedbackStatus | undefined;
+
+    if (isPast) {
+      const seed = event.id.charCodeAt(event.id.length - 1);
+
+      if (seed % 3 === 0) {
+        status = FeedbackStatus.SUBMITTED;
+      } else if (seed % 3 === 1) {
+        status = FeedbackStatus.DISMISSED;
+      } else {
+        status = FeedbackStatus.PENDING;
+      }
+    }
+
+    return {
+      ...event,
+      meetingType: type,
+      feedbackStatus: status
+    };
   }
 }

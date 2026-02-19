@@ -1,3 +1,5 @@
+import { FeedbackStatus, MeetingType } from '../../feedback-inbox/models/feedback.model';
+
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',
   MICROSOFT = 'MICROSOFT'
@@ -27,4 +29,6 @@ export interface CalendarEvent {
   provider?: AuthProvider;
   externalId?: string;
   color?: string;
+  feedbackStatus?: FeedbackStatus;
+  meetingType?: MeetingType;
 }
