@@ -1,7 +1,6 @@
 import { Component, input, output, computed } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
-import { CalendarEvent } from '../models/calendar.model';
-import { FeedbackStatus } from '../../feedback-inbox/models/feedback.model';
+import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
 
 @Component({
   selector: 'app-calendar-event-popover',
@@ -69,7 +68,7 @@ import { FeedbackStatus } from '../../feedback-inbox/models/feedback.model';
   `
 })
 export class CalendarEventPopoverComponent {
-  event = input.required<CalendarEvent>();
+  event = input.required<Meeting>();
   close = output<void>();
   dismiss = output<void>();
   giveFeedback = output<void>();

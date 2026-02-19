@@ -1,13 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
-import {
-  FeedbackableMeeting,
-  FeedbackStatus,
-  MeetingFeedback,
-  MeetingType,
-  DismissReason,
-} from '../models/feedback.model';
+import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
+import { MeetingFeedback, DismissReason } from '../models/feedback.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +10,8 @@ import {
 export class FeedbackService {
   private http = inject(HttpClient);
 
-  private pendingMeetingsSignal = signal<FeedbackableMeeting[]>([]);
-  private dismissedMeetingsSignal = signal<FeedbackableMeeting[]>([]);
+  private pendingMeetingsSignal = signal<Meeting[]>([]);
+  private dismissedMeetingsSignal = signal<Meeting[]>([]);
   private showDismissedSignal = signal(false);
   private loadingSignal = signal(false);
 
@@ -39,15 +34,15 @@ export class FeedbackService {
 
     return list.sort(
       (a, b) =>
-        new Date(b.start_time).getTime() - new Date(a.start_time).getTime(),
+        new Date(b.start).getTime() - new Date(a.start).getTime(),
     );
   });
 
   /** Load pending meetings from mock data */
-  loadPendingMeetings(): Observable<FeedbackableMeeting[]> {
+  loadPendingMeetings(): Observable<Meeting[]> {
     this.loadingSignal.set(true);
     return this.http
-      .get<FeedbackableMeeting[]>('mock-data/feedback/feedbackable-meetings.json')
+      .get<Meeting[]>('mock-data/feedback/feedbackable-meetings.json')
       .pipe(
         tap((meetings) => {
           this.pendingMeetingsSignal.set(meetings);
@@ -57,9 +52,9 @@ export class FeedbackService {
   }
 
   /** Load dismissed meetings from mock data */
-  loadDismissedMeetings(): Observable<FeedbackableMeeting[]> {
+  loadDismissedMeetings(): Observable<Meeting[]> {
     return this.http
-      .get<FeedbackableMeeting[]>('mock-data/feedback/dismissed-meetings.json')
+      .get<Meeting[]>('mock-data/feedback/dismissed-meetings.json')
       .pipe(
         tap((meetings) => {
           this.dismissedMeetingsSignal.set(meetings);
@@ -72,24 +67,24 @@ export class FeedbackService {
     console.log('Feedback submitted:', feedback);
     // Remove from pending list
     this.pendingMeetingsSignal.update((meetings) =>
-      meetings.filter((m) => m.meeting_id !== feedback.meeting_id),
+      meetings.filter((m) => m.id !== feedback.meeting_id),
     );
   }
 
   /** Dismiss a meeting */
-  dismissMeeting(meetingId: string, reason?: DismissReason): FeedbackableMeeting | undefined {
+  dismissMeeting(meetingId: string, reason?: DismissReason): Meeting | undefined {
     const meeting = this.pendingMeetingsSignal().find(
-      (m) => m.meeting_id === meetingId,
+      (m) => m.id === meetingId,
     );
     if (!meeting) return undefined;
 
-    const dismissed: FeedbackableMeeting = {
+    const dismissed: Meeting = {
       ...meeting,
-      feedback_status: FeedbackStatus.DISMISSED,
+      feedbackStatus: FeedbackStatus.DISMISSED,
     };
 
     this.pendingMeetingsSignal.update((meetings) =>
-      meetings.filter((m) => m.meeting_id !== meetingId),
+      meetings.filter((m) => m.id !== meetingId),
     );
     this.dismissedMeetingsSignal.update((meetings) => [dismissed, ...meetings]);
 
@@ -99,26 +94,26 @@ export class FeedbackService {
   /** Undo a dismiss action */
   undoDismiss(meetingId: string): void {
     const meeting = this.dismissedMeetingsSignal().find(
-      (m) => m.meeting_id === meetingId,
+      (m) => m.id === meetingId,
     );
     if (!meeting) return;
 
-    const restored: FeedbackableMeeting = {
+    const restored: Meeting = {
       ...meeting,
-      feedback_status: FeedbackStatus.PENDING,
+      feedbackStatus: FeedbackStatus.PENDING,
     };
 
     this.dismissedMeetingsSignal.update((meetings) =>
-      meetings.filter((m) => m.meeting_id !== meetingId),
+      meetings.filter((m) => m.id !== meetingId),
     );
     this.pendingMeetingsSignal.update((meetings) => [restored, ...meetings]);
   }
 
   /** Update the meeting type for a given meeting */
   updateMeetingType(meetingId: string, meetingType: MeetingType): void {
-    const updater = (meetings: FeedbackableMeeting[]) =>
+    const updater = (meetings: Meeting[]) =>
       meetings.map((m) =>
-        m.meeting_id === meetingId ? { ...m, meeting_type: meetingType } : m,
+        m.id === meetingId ? { ...m, meeting_type: meetingType } : m,
       );
     this.pendingMeetingsSignal.update(updater);
     this.dismissedMeetingsSignal.update(updater);

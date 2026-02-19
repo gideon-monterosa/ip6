@@ -1,6 +1,6 @@
 import { Component, input, computed, output } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
-import { CalendarEvent } from '../models/calendar.model';
+import { Meeting } from '../../../shared/models/meeting.model';
 import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
 
 @Component({
@@ -91,9 +91,9 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
 })
 export class CalendarGridComponent {
   currentDate = input.required<Date>();
-  events = input.required<CalendarEvent[]>();
+  events = input.required<Meeting[]>();
 
-  eventClick = output<CalendarEvent>();
+  eventClick = output<Meeting>();
 
   readonly hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -127,7 +127,7 @@ export class CalendarGridComponent {
     return hour >= this.WORK_START && hour < this.WORK_END;
   }
 
-  getEventsForDay(date: Date): CalendarEvent[] {
+  getEventsForDay(date: Date): Meeting[] {
     return this.events().filter(event => {
       const eventDate = new Date(event.start);
       return eventDate.getDate() === date.getDate() &&
@@ -136,8 +136,8 @@ export class CalendarGridComponent {
     });
   }
 
-  onEventClick(event: CalendarEvent, e: MouseEvent): void {
-    e.stopPropagation(); // Verhindert Bubbling falls nötig
+  onEventClick(event: Meeting, e: MouseEvent): void {
+    e.stopPropagation();
     this.eventClick.emit(event);
   }
 }

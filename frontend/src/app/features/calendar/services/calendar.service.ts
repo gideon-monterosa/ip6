@@ -5,11 +5,10 @@ import {
   AuthProvider,
   CalendarConnectionRequest,
   CalendarStatusResponse,
-  CalendarUrlResponse,
-  CalendarEvent
+  CalendarUrlResponse
 } from '../models/calendar.model';
 import { environment } from '../../../../environments/environment';
-import { FeedbackStatus, MeetingType, MEETING_TYPES } from '../../feedback-inbox/models/feedback.model';
+import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../shared/models/meeting.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,8 +33,8 @@ export class CalendarService {
     return this.http.get<CalendarStatusResponse>(`${this.apiUrl}/status`);
   }
 
-  getEvents(start: Date, end: Date): Observable<CalendarEvent[]> {
-    return this.http.get<CalendarEvent[]>(`${this.apiUrl}/events`, {
+  getEvents(start: Date, end: Date): Observable<Meeting[]> {
+    return this.http.get<Meeting[]>(`${this.apiUrl}/events`, {
       params: {
         start: start.toISOString(),
         end: end.toISOString()
@@ -54,7 +53,7 @@ export class CalendarService {
     return of(void 0);
   }
 
-  private enrichEventWithMockData(event: CalendarEvent): CalendarEvent {
+  private enrichEventWithMockData(event: Meeting): Meeting {
     const now = new Date();
     const eventEnd = new Date(event.end);
     const isPast = eventEnd < now;
@@ -70,7 +69,7 @@ export class CalendarService {
       type = MEETING_TYPES[Math.floor(Math.random() * MEETING_TYPES.length)];
     }
 
-    let status: FeedbackStatus | undefined;
+    let status: FeedbackStatus = FeedbackStatus.PENDING;
 
     if (isPast) {
       const seed = event.id.charCodeAt(event.id.length - 1);

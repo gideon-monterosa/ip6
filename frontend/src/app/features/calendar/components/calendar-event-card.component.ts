@@ -1,7 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { DatePipe, NgClass, NgStyle } from '@angular/common';
-import { CalendarEvent } from '../models/calendar.model';
-import { FeedbackStatus } from '../../feedback-inbox/models/feedback.model';
+import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
 
 @Component({
   selector: 'app-calendar-event-card',
@@ -36,7 +35,7 @@ import { FeedbackStatus } from '../../feedback-inbox/models/feedback.model';
   `
 })
 export class CalendarEventCardComponent {
-  event = input.required<CalendarEvent>();
+  event = input.required<Meeting>();
 
   private readonly cellHeight = 60; // 60px pro Stunde
 

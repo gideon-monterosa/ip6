@@ -2,11 +2,8 @@ import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { FeedbackService } from './services/feedback.service';
 import { FeedbackCardComponent } from './components/feedback-card.component';
 import { FeedbackSurveyModalComponent } from './components/feedback-survey-modal.component';
-import {
-  FeedbackableMeeting,
-  MeetingFeedback,
-  MeetingType,
-} from './models/feedback.model';
+import { Meeting, MeetingType } from '../../shared/models/meeting.model';
+import { MeetingFeedback } from './models/feedback.model';
 
 @Component({
   selector: 'app-feedback-inbox',
@@ -25,7 +22,7 @@ import {
 export class FeedbackInboxComponent implements OnInit, OnDestroy {
   feedbackService = inject(FeedbackService);
 
-  selectedMeeting = signal<FeedbackableMeeting | null>(null);
+  selectedMeeting = signal<Meeting | null>(null);
   showUndoToast = signal(false);
 
   skeletonItems = [1, 2, 3, 4];
@@ -44,7 +41,7 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
 
   onGiveFeedback(meetingId: string): void {
     const meetings = this.feedbackService.filteredMeetings();
-    const meeting = meetings.find((m) => m.meeting_id === meetingId);
+    const meeting = meetings.find((m) => m.id === meetingId);
     if (meeting) {
       this.selectedMeeting.set(meeting);
     }

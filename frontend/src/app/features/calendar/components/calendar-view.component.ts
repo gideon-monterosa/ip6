@@ -1,11 +1,11 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CalendarService } from '../services/calendar.service';
-import { CalendarEvent } from '../models/calendar.model';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
 import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
 import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
-import { FeedbackableMeeting, FeedbackStatus, MeetingFeedback, MeetingType } from '../../feedback-inbox/models/feedback.model';
+import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
+import { MeetingFeedback} from '../../feedback-inbox/models/feedback.model';
 
 @Component({
   selector: 'app-calendar-view',
@@ -64,12 +64,12 @@ export class CalendarViewComponent {
   private calendarService = inject(CalendarService);
 
   currentDate = signal(new Date());
-  events = signal<CalendarEvent[]>([]);
+  events = signal<Meeting[]>([]);
   isLoading = signal(false);
 
-  selectedEvent = signal<CalendarEvent | null>(null);
+  selectedEvent = signal<Meeting | null>(null);
 
-  feedbackMeeting = signal<FeedbackableMeeting | null>(null);
+  feedbackMeeting = signal<Meeting | null>(null);
 
   constructor() {
     effect(() => {
@@ -133,11 +133,11 @@ export class CalendarViewComponent {
     });
   }
 
-  onEventSelected(event: CalendarEvent): void {
+  onEventSelected(event: Meeting): void {
     this.selectedEvent.set(event);
   }
 
-  onDismissEvent(event: CalendarEvent): void {
+  onDismissEvent(event: Meeting): void {
     this.calendarService.dismissEvent(event.id).subscribe(() => {
       this.events.update(currentEvents =>
         currentEvents.map(e =>
@@ -148,19 +148,9 @@ export class CalendarViewComponent {
     });
   }
 
-  onOpenFeedback(event: CalendarEvent): void {
-    const meetingForFeedback: FeedbackableMeeting = {
-      meeting_id: event.id,
-      title: event.title,
-      start_time: event.start,
-      end_time: event.end,
-      duration_minutes: (new Date(event.end).getTime() - new Date(event.start).getTime()) / 60000,
-      meeting_type: event.meetingType || 'Ad-hoc',
-      feedback_status: FeedbackStatus.PENDING
-    };
-
+  onOpenFeedback(event: Meeting): void {
     this.selectedEvent.set(null);
-    this.feedbackMeeting.set(meetingForFeedback);
+    this.feedbackMeeting.set(event);
   }
 
   onSubmitFeedback(feedback: MeetingFeedback): void {

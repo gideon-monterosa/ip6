@@ -64,7 +64,7 @@
   @if (!feedbackService.loading()) {
     @if (feedbackService.filteredMeetings().length > 0) {
       <div class="space-y-3" role="list" aria-label="Meetings requiring feedback">
-        @for (meeting of feedbackService.filteredMeetings(); track meeting.meeting_id) {
+        @for (meeting of feedbackService.filteredMeetings(); track meeting.id) {
           <app-feedback-card
             [meeting]="meeting"
             (giveFeedback)="onGiveFeedback($event)"
