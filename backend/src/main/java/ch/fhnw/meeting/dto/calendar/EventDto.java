@@ -1,5 +1,6 @@
 package ch.fhnw.meeting.dto.calendar;
 
+import ch.fhnw.meeting.model.calendar.MeetingType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,7 @@ public class EventDto {
     private String start;
     private String end;
     private String link;
-    private String meetingType;
+    private MeetingType meetingType;
     private String location;
     private String organizer;
     private Integer attendeesCount;
@@ -64,11 +65,11 @@ public class EventDto {
         this.link = link;
     }
 
-    public String getMeetingType() {
+    public MeetingType getMeetingType() {
         return meetingType;
     }
 
-    public void setMeetingType(String meetingType) {
+    public void setMeetingType(MeetingType meetingType) {
         this.meetingType = meetingType;
     }
 

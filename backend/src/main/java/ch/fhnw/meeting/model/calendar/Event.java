@@ -59,8 +59,9 @@ public class Event {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "meeting_type")
-    private String meetingType = "Other";
+    private MeetingType meetingType = MeetingType.OTHER;
 
     @Column(name = "location")
     private String location;

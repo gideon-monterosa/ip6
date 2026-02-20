@@ -43,4 +43,4 @@ Authorization: Bearer {{auth_token}}
 ### Get Calendar events
 GET http://localhost:8080/api/calendar/events?start=2026-02-06T13:28:14.342Z&end=2026-02-27T13:28:14.342Z
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ4ZW5vIiwiaWF0IjoxNzcxMjcyNDQxLCJleHAiOjE3NzEzNTg4NDF9.SZZPrzXb1PkadcqiE5PfRZ99tX46jJzynm48u_4i5Hsy7lr__qt2sOJYTdbAkQ16XpKHW3Yeo7e76rrrdqi1Pw
+Authorization: Bearer {{auth_token}}

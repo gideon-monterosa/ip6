@@ -132,8 +132,6 @@ public class CalendarService {
                 eventRepository.save(event);
             }
 
-            eventRepository.save(event);
-
         } catch (Exception e) {
             log.warn("Konnte Event {} nicht speichern: {}", dto.getTitle(), e.getMessage());
         }
@@ -147,6 +145,10 @@ public class CalendarService {
         dto.setLink(event.getLink());
         dto.setStart(event.getStartTime().toString());
         dto.setEnd(event.getEndTime().toString());
+        dto.setMeetingType(event.getMeetingType());
+        dto.setLocation(event.getLocation());
+        dto.setOrganizer(event.getOrganizer());
+        dto.setAttendeesCount(event.getAttendeesCount());
         return dto;
     }
 
