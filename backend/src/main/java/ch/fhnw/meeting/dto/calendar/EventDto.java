@@ -11,6 +11,10 @@ public class EventDto {
     private String start;
     private String end;
     private String link;
+    private String meetingType;
+    private String location;
+    private String organizer;
+    private Integer attendeesCount;
 
     public String getId() {
         return id;
@@ -58,5 +62,37 @@ public class EventDto {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getMeetingType() {
+        return meetingType;
+    }
+
+    public void setMeetingType(String meetingType) {
+        this.meetingType = meetingType;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
+    }
+
+    public Integer getAttendeesCount() {
+        return attendeesCount;
+    }
+
+    public void setAttendeesCount(Integer attendeesCount) {
+        this.attendeesCount = attendeesCount;
     }
 }

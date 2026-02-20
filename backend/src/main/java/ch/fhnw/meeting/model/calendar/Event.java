@@ -58,4 +58,16 @@ public class Event {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "meeting_type")
+    private String meetingType = "Other";
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "organizer")
+    private String organizer;
+
+    @Column(name = "attendees_count")
+    private Integer attendeesCount = 0;
 }
