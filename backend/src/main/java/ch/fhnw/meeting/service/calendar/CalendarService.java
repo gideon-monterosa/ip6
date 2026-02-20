@@ -103,16 +103,19 @@ public class CalendarService {
                     user.getId()
             );
 
-            Event event;
             if (existingEventOpt.isPresent()) {
-                event = existingEventOpt.get();
+                Event event = existingEventOpt.get();
                 event.setTitle(dto.getTitle());
                 event.setDescription(dto.getDescription());
                 event.setLink(dto.getLink());
                 event.setStartTime(startTime);
                 event.setEndTime(endTime);
+                event.setLocation(dto.getLocation());
+                event.setOrganizer(dto.getOrganizer());
+                event.setAttendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0);
+                // WICHTIG: meetingType hier absichtlich NICHT überschreiben, damit Änderungen vom Frontend beim nächsten Sync nicht verloren gehen.
             } else {
-                event = Event.builder()
+                Event event = Event.builder()
                         .externalId(dto.getId())
                         .title(dto.getTitle())
                         .description(dto.getDescription())
@@ -121,7 +124,12 @@ public class CalendarService {
                         .user(user)
                         .startTime(startTime)
                         .endTime(endTime)
+                        .meetingType(dto.getMeetingType())
+                        .location(dto.getLocation())
+                        .organizer(dto.getOrganizer())
+                        .attendeesCount(dto.getAttendeesCount())
                         .build();
+                eventRepository.save(event);
             }
 
             eventRepository.save(event);
