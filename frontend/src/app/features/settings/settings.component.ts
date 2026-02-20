@@ -1,8 +1,8 @@
 import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../shared/components/input/input.component';
-import { CalendarService } from '../calendar/services/calendar.service';
 import { AuthProvider, CalendarStatusResponse } from '../calendar/models/calendar.model';
+import { CalendarIntegrationService } from '../../shared/services/calendar-integration.service';
 
 @Component({
   selector: 'app-settings',
@@ -11,7 +11,7 @@ import { AuthProvider, CalendarStatusResponse } from '../calendar/models/calenda
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent implements OnInit {
-  private calendarService = inject(CalendarService);
+  private integrationService = inject(CalendarIntegrationService);
 
   AuthProvider = AuthProvider;
 
@@ -43,12 +43,12 @@ export class SettingsComponent implements OnInit {
 
   loadStatus(): void {
     this.isLoading.set(true);
-    this.calendarService.getStatus().subscribe({
-      next: (status) => {
+    this.integrationService.getConnectionStatus().subscribe({
+      next: (status: any) => {
         this.calendarStatus.set(status);
         this.isLoading.set(false);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to load calendar status', err);
         this.isLoading.set(false);
       }
@@ -57,15 +57,15 @@ export class SettingsComponent implements OnInit {
 
   connectCalendar(provider: AuthProvider): void {
     this.isLoading.set(true);
-    this.calendarService.getAuthUrl(provider).subscribe({
-      next: (response) => {
-        // Redirect the user to the provider's OAuth page
+    this.integrationService.getAuthorizationUrl(provider).subscribe({
+      next: (response: any) => {
         window.location.href = response.url;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to get auth URL', err);
         this.isLoading.set(false);
       }
     });
   }
+
 }

@@ -1,11 +1,12 @@
 import { Component, inject, signal, effect } from '@angular/core';
-import { CalendarService } from '../services/calendar.service';
+import { CalendarUIService } from '../services/calendar-ui.service';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
 import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
 import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
 import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
 import { MeetingFeedback} from '../../feedback-inbox/models/feedback.model';
+import { MeetingService } from '../../../shared/services/meeting.service'
 
 @Component({
   selector: 'app-calendar-view',
@@ -61,14 +62,15 @@ import { MeetingFeedback} from '../../feedback-inbox/models/feedback.model';
   `
 })
 export class CalendarViewComponent {
-  private calendarService = inject(CalendarService);
+  private calendarService = inject(CalendarUIService);
+  private meetingService = inject(MeetingService);
 
   currentDate = signal(new Date());
-  events = signal<Meeting[]>([]);
-  isLoading = signal(false);
+
+  events = this.calendarService.events;
+  isLoading = this.calendarService.isLoading;
 
   selectedEvent = signal<Meeting | null>(null);
-
   feedbackMeeting = signal<Meeting | null>(null);
 
   constructor() {
@@ -90,18 +92,7 @@ export class CalendarViewComponent {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    this.isLoading.set(true);
-
-    this.calendarService.getEvents(startOfWeek, endOfWeek).subscribe({
-      next: (data) => {
-        this.events.set(data);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load events', err);
-        this.isLoading.set(false);
-      }
-    });
+    this.calendarService.loadEventsForCurrentWeek();
   }
 
   onPreviousWeek(): void {
@@ -121,47 +112,33 @@ export class CalendarViewComponent {
   }
 
   onRefresh(): void {
-    this.isLoading.set(true);
-    this.calendarService.sync().subscribe({
-      next: () => {
-        this.loadEventsForWeek(this.currentDate());
-      },
-      error: (err) => {
-        console.error('Sync failed', err);
-        this.isLoading.set(false);
-      }
-    });
+    this.calendarService.triggerSync();
   }
 
   onEventSelected(event: Meeting): void {
-    this.selectedEvent.set(event);
+    this.calendarService.setSelectedEvent(event);
   }
 
   onDismissEvent(event: Meeting): void {
-    this.calendarService.dismissEvent(event.id).subscribe(() => {
-      this.events.update(currentEvents =>
-        currentEvents.map(e =>
-          e.id === event.id ? { ...e, feedbackStatus: FeedbackStatus.DISMISSED } : e
-        )
-      );
-      this.selectedEvent.set(null);
+    this.meetingService.dismissFeedback(event.id).subscribe({
+      next: () => console.log('Event dismissed'),
+      error: (err: Error) => console.error(err)
     });
   }
 
   onOpenFeedback(event: Meeting): void {
-    this.selectedEvent.set(null);
-    this.feedbackMeeting.set(event);
+    this.calendarService.setSelectedEvent(null);
+    this.calendarService.setFeedbackMeeting(event);
   }
 
   onSubmitFeedback(feedback: MeetingFeedback): void {
-    console.log('Feedback submitted from calendar:', feedback);
-
-    this.events.update(currentEvents =>
-      currentEvents.map(e =>
-        e.id === feedback.meeting_id ? { ...e, feedbackStatus: FeedbackStatus.SUBMITTED } : e
-      )
-    );
-
-    this.feedbackMeeting.set(null);
+    this.meetingService.submitFeedback(feedback.meeting_id, feedback).subscribe({
+      next: () => {
+        this.calendarService.setFeedbackMeeting(null);
+      },
+      error: (err) => {
+        console.error('Speichern fehlgeschlagen', err);
+      }
+    });
   }
 }

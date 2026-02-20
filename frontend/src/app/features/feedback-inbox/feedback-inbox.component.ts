@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { FeedbackService } from './services/feedback.service';
+import { FeedbackUIService } from './services/feedback-ui.service';
+import { MeetingService } from '../../shared/services/meeting.service';
 import { FeedbackCardComponent } from './components/feedback-card.component';
 import { FeedbackSurveyModalComponent } from './components/feedback-survey-modal.component';
 import { Meeting, MeetingType } from '../../shared/models/meeting.model';
@@ -20,7 +21,7 @@ import { MeetingFeedback } from './models/feedback.model';
   `,
 })
 export class FeedbackInboxComponent implements OnInit, OnDestroy {
-  feedbackService = inject(FeedbackService);
+  public feedbackService = inject(FeedbackUIService)
 
   selectedMeeting = signal<Meeting | null>(null);
   showUndoToast = signal(false);
@@ -31,8 +32,7 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
   private undoTimeout: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
-    this.feedbackService.loadPendingMeetings().subscribe();
-    this.feedbackService.loadDismissedMeetings().subscribe();
+    this.feedbackService.loadRecentMeetingsForInbox();
   }
 
   ngOnDestroy(): void {
@@ -41,7 +41,7 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
 
   onGiveFeedback(meetingId: string): void {
     const meetings = this.feedbackService.filteredMeetings();
-    const meeting = meetings.find((m) => m.id === meetingId);
+    const meeting = this.feedbackService.filteredMeetings().find((m: any) => m.id === meetingId)
     if (meeting) {
       this.selectedMeeting.set(meeting);
     }
@@ -49,20 +49,13 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
 
   onDismissMeeting(meetingId: string): void {
     this.clearUndoTimeout();
-    const dismissed = this.feedbackService.dismissMeeting(meetingId);
-    if (dismissed) {
-      this.lastDismissedId = meetingId;
-      this.showUndoToast.set(true);
-      this.undoTimeout = setTimeout(() => {
-        this.showUndoToast.set(false);
-        this.lastDismissedId = null;
-      }, 10000);
-    }
+    this.feedbackService.dismissMeeting(meetingId);
+    this.lastDismissedId = meetingId;
   }
 
   onUndoDismiss(): void {
     if (this.lastDismissedId) {
-      this.feedbackService.undoDismiss(this.lastDismissedId);
+      this.feedbackService.undoDismiss(this.lastDismissedId).subscribe();
     }
     this.clearUndoToast();
   }
@@ -74,12 +67,15 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
   }
 
   onSubmitFeedback(feedback: MeetingFeedback): void {
-    this.feedbackService.submitFeedback(feedback);
+    if (!feedback.meeting_id) return;
+    this.feedbackService.submitFeedback(feedback.meeting_id, feedback).subscribe({
+      next: () => this.selectedMeeting.set(null)
+    });
     this.selectedMeeting.set(null);
   }
 
   onCategoryChange(event: { meetingId: string; meetingType: MeetingType }): void {
-    this.feedbackService.updateMeetingType(event.meetingId, event.meetingType);
+    this.feedbackService.updateMeetingType(event.meetingId, event.meetingType).subscribe();
   }
 
   onCloseModal(): void {

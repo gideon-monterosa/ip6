@@ -41,7 +41,7 @@
   </div>
 
   <!-- Loading state -->
-  @if (feedbackService.loading()) {
+  @if (feedbackService.isLoading()) {
     <div class="space-y-3" aria-label="Loading meetings">
       @for (i of skeletonItems; track i) {
         <div class="bg-card border border-border rounded-lg p-5 animate-pulse">
@@ -61,7 +61,7 @@
   }
 
   <!-- Meetings list -->
-  @if (!feedbackService.loading()) {
+  @if (!feedbackService.isLoading()) {
     @if (feedbackService.filteredMeetings().length > 0) {
       <div class="space-y-3" role="list" aria-label="Meetings requiring feedback">
         @for (meeting of feedbackService.filteredMeetings(); track meeting.id) {
