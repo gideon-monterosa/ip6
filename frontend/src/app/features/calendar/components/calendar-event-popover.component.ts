@@ -1,6 +1,6 @@
 import { Component, input, output, computed } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
-import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
+import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../shared/models/meeting.model';
 
 @Component({
   selector: 'app-calendar-event-popover',
@@ -30,6 +30,24 @@ import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
         </div>
 
         <div class="p-5">
+          <div class="mb-5 space-y-1.5">
+            <label class="text-xs font-medium text-gray-700">Meeting Type</label>
+            <div class="relative">
+              <select
+                [value]="event().meetingType"
+                (change)="onTypeChange($event)"
+                class="w-full px-3 py-2.5 pe-9 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-900 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              >
+                @for (type of meetingTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+              <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
+                <svg class="size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+          </div>
+
           @if (isSubmitted()) {
             <div class="flex flex-col gap-3">
               <div class="p-3 bg-green-50 border border-green-100 rounded-lg flex items-center gap-3 text-green-800 text-sm">
@@ -38,14 +56,11 @@ import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
                 </svg>
                 <span>Feedback submitted!</span>
               </div>
-              <button class="w-full py-2.5 px-4 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors cursor-not-allowed opacity-60">
-                View Feedback (Coming Soon)
-              </button>
             </div>
           } @else if (isDismissed()) {
-             <div class="text-center py-4 text-gray-500 italic text-sm">
-                You dismissed feedback for this meeting.
-             </div>
+            <div class="text-center py-4 text-gray-500 italic text-sm">
+              You dismissed feedback for this meeting.
+            </div>
           } @else {
             <div class="flex flex-col gap-3">
               <button (click)="giveFeedback.emit()"
@@ -73,6 +88,10 @@ export class CalendarEventPopoverComponent {
   dismiss = output<void>();
   giveFeedback = output<void>();
 
+  categoryChange = output<{ meetingId: string; meetingType: MeetingType }>();
+
+  meetingTypes = MEETING_TYPES;
+
   isSubmitted = computed(() => this.event().feedbackStatus === FeedbackStatus.SUBMITTED);
   isDismissed = computed(() => this.event().feedbackStatus === FeedbackStatus.DISMISSED);
 
@@ -81,4 +100,12 @@ export class CalendarEventPopoverComponent {
     const end = new Date(this.event().end).getTime();
     return Math.round((end - start) / (1000 * 60));
   });
+
+  onTypeChange(e: Event): void {
+    const select = e.target as HTMLSelectElement;
+    this.categoryChange.emit({
+      meetingId: this.event().id,
+      meetingType: select.value as MeetingType
+    });
+  }
 }

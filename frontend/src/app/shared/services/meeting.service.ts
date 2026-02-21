@@ -41,7 +41,9 @@ export class MeetingService {
   }
 
   updateMeetingCategory(meetingId: string, category: MeetingType): Observable<Meeting> {
-    return this.http.patch<Meeting>(`${this.meetingsApiUrl}/${meetingId}/category`, { meetingType: category }).pipe(
+    return this.http.patch<Meeting>(`${this.calendarApiUrl}/events/${meetingId}/category`, {
+      meetingType: category
+    }).pipe(
       tap(() => this.updateLocalMeeting(meetingId, { meetingType: category }))
     );
   }

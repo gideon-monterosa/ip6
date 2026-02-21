@@ -49,6 +49,7 @@ import { MeetingService } from '../../../shared/services/meeting.service'
         (close)="selectedEvent.set(null)"
         (dismiss)="onDismissEvent(event)"
         (giveFeedback)="onOpenFeedback(event)"
+        (categoryChange)="onCategoryChange($event)"
       />
     }
 
@@ -116,7 +117,7 @@ export class CalendarViewComponent {
   }
 
   onEventSelected(event: Meeting): void {
-    this.calendarService.setSelectedEvent(event);
+    this.selectedEvent.set(event);
   }
 
   onDismissEvent(event: Meeting): void {
@@ -127,18 +128,32 @@ export class CalendarViewComponent {
   }
 
   onOpenFeedback(event: Meeting): void {
-    this.calendarService.setSelectedEvent(null);
-    this.calendarService.setFeedbackMeeting(event);
+    this.selectedEvent.set(null);
+    this.feedbackMeeting.set(event);
   }
 
   onSubmitFeedback(feedback: MeetingFeedback): void {
     this.meetingService.submitFeedback(feedback.meeting_id, feedback).subscribe({
       next: () => {
-        this.calendarService.setFeedbackMeeting(null);
+        this.feedbackMeeting.set(null);
       },
       error: (err) => {
         console.error('Speichern fehlgeschlagen', err);
       }
+    });
+  }
+
+  onCategoryChange(event: { meetingId: string; meetingType: MeetingType }): void {
+    this.meetingService.updateMeetingCategory(event.meetingId, event.meetingType).subscribe({
+      next: () => {
+        console.log('Meeting Typ erfolgreich im Backend aktualisiert!');
+
+        const currentEvent = this.selectedEvent();
+        if (currentEvent && currentEvent.id === event.meetingId) {
+          this.selectedEvent.set({ ...currentEvent, meetingType: event.meetingType });
+        }
+      },
+      error: (err) => console.error('Fehler beim Aktualisieren:', err)
     });
   }
 }

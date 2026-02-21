@@ -75,7 +75,10 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
   }
 
   onCategoryChange(event: { meetingId: string; meetingType: MeetingType }): void {
-    this.feedbackService.updateMeetingType(event.meetingId, event.meetingType).subscribe();
+    this.feedbackService.updateMeetingType(event.meetingId, event.meetingType).subscribe({
+      next: () => console.log('Meeting Typ erfolgreich im Backend aktualisiert!'),
+      error: (err) => console.error('Fehler beim Aktualisieren:', err)
+    });
   }
 
   onCloseModal(): void {
