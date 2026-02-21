@@ -1,6 +1,7 @@
 package ch.fhnw.meeting.model.calendar;
 
 import ch.fhnw.meeting.model.User;
+import ch.fhnw.meeting.model.feedback.FeedbackStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,4 +72,8 @@ public class Event {
 
     @Column(name = "attendees_count")
     private Integer attendeesCount = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "feedback_status", nullable = false)
+    private FeedbackStatus feedbackStatus = FeedbackStatus.PENDING;
 }

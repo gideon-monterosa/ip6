@@ -1,6 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { DatePipe, NgClass, NgStyle } from '@angular/common';
-import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
+import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
 
 @Component({
   selector: 'app-calendar-event-card',
@@ -23,11 +23,19 @@ import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         }
-
         <span class="truncate">{{ event().title }}</span>
       </div>
 
-      <div class="truncate text-[10px] opacity-85 mt-0.5 font-medium">
+      <div class="mt-1 mb-0.5">
+        <span
+          class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium whitespace-nowrap leading-none"
+          [class]="getBadgeClasses(event().meetingType)"
+        >
+          {{ event().meetingType }}
+        </span>
+      </div>
+
+      <div class="truncate text-[10px] opacity-85 font-medium">
         {{ event().start | date:'shortTime' }} - {{ event().end | date:'shortTime' }}
       </div>
 
@@ -99,6 +107,24 @@ export class CalendarEventCardComponent {
         ];
     }
   });
+
+  getBadgeClasses(type: MeetingType): string {
+    const base = 'border';
+    switch (type) {
+      case 'Stand-up':
+        return `${base} bg-blue-50 text-blue-700 border-blue-200`;
+      case 'Planning':
+        return `${base} bg-purple-50 text-purple-700 border-purple-200`;
+      case 'Retrospective':
+        return `${base} bg-green-50 text-green-700 border-green-200`;
+      case '1:1':
+        return `${base} bg-yellow-50 text-yellow-700 border-yellow-200`;
+      case 'Ad-hoc':
+        return `${base} bg-orange-50 text-orange-700 border-orange-200`;
+      default:
+        return `${base} bg-gray-50 text-gray-700 border-gray-200`;
+    }
+  }
 
   tooltip = computed(() => {
     const e = this.event();
