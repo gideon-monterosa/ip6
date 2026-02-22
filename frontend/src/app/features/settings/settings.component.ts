@@ -1,44 +1,113 @@
-import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { AuthProvider, CalendarStatusResponse } from '../calendar/models/calendar.model';
 import { CalendarIntegrationService } from '../../shared/services/calendar-integration.service';
+import { UserService } from '../../core/services/user.service';
+import { UserSettings } from '../../core/models/user.model';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [ReactiveFormsModule, InputComponent],
+  imports: [ReactiveFormsModule],
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent implements OnInit {
   private integrationService = inject(CalendarIntegrationService);
+  private userService = inject(UserService);
+  private fb = inject(FormBuilder);
 
   AuthProvider = AuthProvider;
-
   isLoading = signal(false);
+
   calendarStatus = signal<CalendarStatusResponse>({
     googleConnected: false,
     microsoftConnected: false
   });
 
-  placeholder = signal('');
-  placeholderControl = new FormControl('');
-
   isGoogleConnected = computed(() => this.calendarStatus().googleConnected);
   isMicrosoftConnected = computed(() => this.calendarStatus().microsoftConnected);
   hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected());
 
-  constructor() {
-    effect(() => {
-      const value = this.placeholderControl.value;
-      if (value !== null) {
-        this.placeholder.set(value);
-      }
+  settingsForm!: FormGroup;
+  isSavingSettings = signal(false);
+  saveSettingsSuccess = signal(false);
+
+  availableDays = [
+    { label: 'Monday', value: 'MONDAY' },
+    { label: 'Tuesday', value: 'TUESDAY' },
+    { label: 'Wednesday', value: 'WEDNESDAY' },
+    { label: 'Thursday', value: 'THURSDAY' },
+    { label: 'Friday', value: 'FRIDAY' },
+    { label: 'Saturday', value: 'SATURDAY' },
+    { label: 'Sunday', value: 'SUNDAY' }
+  ];
+
+  ngOnInit(): void {
+    this.initForm();
+    this.loadStatus();
+    this.loadUserSettings();
+  }
+
+  initForm(): void {
+    this.settingsForm = this.fb.group({
+      workStartTime: ['09:00'],
+      workEndTime: ['17:00'],
+      workingDays: this.fb.array(this.availableDays.map(() => new FormControl(false)))
     });
   }
 
-  ngOnInit(): void {
-    this.loadStatus();
+  get workingDaysFormArray() {
+    return this.settingsForm.get('workingDays') as FormArray;
+  }
+
+  loadUserSettings(): void {
+    this.userService.getSettings().subscribe({
+      next: (settings) => {
+        const startTime = settings.workStartTime ? settings.workStartTime.substring(0, 5) : '09:00';
+        const endTime = settings.workEndTime ? settings.workEndTime.substring(0, 5) : '17:00';
+
+        this.settingsForm.patchValue({
+          workStartTime: startTime,
+          workEndTime: endTime
+        });
+
+        // Checkboxen setzen
+        const days = settings.workingDays || [];
+        this.workingDaysFormArray.controls.forEach((control, i) => {
+          control.setValue(days.includes(this.availableDays[i].value));
+        });
+      },
+      error: (err) => console.error('Fehler beim Laden der Einstellungen', err)
+    });
+  }
+
+  saveUserSettings(): void {
+    this.isSavingSettings.set(true);
+    this.saveSettingsSuccess.set(false);
+
+    const formVal = this.settingsForm.value;
+    const selectedDays = this.availableDays
+      .filter((_, i) => formVal.workingDays[i])
+      .map(d => d.value);
+
+    const payload: UserSettings = {
+      workStartTime: formVal.workStartTime + ':00', // Anfügen der Sekunden für das LocalTime Format
+      workEndTime: formVal.workEndTime + ':00',
+      workingDays: selectedDays
+    };
+
+    this.userService.updateSettings(payload).subscribe({
+      next: () => {
+        this.isSavingSettings.set(false);
+        this.saveSettingsSuccess.set(true);
+        setTimeout(() => this.saveSettingsSuccess.set(false), 3000);
+      },
+      error: (err) => {
+        console.error('Fehler beim Speichern', err);
+        this.isSavingSettings.set(false);
+      }
+    });
   }
 
   loadStatus(): void {
@@ -67,5 +136,4 @@ export class SettingsComponent implements OnInit {
       }
     });
   }
-
 }
