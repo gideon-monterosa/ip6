@@ -60,6 +60,7 @@ public class Event {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "meeting_type")
     private MeetingType meetingType = MeetingType.OTHER;
@@ -73,6 +74,7 @@ public class Event {
     @Column(name = "attendees_count")
     private Integer attendeesCount = 0;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "feedback_status", nullable = false)
     private FeedbackStatus feedbackStatus = FeedbackStatus.PENDING;
