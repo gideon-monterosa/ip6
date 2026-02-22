@@ -1,12 +1,14 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CalendarUIService } from '../services/calendar-ui.service';
+import { UserService } from '../../../core/services/user.service';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
 import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
 import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
 import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
 import { MeetingFeedback} from '../../feedback-inbox/models/feedback.model';
-import { MeetingService } from '../../../shared/services/meeting.service'
+import { MeetingService } from '../../../shared/services/meeting.service';
+import { UserSettings } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-calendar-view',
@@ -38,8 +40,9 @@ import { MeetingService } from '../../../shared/services/meeting.service'
         <app-calendar-grid
           [currentDate]="currentDate()"
           [events]="events()"
-          (eventClick)="onEventSelected($event)"
-        />
+          [settings]="userSettings()"
+          (eventClick)="onEventSelected($event)">
+        </app-calendar-grid>
       </div>
     </div>
 
@@ -65,17 +68,24 @@ import { MeetingService } from '../../../shared/services/meeting.service'
 export class CalendarViewComponent implements OnInit {
   private calendarService = inject(CalendarUIService);
   private meetingService = inject(MeetingService);
+  private userService = inject(UserService);
 
   currentDate = this.calendarService.currentDate;
-
   events = this.calendarService.events;
   isLoading = this.calendarService.isLoading;
 
   selectedEvent = signal<Meeting | null>(null);
   feedbackMeeting = signal<Meeting | null>(null);
 
+  userSettings = signal<UserSettings | undefined>(undefined);
+
   ngOnInit(): void {
     this.calendarService.loadEventsForCurrentWeek();
+
+    this.userService.getSettings().subscribe({
+      next: (settings: UserSettings) => this.userSettings.set(settings),
+      error: (err: any) => console.error('Fehler beim Laden der Einstellungen', err)
+    });
   }
 
   onPreviousWeek(): void {
@@ -119,7 +129,7 @@ export class CalendarViewComponent implements OnInit {
       next: () => {
         this.feedbackMeeting.set(null);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Speichern fehlgeschlagen', err);
       }
     });
@@ -135,7 +145,7 @@ export class CalendarViewComponent implements OnInit {
           this.selectedEvent.set({ ...currentEvent, meetingType: event.meetingType });
         }
       },
-      error: (err) => console.error('Fehler beim Aktualisieren:', err)
+      error: (err: any) => console.error('Fehler beim Aktualisieren:', err)
     });
   }
 }
