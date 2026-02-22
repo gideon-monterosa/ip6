@@ -154,7 +154,10 @@ public class GoogleCalendarService implements CalendarProvider{
 
                     @Override
                     public void onTokenErrorResponse(Credential credential, com.google.api.client.auth.oauth2.TokenErrorResponse tokenErrorResponse) {
-                        System.err.println("Kritisch: Refresh Token ungültig. User muss sich neu verbinden.");
+                        System.err.println("Kritisch: Refresh Token ungültig. Fehler: " + tokenErrorResponse.getError());
+                        if ("invalid_grant".equals(tokenErrorResponse.getError())) {
+                            deleteInvalidToken(tokenEntity.getUser().getId());
+                        }
                     }
                 })
                 .build()
@@ -226,5 +229,14 @@ public class GoogleCalendarService implements CalendarProvider{
             tokenRepository.save(token);
             System.out.println("Access Token für User " + userId + " aktualisiert.");
         });
+    }
+
+    @Transactional
+    public void deleteInvalidToken(Long userId) {
+        tokenRepository.findByUserIdAndProvider(userId, AuthProvider.GOOGLE)
+                .ifPresent(token -> {
+                    tokenRepository.delete(token);
+                    System.err.println("Ungültiges Token für User " + userId + " aus der Datenbank entfernt.");
+                });
     }
 }

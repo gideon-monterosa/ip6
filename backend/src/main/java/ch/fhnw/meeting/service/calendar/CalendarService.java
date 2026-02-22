@@ -45,7 +45,8 @@ public class CalendarService {
         this.providers = providerList.stream()
             .collect(Collectors.toMap(CalendarProvider::getProvider, Function.identity()));
     }
-    @Transactional
+
+    @Transactional(noRollbackFor = IllegalArgumentException.class)
     public void syncNextMonth(User user) {
         Optional<UserOAuthToken> tokenOpt = tokenRepository.findByUserId(user.getId());
         if (tokenOpt.isEmpty()) return;
@@ -64,9 +65,9 @@ public class CalendarService {
             List<EventDto> remoteEvents = provider.getEventsInRange(user.getUsername(), start, end);
 
             eventRepository.deleteByUserIdAndProviderAndStartTimeAfter(
-                user.getId(),
-                token.getProvider(),
-                start
+                    user.getId(),
+                    token.getProvider(),
+                    start
             );
 
             for (EventDto dto : remoteEvents) {
@@ -80,6 +81,13 @@ public class CalendarService {
 
         } catch (IOException e) {
             log.error("Fehler beim Sync für User {}", user.getUsername(), e);
+
+            if (e.getMessage() != null && e.getMessage().contains("invalid_grant")) {
+                log.warn("Token für User {} ist abgelaufen oder wurde widerrufen. Token wird gelöscht.", user.getUsername());
+                tokenRepository.delete(token);
+                throw new IllegalArgumentException("KALENDER_GETRENNT");
+            }
+
             throw new RuntimeException("Sync failed for " + user.getUsername(), e);
         }
     }

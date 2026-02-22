@@ -55,16 +55,22 @@ public class CalendarController {
     @PostMapping("/sync")
     public ResponseEntity<?> triggerManualSync(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
-            .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + userDetails.getUsername()));
+                .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + userDetails.getUsername()));
 
         try {
             calendarService.syncNextMonth(user);
-
             return ResponseEntity.ok(Map.of("message", "Kalender erfolgreich synchronisiert."));
+
+        } catch (IllegalArgumentException e) {
+            if ("KALENDER_GETRENNT".equals(e.getMessage())) {
+                return ResponseEntity.status(401)
+                        .body(Map.of("error", "KALENDER_GETRENNT"));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                .body(Map.of("error", "Sync fehlgeschlagen: " + e.getMessage()));
+                    .body(Map.of("error", "Sync fehlgeschlagen: " + e.getMessage()));
         }
     }
 
