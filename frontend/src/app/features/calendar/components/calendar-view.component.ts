@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CalendarUIService } from '../services/calendar-ui.service';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
@@ -62,11 +62,11 @@ import { MeetingService } from '../../../shared/services/meeting.service'
     }
   `
 })
-export class CalendarViewComponent {
+export class CalendarViewComponent implements OnInit {
   private calendarService = inject(CalendarUIService);
   private meetingService = inject(MeetingService);
 
-  currentDate = signal(new Date());
+  currentDate = this.calendarService.currentDate;
 
   events = this.calendarService.events;
   isLoading = this.calendarService.isLoading;
@@ -74,42 +74,24 @@ export class CalendarViewComponent {
   selectedEvent = signal<Meeting | null>(null);
   feedbackMeeting = signal<Meeting | null>(null);
 
-  constructor() {
-    effect(() => {
-      this.loadEventsForWeek(this.currentDate());
-    });
-  }
-
-  private loadEventsForWeek(date: Date): void {
-    const curr = new Date(date);
-    const day = curr.getDay();
-    const diff = curr.getDate() - day + (day === 0 ? -6 : 1); // Montag
-
-    const startOfWeek = new Date(curr);
-    startOfWeek.setDate(diff);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
+  ngOnInit(): void {
     this.calendarService.loadEventsForCurrentWeek();
   }
 
   onPreviousWeek(): void {
     const newDate = new Date(this.currentDate());
     newDate.setDate(newDate.getDate() - 7);
-    this.currentDate.set(newDate);
+    this.calendarService.changeDate(newDate);
   }
 
   onNextWeek(): void {
     const newDate = new Date(this.currentDate());
     newDate.setDate(newDate.getDate() + 7);
-    this.currentDate.set(newDate);
+    this.calendarService.changeDate(newDate);
   }
 
   onToday(): void {
-    this.currentDate.set(new Date());
+    this.calendarService.changeDate(new Date());
   }
 
   onRefresh(): void {
