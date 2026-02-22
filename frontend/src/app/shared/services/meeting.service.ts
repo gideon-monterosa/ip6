@@ -11,7 +11,7 @@ export class MeetingService {
   private http = inject(HttpClient);
 
   private calendarApiUrl = `${environment.apiUrl}/api/calendar`;
-  private meetingsApiUrl = `${environment.apiUrl}/api/meetings`;
+  private feedbackApiUrl = `${environment.apiUrl}/api/feedback`;
 
   private meetingsSignal = signal<Meeting[]>([]);
   public readonly meetings = this.meetingsSignal.asReadonly();
@@ -49,19 +49,30 @@ export class MeetingService {
   }
 
   submitFeedback(meetingId: string, feedbackData: any): Observable<void> {
-    return this.http.post<void>(`${this.meetingsApiUrl}/${meetingId}/feedback`, feedbackData).pipe(
+    const payload = {
+      details: {
+        type: 'MEETING',
+        rotiScore: feedbackData.roti_score,
+        mood: feedbackData.mood,
+        energyAfter: feedbackData.energy_after,
+        issueTags: feedbackData.issue_tags,
+        comment: feedbackData.comment
+      }
+    };
+
+    return this.http.post<void>(`${this.feedbackApiUrl}/${meetingId}/feedback`, payload).pipe(
       tap(() => this.updateLocalMeeting(meetingId, { feedbackStatus: FeedbackStatus.SUBMITTED }))
     );
   }
 
   dismissFeedback(meetingId: string): Observable<void> {
-    return this.http.post<void>(`${this.meetingsApiUrl}/${meetingId}/dismiss`, {}).pipe(
+    return this.http.post<void>(`${this.feedbackApiUrl}/${meetingId}/dismiss`, {}).pipe(
       tap(() => this.updateLocalMeeting(meetingId, { feedbackStatus: FeedbackStatus.DISMISSED }))
     );
   }
 
   undoDismiss(meetingId: string): Observable<void> {
-    return this.http.post<void>(`${this.meetingsApiUrl}/${meetingId}/undo-dismiss`, {}).pipe(
+    return this.http.post<void>(`${this.feedbackApiUrl}/${meetingId}/undo-dismiss`, {}).pipe(
       tap(() => this.updateLocalMeeting(meetingId, { feedbackStatus: FeedbackStatus.PENDING }))
     );
   }
