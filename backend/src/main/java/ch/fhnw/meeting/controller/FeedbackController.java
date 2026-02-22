@@ -34,4 +34,13 @@ public class FeedbackController {
         feedbackService.setFeedbackStatus(externalId, userDetails.getUsername(), FeedbackStatus.DISMISSED);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{externalId}/undo-dismiss")
+    public ResponseEntity<Void> undoDismissFeedback(
+            @PathVariable String externalId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        feedbackService.setFeedbackStatus(externalId, userDetails.getUsername(), FeedbackStatus.PENDING);
+        return ResponseEntity.ok().build();
+    }
 }
