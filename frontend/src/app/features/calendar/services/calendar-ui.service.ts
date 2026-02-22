@@ -53,7 +53,14 @@ export class CalendarUIService {
   triggerSync(): void {
     this.integrationService.sync().subscribe({
       next: () => this.loadEventsForCurrentWeek(),
-      error: (err) => console.error('Sync fehlgeschlagen', err)
+      error: (err) => {
+        console.error('Sync fehlgeschlagen', err);
+        if (err.error?.error?.includes('KALENDER_GETRENNT') || err.message?.includes('invalid_grant')) {
+          alert('Your calendar connection has timed out. Please reconnect via settings');
+        } else {
+          alert('There was a problem while syncing your calendar.');
+        }
+      }
     });
   }
 }
