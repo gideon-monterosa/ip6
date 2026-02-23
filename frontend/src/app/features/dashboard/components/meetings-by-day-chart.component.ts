@@ -18,22 +18,28 @@ import {
   imports: [NgApexchartsModule],
   template: `
     <div
-      class='bg-white border border-gray-200 shadow-2xs rounded-xl p-4 md:p-5'
+      class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5'
     >
-      <h4 class='text-sm font-medium text-gray-500 uppercase mb-3'>
+      <h4 class='text-sm font-medium text-muted-foreground-1 uppercase mb-3'>
         Meetings by Day
       </h4>
-      <apx-chart
-        [series]='series'
-        [chart]='chart'
-        [xaxis]='xaxis'
-        [yaxis]='yaxis'
-        [dataLabels]='dataLabels'
-        [plotOptions]='plotOptions'
-        [grid]='grid'
-        [tooltip]='tooltip'
-        [colors]='colors'
-      />
+      @if (hasData) {
+        <apx-chart
+          [series]='series'
+          [chart]='chart'
+          [xaxis]='xaxis'
+          [yaxis]='yaxis'
+          [dataLabels]='dataLabels'
+          [plotOptions]='plotOptions'
+          [grid]='grid'
+          [tooltip]='tooltip'
+          [colors]='colors'
+        />
+      } @else {
+        <div class="flex items-center justify-center h-[300px] text-sm text-muted-foreground-2">
+          No meetings this week
+        </div>
+      }
     </div>
   `,
 })
@@ -41,6 +47,7 @@ export class MeetingsByDayChartComponent {
   days = input.required<DayData[]>();
 
   series: ApexAxisChartSeries = [];
+  hasData = false;
   chart: ApexChart = { type: 'bar', height: 300, toolbar: { show: false } };
   xaxis: ApexXAxis = { categories: [] };
   yaxis: ApexYAxis = { title: { text: 'Meetings' } };
@@ -55,7 +62,8 @@ export class MeetingsByDayChartComponent {
   constructor() {
     effect(() => {
       const data = this.days();
-      if (data.length) {
+      this.hasData = data.some((d) => d.count > 0);
+      if (this.hasData) {
         this.series = [{ name: 'Meetings', data: data.map((d) => d.count) }];
         this.xaxis = { categories: data.map((d) => d.day) };
       }

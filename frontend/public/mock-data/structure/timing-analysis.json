@@ -1,7 +1,0 @@
-{
-  "timing": [
-    { "timeOfDay": "Morning", "count": 72, "percentage": 68.6 },
-    { "timeOfDay": "Midday", "count": 16, "percentage": 15.2 },
-    { "timeOfDay": "Afternoon", "count": 17, "percentage": 16.2 }
-  ]
-}

@@ -1,9 +1,5 @@
-import { Component, inject, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
-import { ImpactService } from './services/impact.service';
-import { FilterService } from './services/filter.service';
-import { FilterPanelComponent } from './components/shared/filter-panel.component';
+import { Component, inject, input, effect, signal } from '@angular/core';
+import { ImpactDashboardService } from './services/impact-dashboard.service';
 import { ImpactKpiSummaryComponent } from './components/impact/impact-kpi-summary.component';
 import { SentimentDistributionComponent } from './components/impact/sentiment-distribution.component';
 import { EfficiencyDistributionComponent } from './components/impact/efficiency-distribution.component';
@@ -11,11 +7,19 @@ import { ImpactByMeetingTypeComponent } from './components/impact/impact-by-meet
 import { ImpactByTimeOfDayComponent } from './components/impact/impact-by-time-of-day.component';
 import { FocusDisruptionPerceptionComponent } from './components/impact/focus-disruption-perception.component';
 import { QualitativeThemesComponent } from './components/impact/qualitative-themes.component';
+import {
+  ImpactSummaryWeek,
+  SentimentBucket,
+  EfficiencyBucket,
+  ImpactByType,
+  ImpactByTime,
+  DisruptionDay,
+  ThemeFrequency,
+} from './models/dashboard.model';
 
 @Component({
   selector: 'app-impact-dashboard',
   imports: [
-    FilterPanelComponent,
     ImpactKpiSummaryComponent,
     SentimentDistributionComponent,
     EfficiencyDistributionComponent,
@@ -26,9 +30,6 @@ import { QualitativeThemesComponent } from './components/impact/qualitative-them
   ],
   template: `
     <div>
-      <!-- Filter Panel -->
-      <app-filter-panel />
-
       <!-- KPI Summary Row -->
       @if (summary()) {
         <div class='mb-6'>
@@ -77,28 +78,31 @@ import { QualitativeThemesComponent } from './components/impact/qualitative-them
   `,
 })
 export class ImpactDashboardComponent {
-  private impactService = inject(ImpactService);
-  private filterService = inject(FilterService);
+  private service = inject(ImpactDashboardService);
 
-  private dashboardData = toSignal(
-    forkJoin({
-      feedback: this.impactService.loadFeedback(),
-      summary: this.impactService.getSummary(),
-      sentiment: this.impactService.getSentimentDistribution(),
-      efficiency: this.impactService.getEfficiencyDistribution(),
-      impactByType: this.impactService.getImpactByMeetingType(),
-      impactByTime: this.impactService.getImpactByTimeOfDay(),
-      focusDisruption: this.impactService.getFocusDisruption(),
-      themes: this.impactService.getQualitativeThemes(),
-    }),
-    { initialValue: null },
-  );
+  weekStart = input.required<Date>();
+  weekEnd = input.required<Date>();
 
-  summary = computed(() => this.dashboardData()?.summary.summary ?? null);
-  sentiment = computed(() => this.dashboardData()?.sentiment.distribution ?? []);
-  efficiency = computed(() => this.dashboardData()?.efficiency.distribution ?? []);
-  impactByType = computed(() => this.dashboardData()?.impactByType.impacts ?? []);
-  impactByTime = computed(() => this.dashboardData()?.impactByTime.impacts ?? []);
-  focusDisruption = computed(() => this.dashboardData()?.focusDisruption.disruption ?? []);
-  themes = computed(() => this.dashboardData()?.themes.themes ?? []);
+  summary = signal<ImpactSummaryWeek | null>(null);
+  sentiment = signal<SentimentBucket[]>([]);
+  efficiency = signal<EfficiencyBucket[]>([]);
+  impactByType = signal<ImpactByType[]>([]);
+  impactByTime = signal<ImpactByTime[]>([]);
+  focusDisruption = signal<DisruptionDay[]>([]);
+  themes = signal<ThemeFrequency[]>([]);
+
+  constructor() {
+    effect(() => {
+      const start = this.weekStart();
+      const end = this.weekEnd();
+
+      this.service.getImpactSummary(start, end).subscribe((d) => this.summary.set(d));
+      this.service.getSentimentDistribution(start, end).subscribe((d) => this.sentiment.set(d));
+      this.service.getEfficiencyDistribution(start, end).subscribe((d) => this.efficiency.set(d));
+      this.service.getImpactByType(start, end).subscribe((d) => this.impactByType.set(d));
+      this.service.getImpactByTime(start, end).subscribe((d) => this.impactByTime.set(d));
+      this.service.getFocusDisruption(start, end).subscribe((d) => this.focusDisruption.set(d));
+      this.service.getQualitativeThemes(start, end).subscribe((d) => this.themes.set(d));
+    });
+  }
 }

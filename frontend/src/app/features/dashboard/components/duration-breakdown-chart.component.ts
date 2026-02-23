@@ -16,21 +16,27 @@ import {
   imports: [NgApexchartsModule],
   template: `
     <div
-      class='bg-white border border-gray-200 shadow-2xs rounded-xl p-4 md:p-5'
+      class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5'
     >
-      <h4 class='text-sm font-medium text-gray-500 uppercase mb-3'>
+      <h4 class='text-sm font-medium text-muted-foreground-1 uppercase mb-3'>
         Duration Breakdown
       </h4>
-      <apx-chart
-        [series]='series'
-        [chart]='chart'
-        [labels]='labels'
-        [responsive]='responsive'
-        [legend]='legend'
-        [dataLabels]='dataLabels'
-        [plotOptions]='plotOptions'
-        [colors]='colors'
-      />
+      @if (breakdown().length === 0) {
+        <div class="flex items-center justify-center h-[300px] text-sm text-muted-foreground-2">
+          No meetings this week
+        </div>
+      } @else {
+        <apx-chart
+          [series]='series'
+          [chart]='chart'
+          [labels]='labels'
+          [responsive]='responsive'
+          [legend]='legend'
+          [dataLabels]='dataLabels'
+          [plotOptions]='plotOptions'
+          [colors]='colors'
+        />
+      }
     </div>
   `,
 })

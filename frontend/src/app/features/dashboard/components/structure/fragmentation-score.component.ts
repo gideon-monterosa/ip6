@@ -1,6 +1,6 @@
 import { Component, input, effect, computed } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { FragmentationScore } from '../../models/structure.model';
+import { FragmentationDay } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_GRID_BORDER, SEMANTIC_COLORS } from '../../../../theme.constants';
 import {
@@ -53,7 +53,7 @@ import {
   `,
 })
 export class FragmentationScoreComponent {
-  data = input.required<FragmentationScore[]>();
+  data = input.required<FragmentationDay[]>();
 
   currentScore = computed(() => {
     const items = this.data();

@@ -1,9 +1,0 @@
-{
-  "distribution": [
-    { "scale": 1, "count": 3, "percentage": 3.3 },
-    { "scale": 2, "count": 14, "percentage": 15.6 },
-    { "scale": 3, "count": 22, "percentage": 24.4 },
-    { "scale": 4, "count": 39, "percentage": 43.3 },
-    { "scale": 5, "count": 12, "percentage": 13.3 }
-  ]
-}

@@ -1,6 +1,6 @@
 import { Component, input, effect, computed } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { FocusDisruptionData } from '../../models/impact.model';
+import { DisruptionDay } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_GRID_BORDER, SEMANTIC_COLORS } from '../../../../theme.constants';
 import {
@@ -47,7 +47,7 @@ import {
   `,
 })
 export class FocusDisruptionPerceptionComponent {
-  data = input.required<FocusDisruptionData[]>();
+  data = input.required<DisruptionDay[]>();
 
   currentAvg = computed(() => {
     const items = this.data();

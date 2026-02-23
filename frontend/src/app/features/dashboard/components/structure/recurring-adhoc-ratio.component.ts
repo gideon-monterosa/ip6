@@ -1,6 +1,6 @@
 import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { RecurringRatio } from '../../models/structure.model';
+import { RecurringRatioData } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_PRIMARY, CHART_COLORS } from '../../../../theme.constants';
 import {
@@ -34,7 +34,7 @@ import {
   `,
 })
 export class RecurringAdhocRatioComponent {
-  ratio = input.required<RecurringRatio | null>();
+  ratio = input.required<RecurringRatioData | null>();
 
   series: ApexNonAxisChartSeries = [];
   labels = ['Recurring', 'Ad-hoc'];

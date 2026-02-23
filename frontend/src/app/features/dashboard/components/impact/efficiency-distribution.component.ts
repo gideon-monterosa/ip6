@@ -1,6 +1,6 @@
 import { Component, input, effect, computed } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { EfficiencyDistribution } from '../../models/impact.model';
+import { EfficiencyBucket } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -48,7 +48,7 @@ import {
   `,
 })
 export class EfficiencyDistributionComponent {
-  data = input.required<EfficiencyDistribution[]>();
+  data = input.required<EfficiencyBucket[]>();
 
   lowPct = computed(() => {
     const items = this.data();
