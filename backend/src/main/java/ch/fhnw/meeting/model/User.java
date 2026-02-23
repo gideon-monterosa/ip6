@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +36,18 @@ public class User {
 
     @Column(nullable = false, length = 20)
     private String role = "USER";
+
+    @Column(name = "work_start_time")
+    private LocalTime workStartTime;
+
+    @Column(name = "work_end_time")
+    private LocalTime workEndTime;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_working_days", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "day_of_week")
+    @Enumerated(EnumType.STRING)
+    private Set<DayOfWeek> workingDays;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -1,0 +1,55 @@
+### register
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "xeno",
+  "email": "test@test.com",
+  "password": "123456"
+}
+
+### login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "xeno",
+  "password": "123456"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token);
+%}
+
+### me test
+GET http://localhost:8080/api/auth/me
+Authorization: Bearer {{auth_token}}
+
+### calendar connect
+GET http://localhost:8080/api/calendar/connect?provider=google
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### calendar connection status
+GET http://localhost:8080/api/calendar/status
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Manual sync calendar
+POST http://localhost:8080/api/calendar/sync
+Authorization: Bearer {{auth_token}}
+
+
+### Get Calendar events
+GET http://localhost:8080/api/calendar/events?start=2026-02-06T13:28:14.342Z&end=2026-02-27T13:28:14.342Z
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Meeting Typ ändern
+PATCH http://localhost:8080/api/calendar/events/0hvm3g91r4is7rmu9ljb7u9kij/category
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "meetingType": "Stand-up"
+}

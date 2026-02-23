@@ -1,20 +1,20 @@
 [
   {
-    "meeting_id": "mtg-101",
+    "id": "mtg-101",
     "title": "All-Hands Company Update",
-    "start_time": "2026-02-10T16:00:00",
-    "end_time": "2026-02-10T17:00:00",
+    "start": "2026-02-10T16:00:00",
+    "end": "2026-02-10T17:00:00",
     "duration_minutes": 60,
-    "meeting_type": "Other",
-    "feedback_status": "DISMISSED"
+    "meetingType": "Other",
+    "feedbackStatus": "DISMISSED"
   },
   {
-    "meeting_id": "mtg-102",
+    "id": "mtg-102",
     "title": "Quick Sync with Marketing",
-    "start_time": "2026-02-10T11:00:00",
-    "end_time": "2026-02-10T11:15:00",
+    "start": "2026-02-10T11:00:00",
+    "end": "2026-02-10T11:15:00",
     "duration_minutes": 15,
-    "meeting_type": "Ad-hoc",
-    "feedback_status": "DISMISSED"
+    "meetingType": "Ad-hoc",
+    "feedbackStatus": "DISMISSED"
   }
 ]

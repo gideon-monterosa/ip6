@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarService } from '../services/calendar.service';
+import { CalendarIntegrationService } from '../../../shared/services/calendar-integration.service';
 import { AuthProvider } from '../models/calendar.model';
 
 @Component({
@@ -12,7 +12,7 @@ export class CalendarCallbackComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private calendarService: CalendarService,
+    private calendarService: CalendarIntegrationService,
   ) {}
 
   ngOnInit(): void {

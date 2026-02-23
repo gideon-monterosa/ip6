@@ -5,6 +5,7 @@ import ch.fhnw.meeting.model.calendar.AuthProvider;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +28,11 @@ public class MicrosoftCalendarService implements CalendarProvider {
 
     @Override
     public List<EventDto> getEvents(String username) throws IOException {
+        return List.of();
+    }
+
+    @Override
+    public List<EventDto> getEventsInRange(String username, LocalDateTime start, LocalDateTime end) throws IOException {
         return List.of();
     }
 }
