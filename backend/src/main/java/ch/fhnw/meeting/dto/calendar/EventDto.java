@@ -1,5 +1,7 @@
 package ch.fhnw.meeting.dto.calendar;
 
+import ch.fhnw.meeting.model.calendar.MeetingType;
+import ch.fhnw.meeting.model.feedback.FeedbackStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +13,12 @@ public class EventDto {
     private String start;
     private String end;
     private String link;
+    private MeetingType meetingType;
+    private String location;
+    private String organizer;
+    private Integer attendeesCount;
+
+    private FeedbackStatus feedbackStatus;
 
     public String getId() {
         return id;
@@ -58,5 +66,45 @@ public class EventDto {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public MeetingType getMeetingType() {
+        return meetingType;
+    }
+
+    public void setMeetingType(MeetingType meetingType) {
+        this.meetingType = meetingType;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
+    }
+
+    public Integer getAttendeesCount() {
+        return attendeesCount;
+    }
+
+    public void setAttendeesCount(Integer attendeesCount) {
+        this.attendeesCount = attendeesCount;
+    }
+
+    public FeedbackStatus getFeedbackStatus() {
+        return feedbackStatus;
+    }
+
+    public void setFeedbackStatus(FeedbackStatus feedbackStatus) {
+        this.feedbackStatus = feedbackStatus;
     }
 }

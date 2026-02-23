@@ -9,18 +9,28 @@ import org.springframework.stereotype.Component;
 public class GoogleEventFactory {
 
     public EventDto create(Event event) {
-        if (event == null) {
-            return null;
-        }
+        if (event == null) return null;
 
         EventDto dto = new EventDto();
         dto.setId(event.getId());
         dto.setTitle(event.getSummary());
         dto.setDescription(event.getDescription());
         dto.setLink(event.getHtmlLink());
-
         dto.setStart(formatDate(event.getStart()));
         dto.setEnd(formatDate(event.getEnd()));
+        dto.setLocation(event.getLocation());
+
+        if (event.getOrganizer() != null) {
+            dto.setOrganizer(event.getOrganizer().getDisplayName() != null
+                    ? event.getOrganizer().getDisplayName()
+                    : event.getOrganizer().getEmail());
+        }
+
+        if (event.getAttendees() != null) {
+            dto.setAttendeesCount(event.getAttendees().size());
+        } else {
+            dto.setAttendeesCount(0);
+        }
 
         return dto;
     }

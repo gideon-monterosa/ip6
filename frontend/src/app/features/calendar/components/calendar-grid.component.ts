@@ -1,7 +1,8 @@
 import { Component, input, computed, output } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
-import { CalendarEvent } from '../models/calendar.model';
+import { Meeting } from '../../../shared/models/meeting.model';
 import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
+import { UserSettings } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-calendar-grid',
@@ -50,8 +51,8 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
           <div class="w-16 flex-shrink-0 border-r border-gray-100 bg-gray-50/50 select-none">
             @for (hour of hours; track hour) {
               <div class="h-[60px] border-b border-gray-100 relative"
-                   [class.bg-white]="isWorkingHour(hour)"
-                   [class.bg-gray-50]="!isWorkingHour(hour)">
+                   [class.bg-white]="isWorkingHourAxis(hour)"
+                   [class.bg-gray-50]="!isWorkingHourAxis(hour)">
                 <span class="absolute -top-3 right-2 text-xs text-gray-400 font-medium font-mono">
                   {{ hour }}:00
                 </span>
@@ -64,9 +65,9 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
               @for (day of weekDays(); track day) {
                 <div class="border-r border-gray-100 h-full last:border-r-0">
                   @for (hour of hours; track hour) {
-                    <div class="h-[60px] border-b border-gray-50"
-                         [class.bg-white]="isWorkingHour(hour)"
-                         [class.bg-gray-50]="!isWorkingHour(hour)">
+                    <div class="h-[60px] border-b border-gray-50 transition-colors"
+                         [class.bg-white]="isWorkingTime(day, hour)"
+                         [class.bg-gray-100]="!isWorkingTime(day, hour)">
                     </div>
                   }
                 </div>
@@ -91,14 +92,29 @@ import { CalendarEventCardComponent } from '../components/calendar-event-card.co
 })
 export class CalendarGridComponent {
   currentDate = input.required<Date>();
-  events = input.required<CalendarEvent[]>();
+  events = input.required<Meeting[]>();
 
-  eventClick = output<CalendarEvent>();
+  settings = input<UserSettings>();
+
+  eventClick = output<Meeting>();
 
   readonly hours = Array.from({ length: 24 }, (_, i) => i);
 
-  readonly WORK_START = 9; // 09:00
-  readonly WORK_END = 18;  // 18:00
+  readonly DAY_NAMES = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+
+  workStartHour = computed(() => {
+    const timeString = this.settings()?.workStartTime;
+    return timeString ? parseInt(timeString.split(':')[0], 10) : 9;
+  });
+
+  workEndHour = computed(() => {
+    const timeString = this.settings()?.workEndTime;
+    return timeString ? parseInt(timeString.split(':')[0], 10) : 18;
+  });
+
+  workingDays = computed(() => {
+    return this.settings()?.workingDays || ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+  });
 
   weekDays = computed(() => {
     const curr = new Date(this.currentDate());
@@ -123,11 +139,18 @@ export class CalendarGridComponent {
       date.getFullYear() === today.getFullYear();
   }
 
-  isWorkingHour(hour: number): boolean {
-    return hour >= this.WORK_START && hour < this.WORK_END;
+  isWorkingHourAxis(hour: number): boolean {
+    return hour >= this.workStartHour() && hour < this.workEndHour();
   }
 
-  getEventsForDay(date: Date): CalendarEvent[] {
+  isWorkingTime(date: Date, hour: number): boolean {
+    const dayName = this.DAY_NAMES[date.getDay()];
+    const isWorkingDay = this.workingDays().includes(dayName);
+    const isWorkingHour = hour >= this.workStartHour() && hour < this.workEndHour();
+    return isWorkingDay && isWorkingHour;
+  }
+
+  getEventsForDay(date: Date): Meeting[] {
     return this.events().filter(event => {
       const eventDate = new Date(event.start);
       return eventDate.getDate() === date.getDate() &&
@@ -136,8 +159,8 @@ export class CalendarGridComponent {
     });
   }
 
-  onEventClick(event: CalendarEvent, e: MouseEvent): void {
-    e.stopPropagation(); // Verhindert Bubbling falls nötig
+  onEventClick(event: Meeting, e: MouseEvent): void {
+    e.stopPropagation();
     this.eventClick.emit(event);
   }
 }

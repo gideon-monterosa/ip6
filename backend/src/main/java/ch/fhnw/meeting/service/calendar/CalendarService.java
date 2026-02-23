@@ -34,6 +34,7 @@ public class CalendarService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
+
     public CalendarService(List<CalendarProvider> providerList,
                            UserOAuthTokenRepository tokenRepository,
                            UserRepository userRepository,
@@ -44,7 +45,8 @@ public class CalendarService {
         this.providers = providerList.stream()
             .collect(Collectors.toMap(CalendarProvider::getProvider, Function.identity()));
     }
-    @Transactional
+
+    @Transactional(noRollbackFor = IllegalArgumentException.class)
     public void syncNextMonth(User user) {
         Optional<UserOAuthToken> tokenOpt = tokenRepository.findByUserId(user.getId());
         if (tokenOpt.isEmpty()) return;
@@ -63,9 +65,9 @@ public class CalendarService {
             List<EventDto> remoteEvents = provider.getEventsInRange(user.getUsername(), start, end);
 
             eventRepository.deleteByUserIdAndProviderAndStartTimeAfter(
-                user.getId(),
-                token.getProvider(),
-                start
+                    user.getId(),
+                    token.getProvider(),
+                    start
             );
 
             for (EventDto dto : remoteEvents) {
@@ -79,6 +81,13 @@ public class CalendarService {
 
         } catch (IOException e) {
             log.error("Fehler beim Sync für User {}", user.getUsername(), e);
+
+            if (e.getMessage() != null && e.getMessage().contains("invalid_grant")) {
+                log.warn("Token für User {} ist abgelaufen oder wurde widerrufen. Token wird gelöscht.", user.getUsername());
+                tokenRepository.delete(token);
+                throw new IllegalArgumentException("KALENDER_GETRENNT");
+            }
+
             throw new RuntimeException("Sync failed for " + user.getUsername(), e);
         }
     }
@@ -103,16 +112,19 @@ public class CalendarService {
                     user.getId()
             );
 
-            Event event;
             if (existingEventOpt.isPresent()) {
-                event = existingEventOpt.get();
+                Event event = existingEventOpt.get();
                 event.setTitle(dto.getTitle());
                 event.setDescription(dto.getDescription());
                 event.setLink(dto.getLink());
                 event.setStartTime(startTime);
                 event.setEndTime(endTime);
+                event.setLocation(dto.getLocation());
+                event.setOrganizer(dto.getOrganizer());
+                event.setAttendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0);
+                // WICHTIG: meetingType hier absichtlich NICHT überschreiben, damit Änderungen vom Frontend beim nächsten Sync nicht verloren gehen.
             } else {
-                event = Event.builder()
+                Event event = Event.builder()
                         .externalId(dto.getId())
                         .title(dto.getTitle())
                         .description(dto.getDescription())
@@ -121,10 +133,13 @@ public class CalendarService {
                         .user(user)
                         .startTime(startTime)
                         .endTime(endTime)
+                        .meetingType(dto.getMeetingType())
+                        .location(dto.getLocation())
+                        .organizer(dto.getOrganizer())
+                        .attendeesCount(dto.getAttendeesCount())
                         .build();
+                eventRepository.save(event);
             }
-
-            eventRepository.save(event);
 
         } catch (Exception e) {
             log.warn("Konnte Event {} nicht speichern: {}", dto.getTitle(), e.getMessage());
@@ -139,6 +154,10 @@ public class CalendarService {
         dto.setLink(event.getLink());
         dto.setStart(event.getStartTime().toString());
         dto.setEnd(event.getEndTime().toString());
+        dto.setMeetingType(event.getMeetingType());
+        dto.setLocation(event.getLocation());
+        dto.setOrganizer(event.getOrganizer());
+        dto.setAttendeesCount(event.getAttendeesCount());
         return dto;
     }
 

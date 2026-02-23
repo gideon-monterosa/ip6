@@ -6,15 +6,8 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  FeedbackableMeeting,
-  MeetingFeedback,
-  MeetingType,
-  MoodType,
-  IssueTag,
-  ISSUE_TAG_LABELS,
-  MEETING_TYPES,
-} from '../models/feedback.model';
+import { Meeting, MeetingType, MEETING_TYPES } from '../../../shared/models/meeting.model';
+import { MeetingFeedback, MoodType, IssueTag, ISSUE_TAG_LABELS } from '../models/feedback.model';
 
 @Component({
   selector: 'app-feedback-survey-modal',
@@ -31,7 +24,7 @@ import {
   `,
 })
 export class FeedbackSurveyModalComponent implements OnInit {
-  meeting = input.required<FeedbackableMeeting>();
+  meeting = input.required<Meeting>();
   submitFeedback = output<MeetingFeedback>();
   categoryChange = output<{ meetingId: string; meetingType: MeetingType }>();
   close = output<void>();
@@ -68,7 +61,7 @@ export class FeedbackSurveyModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.feedbackForm = this.fb.group({
-      meeting_type_override: [this.meeting().meeting_type],
+      meeting_type_override: [this.meeting().meetingType],
       roti_score: [null, Validators.required],
       mood: [null, Validators.required],
       energy_after: [null, Validators.required],
@@ -78,7 +71,7 @@ export class FeedbackSurveyModalComponent implements OnInit {
     // Emit category change when user selects a different type
     this.feedbackForm.get('meeting_type_override')?.valueChanges.subscribe((val: MeetingType) => {
       this.categoryChange.emit({
-        meetingId: this.meeting().meeting_id,
+        meetingId: this.meeting().id,
         meetingType: val,
       });
     });
@@ -136,11 +129,11 @@ export class FeedbackSurveyModalComponent implements OnInit {
     const formValue = this.feedbackForm.value;
     const overrideType = formValue.meeting_type_override;
     const feedback: MeetingFeedback = {
-      meeting_id: this.meeting().meeting_id,
+      meeting_id: this.meeting().id,
       roti_score: formValue.roti_score,
       mood: formValue.mood,
       energy_after: formValue.energy_after,
-      meeting_type_override: overrideType !== this.meeting().meeting_type ? overrideType : undefined,
+      meeting_type_override: overrideType !== this.meeting().meetingType ? overrideType : undefined,
       issue_tags: Array.from(this.selectedIssueTags()),
       comment: formValue.comment || undefined,
     };

@@ -1,11 +1,14 @@
-import { Component, inject, signal, effect } from '@angular/core';
-import { CalendarService } from '../services/calendar.service';
-import { CalendarEvent } from '../models/calendar.model';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { CalendarUIService } from '../services/calendar-ui.service';
+import { UserService } from '../../../core/services/user.service';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
 import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
 import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
-import { FeedbackableMeeting, FeedbackStatus, MeetingFeedback, MeetingType } from '../../feedback-inbox/models/feedback.model';
+import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
+import { MeetingFeedback} from '../../feedback-inbox/models/feedback.model';
+import { MeetingService } from '../../../shared/services/meeting.service';
+import { UserSettings } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-calendar-view',
@@ -37,8 +40,9 @@ import { FeedbackableMeeting, FeedbackStatus, MeetingFeedback, MeetingType } fro
         <app-calendar-grid
           [currentDate]="currentDate()"
           [events]="events()"
-          (eventClick)="onEventSelected($event)"
-        />
+          [settings]="userSettings()"
+          (eventClick)="onEventSelected($event)">
+        </app-calendar-grid>
       </div>
     </div>
 
@@ -48,6 +52,7 @@ import { FeedbackableMeeting, FeedbackStatus, MeetingFeedback, MeetingType } fro
         (close)="selectedEvent.set(null)"
         (dismiss)="onDismissEvent(event)"
         (giveFeedback)="onOpenFeedback(event)"
+        (categoryChange)="onCategoryChange($event)"
       />
     }
 
@@ -60,118 +65,87 @@ import { FeedbackableMeeting, FeedbackStatus, MeetingFeedback, MeetingType } fro
     }
   `
 })
-export class CalendarViewComponent {
-  private calendarService = inject(CalendarService);
+export class CalendarViewComponent implements OnInit {
+  private calendarService = inject(CalendarUIService);
+  private meetingService = inject(MeetingService);
+  private userService = inject(UserService);
 
-  currentDate = signal(new Date());
-  events = signal<CalendarEvent[]>([]);
-  isLoading = signal(false);
+  currentDate = this.calendarService.currentDate;
+  events = this.calendarService.events;
+  isLoading = this.calendarService.isLoading;
 
-  selectedEvent = signal<CalendarEvent | null>(null);
+  selectedEvent = signal<Meeting | null>(null);
+  feedbackMeeting = signal<Meeting | null>(null);
 
-  feedbackMeeting = signal<FeedbackableMeeting | null>(null);
+  userSettings = signal<UserSettings | undefined>(undefined);
 
-  constructor() {
-    effect(() => {
-      this.loadEventsForWeek(this.currentDate());
-    });
-  }
+  ngOnInit(): void {
+    this.calendarService.loadEventsForCurrentWeek();
 
-  private loadEventsForWeek(date: Date): void {
-    const curr = new Date(date);
-    const day = curr.getDay();
-    const diff = curr.getDate() - day + (day === 0 ? -6 : 1); // Montag
-
-    const startOfWeek = new Date(curr);
-    startOfWeek.setDate(diff);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    this.isLoading.set(true);
-
-    this.calendarService.getEvents(startOfWeek, endOfWeek).subscribe({
-      next: (data) => {
-        this.events.set(data);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load events', err);
-        this.isLoading.set(false);
-      }
+    this.userService.getSettings().subscribe({
+      next: (settings: UserSettings) => this.userSettings.set(settings),
+      error: (err: any) => console.error('Fehler beim Laden der Einstellungen', err)
     });
   }
 
   onPreviousWeek(): void {
     const newDate = new Date(this.currentDate());
     newDate.setDate(newDate.getDate() - 7);
-    this.currentDate.set(newDate);
+    this.calendarService.changeDate(newDate);
   }
 
   onNextWeek(): void {
     const newDate = new Date(this.currentDate());
     newDate.setDate(newDate.getDate() + 7);
-    this.currentDate.set(newDate);
+    this.calendarService.changeDate(newDate);
   }
 
   onToday(): void {
-    this.currentDate.set(new Date());
+    this.calendarService.changeDate(new Date());
   }
 
   onRefresh(): void {
-    this.isLoading.set(true);
-    this.calendarService.sync().subscribe({
+    this.calendarService.triggerSync();
+  }
+
+  onEventSelected(event: Meeting): void {
+    this.selectedEvent.set(event);
+  }
+
+  onDismissEvent(event: Meeting): void {
+    this.meetingService.dismissFeedback(event.id).subscribe({
+      next: () => console.log('Event dismissed'),
+      error: (err: Error) => console.error(err)
+    });
+  }
+
+  onOpenFeedback(event: Meeting): void {
+    this.selectedEvent.set(null);
+    this.feedbackMeeting.set(event);
+  }
+
+  onSubmitFeedback(feedback: MeetingFeedback): void {
+    this.meetingService.submitFeedback(feedback.meeting_id, feedback).subscribe({
       next: () => {
-        this.loadEventsForWeek(this.currentDate());
+        this.feedbackMeeting.set(null);
       },
-      error: (err) => {
-        console.error('Sync failed', err);
-        this.isLoading.set(false);
+      error: (err: any) => {
+        console.error('Speichern fehlgeschlagen', err);
       }
     });
   }
 
-  onEventSelected(event: CalendarEvent): void {
-    this.selectedEvent.set(event);
-  }
+  onCategoryChange(event: { meetingId: string; meetingType: MeetingType }): void {
+    this.meetingService.updateMeetingCategory(event.meetingId, event.meetingType).subscribe({
+      next: () => {
+        console.log('Meeting Typ erfolgreich im Backend aktualisiert!');
 
-  onDismissEvent(event: CalendarEvent): void {
-    this.calendarService.dismissEvent(event.id).subscribe(() => {
-      this.events.update(currentEvents =>
-        currentEvents.map(e =>
-          e.id === event.id ? { ...e, feedbackStatus: FeedbackStatus.DISMISSED } : e
-        )
-      );
-      this.selectedEvent.set(null);
+        const currentEvent = this.selectedEvent();
+        if (currentEvent && currentEvent.id === event.meetingId) {
+          this.selectedEvent.set({ ...currentEvent, meetingType: event.meetingType });
+        }
+      },
+      error: (err: any) => console.error('Fehler beim Aktualisieren:', err)
     });
-  }
-
-  onOpenFeedback(event: CalendarEvent): void {
-    const meetingForFeedback: FeedbackableMeeting = {
-      meeting_id: event.id,
-      title: event.title,
-      start_time: event.start,
-      end_time: event.end,
-      duration_minutes: (new Date(event.end).getTime() - new Date(event.start).getTime()) / 60000,
-      meeting_type: event.meetingType || 'Ad-hoc',
-      feedback_status: FeedbackStatus.PENDING
-    };
-
-    this.selectedEvent.set(null);
-    this.feedbackMeeting.set(meetingForFeedback);
-  }
-
-  onSubmitFeedback(feedback: MeetingFeedback): void {
-    console.log('Feedback submitted from calendar:', feedback);
-
-    this.events.update(currentEvents =>
-      currentEvents.map(e =>
-        e.id === feedback.meeting_id ? { ...e, feedbackStatus: FeedbackStatus.SUBMITTED } : e
-      )
-    );
-
-    this.feedbackMeeting.set(null);
   }
 }

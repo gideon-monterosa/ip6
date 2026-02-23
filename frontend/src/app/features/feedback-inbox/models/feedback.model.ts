@@ -1,8 +1,4 @@
-export enum FeedbackStatus {
-  PENDING = 'PENDING',
-  SUBMITTED = 'SUBMITTED',
-  DISMISSED = 'DISMISSED',
-}
+import { MeetingType } from '../../../shared/models/meeting.model';
 
 export enum DismissReason {
   NOT_RELEVANT = 'NOT_RELEVANT',
@@ -43,43 +39,6 @@ export const ISSUE_TAG_LABELS: Record<IssueTag, string> = {
   [IssueTag.DOMINATED_BY_FEW]: 'Dominated by few',
   [IssueTag.TECHNICAL_ISSUES]: 'Technical issues',
 };
-
-export type MeetingType =
-  | 'Stand-up'
-  | 'Planning'
-  | 'Retrospective'
-  | '1:1'
-  | 'Ad-hoc'
-  | 'Other';
-
-export interface FeedbackableMeeting {
-  meeting_id: string;
-  title: string;
-  start_time: string;
-  end_time: string;
-  duration_minutes: number;
-  meeting_type: MeetingType;
-  feedback_status: FeedbackStatus;
-}
-
-export interface FeedbackRecord {
-  meeting_id: string;
-  user_id: string;
-  status: FeedbackStatus;
-  created_at: string;
-  submitted_at?: string;
-  dismissed_at?: string;
-  dismiss_reason?: DismissReason;
-}
-
-export const MEETING_TYPES: MeetingType[] = [
-  'Stand-up',
-  'Planning',
-  'Retrospective',
-  '1:1',
-  'Ad-hoc',
-  'Other',
-];
 
 export interface MeetingFeedback {
   meeting_id: string;

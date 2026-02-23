@@ -39,3 +39,17 @@ Authorization: Bearer {{auth_token}}
 POST http://localhost:8080/api/calendar/sync
 Authorization: Bearer {{auth_token}}
 
+
+### Get Calendar events
+GET http://localhost:8080/api/calendar/events?start=2026-02-06T13:28:14.342Z&end=2026-02-27T13:28:14.342Z
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Meeting Typ ändern
+PATCH http://localhost:8080/api/calendar/events/0hvm3g91r4is7rmu9ljb7u9kij/category
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "meetingType": "Stand-up"
+}

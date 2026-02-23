@@ -1,6 +1,7 @@
 package ch.fhnw.meeting.model.calendar;
 
 import ch.fhnw.meeting.model.User;
+import ch.fhnw.meeting.model.feedback.FeedbackStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,4 +59,23 @@ public class Event {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "meeting_type")
+    private MeetingType meetingType = MeetingType.OTHER;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "organizer")
+    private String organizer;
+
+    @Column(name = "attendees_count")
+    private Integer attendeesCount = 0;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "feedback_status", nullable = false)
+    private FeedbackStatus feedbackStatus = FeedbackStatus.PENDING;
 }
