@@ -1,6 +1,7 @@
 import { Component, input, computed, output } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
-import { Meeting } from '../../../shared/models/meeting.model';
+import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
+import { DailyFeedback } from '../../feedback-inbox/models/feedback.model';
 import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
 import { UserSettings } from '../../../core/models/user.model';
 
@@ -28,18 +29,47 @@ import { UserSettings } from '../../../core/models/user.model';
 
         <div class="grid grid-cols-7 flex-1">
           @for (day of weekDays(); track day) {
-            <div class="px-2 py-3 text-center border-r border-gray-100 last:border-r-0"
+            <div class="px-2 py-2 text-center border-r border-gray-100 last:border-r-0"
                  [class.bg-blue-50]="isToday(day)">
               <div class="text-xs uppercase font-medium"
                    [class.text-blue-600]="isToday(day)"
                    [class.text-gray-500]="!isToday(day)">
                 {{ day | date:'EEE' }}
               </div>
-              <div class="text-lg font-semibold mt-1"
+              <div class="text-lg font-semibold mt-0.5"
                    [class.text-blue-700]="isToday(day)"
                    [class.text-gray-800]="!isToday(day)">
                 {{ day | date:'d' }}
               </div>
+              <!-- EoD feedback button -->
+              @if (!isFutureDate(day)) {
+                @if (getDailyFeedbackForDay(day); as df) {
+                  <button
+                    type="button"
+                    (click)="eodFeedbackClick.emit({ date: day, status: df.feedbackStatus }); $event.stopPropagation()"
+                    class="mt-1 text-xs px-1.5 py-0.5 rounded-full transition-colors w-full truncate"
+                    [class]="getEodButtonClasses(df.feedbackStatus)"
+                    [attr.aria-label]="'End of day feedback for ' + (day | date:'MMM d')"
+                  >
+                    @if (df.feedbackStatus === 'SUBMITTED') {
+                      &#10003; Day Reviewed
+                    } @else if (df.feedbackStatus === 'DISMISSED') {
+                      &mdash; Skipped
+                    } @else {
+                      Review Day
+                    }
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    (click)="eodFeedbackClick.emit({ date: day, status: 'PENDING' }); $event.stopPropagation()"
+                    class="mt-1 text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors w-full truncate"
+                    [attr.aria-label]="'End of day feedback for ' + (day | date:'MMM d')"
+                  >
+                    Review Day
+                  </button>
+                }
+              }
             </div>
           }
         </div>
@@ -93,10 +123,11 @@ import { UserSettings } from '../../../core/models/user.model';
 export class CalendarGridComponent {
   currentDate = input.required<Date>();
   events = input.required<Meeting[]>();
-
   settings = input<UserSettings>();
+  dailyFeedbacks = input<DailyFeedback[]>([]);
 
   eventClick = output<Meeting>();
+  eodFeedbackClick = output<{ date: Date; status: string }>();
 
   readonly hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -139,6 +170,14 @@ export class CalendarGridComponent {
       date.getFullYear() === today.getFullYear();
   }
 
+  isFutureDate(date: Date): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d > today;
+  }
+
   isWorkingHourAxis(hour: number): boolean {
     return hour >= this.workStartHour() && hour < this.workEndHour();
   }
@@ -157,6 +196,29 @@ export class CalendarGridComponent {
         eventDate.getMonth() === date.getMonth() &&
         eventDate.getFullYear() === date.getFullYear();
     });
+  }
+
+  getDailyFeedbackForDay(date: Date): DailyFeedback | undefined {
+    const dateStr = this.formatDateToISO(date);
+    return this.dailyFeedbacks().find(df => df.date === dateStr);
+  }
+
+  getEodButtonClasses(status: string): string {
+    switch (status) {
+      case FeedbackStatus.SUBMITTED:
+        return 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100';
+      case FeedbackStatus.DISMISSED:
+        return 'bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100';
+      default:
+        return 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100';
+    }
+  }
+
+  private formatDateToISO(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   onEventClick(event: Meeting, e: MouseEvent): void {

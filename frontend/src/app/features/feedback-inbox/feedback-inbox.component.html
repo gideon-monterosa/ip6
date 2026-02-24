@@ -4,13 +4,13 @@
     <div>
       <div class="flex items-center gap-2">
         <h1 class="text-2xl font-bold text-foreground">Feedback Inbox</h1>
-        @if (feedbackService.pendingCount() > 0) {
+        @if (feedbackService.totalPendingCount() > 0) {
           <span class="inline-flex items-center justify-center size-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
-            {{ feedbackService.pendingCount() }}
+            {{ feedbackService.totalPendingCount() }}
           </span>
         }
       </div>
-      <p class="text-sm text-muted-foreground-1 mt-1">Provide feedback on your recent meetings</p>
+      <p class="text-sm text-muted-foreground-1 mt-1">Provide feedback on your recent meetings and workdays</p>
     </div>
   </div>
 
@@ -60,20 +60,9 @@
     </div>
   }
 
-  <!-- Meetings list -->
+  <!-- Content -->
   @if (!feedbackService.isLoading()) {
-    @if (feedbackService.filteredMeetings().length > 0) {
-      <div class="space-y-3" role="list" aria-label="Meetings requiring feedback">
-        @for (meeting of feedbackService.filteredMeetings(); track meeting.id) {
-          <app-feedback-card
-            [meeting]="meeting"
-            (giveFeedback)="onGiveFeedback($event)"
-            (dismissMeeting)="onDismissMeeting($event)"
-            role="listitem"
-          />
-        }
-      </div>
-    } @else {
+    @if (feedbackService.filteredMeetings().length === 0 && feedbackService.filteredDailyFeedbacks().length === 0) {
       <!-- Empty state -->
       <div class="flex flex-col items-center justify-center py-16 text-center">
         <div class="size-16 rounded-full bg-layer border border-layer-line flex items-center justify-center mb-4">
@@ -82,19 +71,78 @@
           </svg>
         </div>
         <h3 class="text-lg font-semibold text-foreground mb-1">You're all caught up!</h3>
-        <p class="text-sm text-muted-foreground-1">No meetings need your feedback right now.</p>
+        <p class="text-sm text-muted-foreground-1">No feedback needed right now.</p>
       </div>
+    } @else {
+
+      <!-- Meeting Feedback Section -->
+      @if (feedbackService.filteredMeetings().length > 0) {
+        <h2 class="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+          <svg class="size-4 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          Meeting Feedback
+          @if (feedbackService.pendingCount() > 0) {
+            <span class="inline-flex items-center justify-center size-5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+              {{ feedbackService.pendingCount() }}
+            </span>
+          }
+        </h2>
+        <div class="space-y-3 mb-8" role="list" aria-label="Meetings requiring feedback">
+          @for (meeting of feedbackService.filteredMeetings(); track meeting.id) {
+            <app-feedback-card
+              [meeting]="meeting"
+              (giveFeedback)="onGiveFeedback($event)"
+              (dismissMeeting)="onDismissMeeting($event)"
+              role="listitem"
+            />
+          }
+        </div>
+      }
+
+      <!-- End of Day Feedback Section -->
+      @if (feedbackService.filteredDailyFeedbacks().length > 0) {
+        <h2 class="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+          <svg class="size-4 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          End of Day Feedback
+          @if (feedbackService.pendingDailyFeedbacks().length > 0) {
+            <span class="inline-flex items-center justify-center size-5 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">
+              {{ feedbackService.pendingDailyFeedbacks().length }}
+            </span>
+          }
+        </h2>
+        <div class="space-y-3" role="list" aria-label="End of day feedback items">
+          @for (df of feedbackService.filteredDailyFeedbacks(); track df.date) {
+            <app-eod-feedback-card
+              [dailyFeedback]="df"
+              (giveFeedback)="onGiveEodFeedback($event)"
+              (dismissFeedback)="onDismissEodFeedback($event)"
+              role="listitem"
+            />
+          }
+        </div>
+      }
+
     }
   }
 </div>
 
-<!-- Survey modal -->
+<!-- Survey modal (meeting) -->
 @if (selectedMeeting()) {
   <app-feedback-survey-modal
     [meeting]="selectedMeeting()!"
     (submitFeedback)="onSubmitFeedback($event)"
     (categoryChange)="onCategoryChange($event)"
     (close)="onCloseModal()"
+  />
+}
+
+<!-- EoD Survey modal -->
+@if (selectedEodDate()) {
+  <app-eod-survey-modal
+    [date]="selectedEodDate()!"
+    (submitFeedback)="onSubmitEodFeedback($event)"
+    (close)="selectedEodDate.set(null)"
   />
 }
 
@@ -106,7 +154,7 @@
     aria-live="polite"
   >
     <svg class="shrink-0 size-4 text-muted-foreground-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-    <span class="text-sm text-foreground">Meeting dismissed.</span>
+    <span class="text-sm text-foreground">Dismissed.</span>
     <button
       type="button"
       class="text-sm font-medium text-primary hover:text-primary-hover focus:outline-hidden focus:underline transition"
