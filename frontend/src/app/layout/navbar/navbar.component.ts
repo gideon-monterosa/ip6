@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterModule, RouterLinkActive } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
-import { FeedbackUIService } from '../../features/feedback-inbox/services/feedback-ui.service';
+import { Component, inject, OnInit } from "@angular/core";
+import { Router, RouterModule, RouterLinkActive } from "@angular/router";
+import { AuthService } from "../../core/services/auth.service";
+import { FeedbackUIService } from "../../features/feedback-inbox/services/feedback-ui.service";
 
 @Component({
-  selector: 'app-navbar',
+  selector: "app-navbar",
   imports: [RouterModule, RouterLinkActive],
-  templateUrl: './navbar.component.html',
+  templateUrl: "./navbar.component.html",
 })
 export class NavbarComponent implements OnInit {
   private authService = inject(AuthService);
@@ -24,6 +24,10 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(["/login"]);
+  }
+
+  getUserInitial(): string {
+    return this.currentUser()?.username?.charAt(0).toUpperCase() || "U";
   }
 }

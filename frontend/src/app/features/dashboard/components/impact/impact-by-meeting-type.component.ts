@@ -1,6 +1,6 @@
 import { Component, input, effect, signal } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { MeetingTypeImpact } from '../../models/impact.model';
+import { ImpactByType } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_SERIES_PALETTE, CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -80,7 +80,7 @@ import {
   `,
 })
 export class ImpactByMeetingTypeComponent {
-  data = input.required<MeetingTypeImpact[]>();
+  data = input.required<ImpactByType[]>();
   viewMode = signal<'chart' | 'table'>('chart');
 
   series: ApexAxisChartSeries = [];

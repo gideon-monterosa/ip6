@@ -1,6 +1,6 @@
 import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { QualitativeTheme } from '../../models/impact.model';
+import { ThemeFrequency } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_COLORS, CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -34,7 +34,7 @@ import {
   `,
 })
 export class QualitativeThemesComponent {
-  data = input.required<QualitativeTheme[]>();
+  data = input.required<ThemeFrequency[]>();
 
   series: ApexAxisChartSeries = [];
   chart: ApexChart = { type: 'bar', height: 320, toolbar: { show: false } };

@@ -9,6 +9,14 @@
     }
   </div>
 
+  <!-- Week Selector -->
+  <div class="mb-6">
+    <app-week-selector
+      [weekStart]="selectedWeekStart()"
+      (weekChange)="onWeekChange($event)"
+    />
+  </div>
+
   <!-- Dashboard Tabs -->
   <div class="mb-6">
     <app-dashboard-tabs
@@ -19,8 +27,14 @@
 
   <!-- Dashboard Content -->
   @if (activeTab() === 'structure') {
-    <app-structure-dashboard />
+    <app-structure-dashboard
+      [weekStart]="selectedWeekStart()"
+      [weekEnd]="selectedWeekEnd()"
+    />
   } @else {
-    <app-impact-dashboard />
+    <app-impact-dashboard
+      [weekStart]="selectedWeekStart()"
+      [weekEnd]="selectedWeekEnd()"
+    />
   }
 </div>

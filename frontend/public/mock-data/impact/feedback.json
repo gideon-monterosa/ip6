@@ -1,96 +1,1363 @@
 {
   "feedback": [
-    { "meeting_id": "m-001", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Quick and focused, good way to start the day", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-16T09:20:00Z" },
-    { "meeting_id": "m-002", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Planning was productive but could be shorter", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2025-12-16T11:05:00Z" },
-    { "meeting_id": "m-003", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Great 1:1, got clear direction", "time_of_day_bucket": "Afternoon", "meeting_type": "1:1", "feedback_timestamp": "2025-12-16T14:35:00Z" },
-    { "meeting_id": "m-004", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Standard standup, no issues", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-17T09:20:00Z" },
-    { "meeting_id": "m-005", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Unplanned meeting disrupted my focus completely", "time_of_day_bucket": "Midday", "meeting_type": "Ad-hoc", "feedback_timestamp": "2025-12-17T13:50:00Z" },
-    { "meeting_id": "m-006", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Retrospective was okay, some good points raised", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2025-12-17T16:05:00Z" },
-    { "meeting_id": "m-007", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Very efficient standup today", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-18T09:20:00Z" },
-    { "meeting_id": "m-008", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good sync with manager", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2025-12-18T11:35:00Z" },
-    { "meeting_id": "m-009", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-19T09:20:00Z" },
-    { "meeting_id": "m-010", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Could have been an email", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2025-12-19T10:35:00Z" },
-    { "meeting_id": "m-011", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Good planning session but ran long", "time_of_day_bucket": "Afternoon", "meeting_type": "Planning", "feedback_timestamp": "2025-12-19T15:05:00Z" },
-    { "meeting_id": "m-012", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Quick and to the point", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-20T09:20:00Z" },
-    { "meeting_id": "m-013", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Too many participants, no clear agenda", "time_of_day_bucket": "Midday", "meeting_type": "Other", "feedback_timestamp": "2025-12-20T13:05:00Z" },
-    { "meeting_id": "m-014", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-23T09:20:00Z" },
-    { "meeting_id": "m-015", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Very productive 1:1, got blockers resolved", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2025-12-23T11:05:00Z" },
-    { "meeting_id": "m-017", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-30T09:20:00Z" },
-    { "meeting_id": "m-018", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Sprint planning was comprehensive but long", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2025-12-30T12:05:00Z" },
-    { "meeting_id": "m-019", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good conversation about career growth", "time_of_day_bucket": "Afternoon", "meeting_type": "1:1", "feedback_timestamp": "2025-12-30T14:35:00Z" },
-    { "meeting_id": "m-020", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2025-12-31T09:20:00Z" },
-    { "meeting_id": "m-021", "perceived_efficiency": 3, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Interrupted deep work session", "time_of_day_bucket": "Midday", "meeting_type": "Ad-hoc", "feedback_timestamp": "2025-12-31T13:35:00Z" },
-    { "meeting_id": "m-022", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Good energy in standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-02T09:20:00Z" },
-    { "meeting_id": "m-023", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Productive retro with actionable items", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2026-01-02T16:05:00Z" },
-    { "meeting_id": "m-024", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-05T09:20:00Z" },
-    { "meeting_id": "m-025", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Planning needs better preparation from everyone", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2026-01-05T11:05:00Z" },
-    { "meeting_id": "m-026", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Best 1:1 this month, very aligned", "time_of_day_bucket": "Afternoon", "meeting_type": "1:1", "feedback_timestamp": "2026-01-05T14:35:00Z" },
-    { "meeting_id": "m-027", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-06T09:20:00Z" },
-    { "meeting_id": "m-028", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 5, "free_text_comment": "Unplanned, broke my flow state", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-06T11:50:00Z" },
-    { "meeting_id": "m-029", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Quick sync, helpful updates", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-01-06T13:35:00Z" },
-    { "meeting_id": "m-030", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-07T09:20:00Z" },
-    { "meeting_id": "m-031", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "No agenda, wasted time", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-07T10:35:00Z" },
-    { "meeting_id": "m-032", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 1, "perceived_value": false, "perceived_focus_disruption": 5, "free_text_comment": "Too many participants, could have been async", "time_of_day_bucket": "Afternoon", "meeting_type": "Other", "feedback_timestamp": "2026-01-07T15:05:00Z" },
-    { "meeting_id": "m-033", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Efficient standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-08T09:20:00Z" },
-    { "meeting_id": "m-034", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good feedback from manager", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2026-01-08T10:35:00Z" },
-    { "meeting_id": "m-035", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Retro had good insights but dragged on", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2026-01-08T16:05:00Z" },
-    { "meeting_id": "m-036", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-09T09:20:00Z" },
-    { "meeting_id": "m-037", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Necessary but disrupted lunch plans", "time_of_day_bucket": "Midday", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-09T12:35:00Z" },
-    { "meeting_id": "m-038", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Strong start to the week", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-12T09:20:00Z" },
-    { "meeting_id": "m-039", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Well-prepared sprint planning", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2026-01-12T11:05:00Z" },
-    { "meeting_id": "m-040", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good 1:1 check-in", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-01-12T13:35:00Z" },
-    { "meeting_id": "m-041", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Last minute meeting, no preparation time", "time_of_day_bucket": "Afternoon", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-12T15:35:00Z" },
-    { "meeting_id": "m-042", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-13T09:20:00Z" },
-    { "meeting_id": "m-043", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Excellent mentoring session", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2026-01-13T11:35:00Z" },
-    { "meeting_id": "m-044", "perceived_efficiency": 1, "emotional_impact": "stressed", "energy_after_meeting": 1, "perceived_value": false, "perceived_focus_disruption": 5, "free_text_comment": "Way too many people, no clear outcome", "time_of_day_bucket": "Afternoon", "meeting_type": "Other", "feedback_timestamp": "2026-01-13T15:05:00Z" },
-    { "meeting_id": "m-045", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Normal standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-14T09:20:00Z" },
-    { "meeting_id": "m-046", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Needed but too long for the topic", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-14T10:50:00Z" },
-    { "meeting_id": "m-047", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good alignment on priorities", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-01-14T13:35:00Z" },
-    { "meeting_id": "m-048", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-15T09:20:00Z" },
-    { "meeting_id": "m-049", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Could have been a Slack message", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-15T10:35:00Z" },
-    { "meeting_id": "m-050", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Good action items from retro", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2026-01-15T16:05:00Z" },
-    { "meeting_id": "m-051", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-16T09:20:00Z" },
-    { "meeting_id": "m-052", "perceived_efficiency": 2, "emotional_impact": "neutral", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 3, "free_text_comment": "Too long for the content covered", "time_of_day_bucket": "Midday", "meeting_type": "Other", "feedback_timestamp": "2026-01-16T12:50:00Z" },
-    { "meeting_id": "m-053", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Best standup this week", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-19T09:20:00Z" },
-    { "meeting_id": "m-054", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Good content but needed better facilitation", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2026-01-19T11:05:00Z" },
-    { "meeting_id": "m-055", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Productive check-in", "time_of_day_bucket": "Afternoon", "meeting_type": "1:1", "feedback_timestamp": "2026-01-19T14:35:00Z" },
-    { "meeting_id": "m-056", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-20T09:20:00Z" },
-    { "meeting_id": "m-057", "perceived_efficiency": 3, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Unexpected meeting during focused work", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-20T11:35:00Z" },
-    { "meeting_id": "m-058", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good discussion on career path", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-01-20T13:35:00Z" },
-    { "meeting_id": "m-059", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-21T09:20:00Z" },
-    { "meeting_id": "m-060", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Too many attendees for the topic", "time_of_day_bucket": "Morning", "meeting_type": "Other", "feedback_timestamp": "2026-01-21T11:35:00Z" },
-    { "meeting_id": "m-061", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Great energy", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-22T09:20:00Z" },
-    { "meeting_id": "m-062", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Very productive technical discussion", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2026-01-22T10:35:00Z" },
-    { "meeting_id": "m-063", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Some good discussions but went overtime", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2026-01-22T16:05:00Z" },
-    { "meeting_id": "m-064", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-23T09:20:00Z" },
-    { "meeting_id": "m-065", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Quick but necessary sync", "time_of_day_bucket": "Midday", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-23T12:35:00Z" },
-    { "meeting_id": "m-066", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-26T09:20:00Z" },
-    { "meeting_id": "m-067", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Well-structured planning session", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2026-01-26T11:05:00Z" },
-    { "meeting_id": "m-068", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Aligned on next steps", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-01-26T13:35:00Z" },
-    { "meeting_id": "m-069", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 5, "free_text_comment": "Late afternoon ad-hoc completely killed productivity", "time_of_day_bucket": "Afternoon", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-26T15:50:00Z" },
-    { "meeting_id": "m-070", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Standard standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-27T09:20:00Z" },
-    { "meeting_id": "m-071", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Clear action items from 1:1", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2026-01-27T11:35:00Z" },
-    { "meeting_id": "m-072", "perceived_efficiency": 1, "emotional_impact": "stressed", "energy_after_meeting": 1, "perceived_value": false, "perceived_focus_disruption": 5, "free_text_comment": "Painful meeting, no outcome, too long", "time_of_day_bucket": "Afternoon", "meeting_type": "Other", "feedback_timestamp": "2026-01-27T15:05:00Z" },
-    { "meeting_id": "m-073", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-28T09:20:00Z" },
-    { "meeting_id": "m-074", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Quick escalation, acceptable disruption", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-28T10:50:00Z" },
-    { "meeting_id": "m-075", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Excellent 1:1, resolved major blockers", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-01-28T13:35:00Z" },
-    { "meeting_id": "m-076", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Good standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-29T09:20:00Z" },
-    { "meeting_id": "m-077", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Valuable retro with real improvements identified", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2026-01-29T16:05:00Z" },
-    { "meeting_id": "m-078", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-01-30T09:20:00Z" },
-    { "meeting_id": "m-079", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Needed but could be shorter", "time_of_day_bucket": "Midday", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-01-30T12:35:00Z" },
-    { "meeting_id": "m-080", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Energetic start to the week", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-02-02T09:20:00Z" },
-    { "meeting_id": "m-081", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Decent planning, some ambiguity remains", "time_of_day_bucket": "Morning", "meeting_type": "Planning", "feedback_timestamp": "2026-02-02T11:05:00Z" },
-    { "meeting_id": "m-082", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Short but effective", "time_of_day_bucket": "Afternoon", "meeting_type": "1:1", "feedback_timestamp": "2026-02-02T14:35:00Z" },
-    { "meeting_id": "m-083", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-02-03T09:20:00Z" },
-    { "meeting_id": "m-084", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Surprise meeting, context switching cost was high", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-02-03T11:50:00Z" },
-    { "meeting_id": "m-085", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Good sync", "time_of_day_bucket": "Midday", "meeting_type": "1:1", "feedback_timestamp": "2026-02-03T13:35:00Z" },
-    { "meeting_id": "m-086", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Normal standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-02-04T09:20:00Z" },
-    { "meeting_id": "m-087", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Quick but needed", "time_of_day_bucket": "Morning", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-02-04T10:35:00Z" },
-    { "meeting_id": "m-088", "perceived_efficiency": 2, "emotional_impact": "stressed", "energy_after_meeting": 1, "perceived_value": false, "perceived_focus_disruption": 5, "free_text_comment": "Could have been async, wasted afternoon", "time_of_day_bucket": "Afternoon", "meeting_type": "Other", "feedback_timestamp": "2026-02-04T15:05:00Z" },
-    { "meeting_id": "m-089", "perceived_efficiency": 5, "emotional_impact": "motivated", "energy_after_meeting": 5, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "Perfect standup", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-02-05T09:20:00Z" },
-    { "meeting_id": "m-090", "perceived_efficiency": 4, "emotional_impact": "motivated", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 2, "free_text_comment": "Productive technical 1:1", "time_of_day_bucket": "Morning", "meeting_type": "1:1", "feedback_timestamp": "2026-02-05T10:35:00Z" },
-    { "meeting_id": "m-091", "perceived_efficiency": 3, "emotional_impact": "neutral", "energy_after_meeting": 3, "perceived_value": true, "perceived_focus_disruption": 3, "free_text_comment": "Retro had too many items to discuss", "time_of_day_bucket": "Afternoon", "meeting_type": "Retrospective", "feedback_timestamp": "2026-02-05T16:05:00Z" },
-    { "meeting_id": "m-092", "perceived_efficiency": 4, "emotional_impact": "neutral", "energy_after_meeting": 4, "perceived_value": true, "perceived_focus_disruption": 1, "free_text_comment": "", "time_of_day_bucket": "Morning", "meeting_type": "Stand-up", "feedback_timestamp": "2026-02-06T09:20:00Z" },
-    { "meeting_id": "m-093", "perceived_efficiency": 3, "emotional_impact": "stressed", "energy_after_meeting": 2, "perceived_value": false, "perceived_focus_disruption": 4, "free_text_comment": "Noon disruption, had to context switch", "time_of_day_bucket": "Midday", "meeting_type": "Ad-hoc", "feedback_timestamp": "2026-02-06T12:35:00Z" }
+    {
+      "meeting_id": "m-001",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Quick and focused, good way to start the day",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-16T09:20:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-002",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Planning was productive but could be shorter",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2025-12-16T11:05:00Z",
+      "themes": [
+        "Productive",
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-003",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Great 1:1, got clear direction",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2025-12-16T14:35:00Z",
+      "themes": [
+        "Career Growth"
+      ]
+    },
+    {
+      "meeting_id": "m-004",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Standard standup, no issues",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-17T09:20:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-005",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Unplanned meeting disrupted my focus completely",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2025-12-17T13:50:00Z",
+      "themes": [
+        "Focused & Efficient",
+        "Focus Disruption",
+        "Unplanned"
+      ]
+    },
+    {
+      "meeting_id": "m-006",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Retrospective was okay, some good points raised",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2025-12-17T16:05:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-007",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Very efficient standup today",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-18T09:20:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-008",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good sync with manager",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2025-12-18T11:35:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-009",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-19T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-010",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Could have been an email",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2025-12-19T10:35:00Z",
+      "themes": [
+        "Could Be Async"
+      ]
+    },
+    {
+      "meeting_id": "m-011",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Good planning session but ran long",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2025-12-19T15:05:00Z",
+      "themes": [
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-012",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Quick and to the point",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-20T09:20:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-013",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Too many participants, no clear agenda",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2025-12-20T13:05:00Z",
+      "themes": [
+        "Missing Agenda",
+        "Too Many Participants"
+      ]
+    },
+    {
+      "meeting_id": "m-014",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-23T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-015",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Very productive 1:1, got blockers resolved",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2025-12-23T11:05:00Z",
+      "themes": [
+        "Productive",
+        "Blocker Resolution"
+      ]
+    },
+    {
+      "meeting_id": "m-017",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-30T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-018",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Sprint planning was comprehensive but long",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2025-12-30T12:05:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-019",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good conversation about career growth",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2025-12-30T14:35:00Z",
+      "themes": [
+        "Career Growth"
+      ]
+    },
+    {
+      "meeting_id": "m-020",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2025-12-31T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-021",
+      "perceived_efficiency": 3,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Interrupted deep work session",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2025-12-31T13:35:00Z",
+      "themes": [
+        "Focus Disruption"
+      ]
+    },
+    {
+      "meeting_id": "m-022",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Good energy in standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-02T09:20:00Z",
+      "themes": [
+        "Energizing"
+      ]
+    },
+    {
+      "meeting_id": "m-023",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Productive retro with actionable items",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2026-01-02T16:05:00Z",
+      "themes": [
+        "Productive",
+        "Clear Action Items"
+      ]
+    },
+    {
+      "meeting_id": "m-024",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-05T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-025",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Planning needs better preparation from everyone",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2026-01-05T11:05:00Z",
+      "themes": [
+        "Needs Preparation"
+      ]
+    },
+    {
+      "meeting_id": "m-026",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Best 1:1 this month, very aligned",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-05T14:35:00Z",
+      "themes": [
+        "Good Alignment"
+      ]
+    },
+    {
+      "meeting_id": "m-027",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-06T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-028",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 5,
+      "free_text_comment": "Unplanned, broke my flow state",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-06T11:50:00Z",
+      "themes": [
+        "Focus Disruption",
+        "Unplanned"
+      ]
+    },
+    {
+      "meeting_id": "m-029",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Quick sync, helpful updates",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-06T13:35:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-030",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-07T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-031",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "No agenda, wasted time",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-07T10:35:00Z",
+      "themes": [
+        "Missing Agenda",
+        "Time Wasted"
+      ]
+    },
+    {
+      "meeting_id": "m-032",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 1,
+      "perceived_value": false,
+      "perceived_focus_disruption": 5,
+      "free_text_comment": "Too many participants, could have been async",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2026-01-07T15:05:00Z",
+      "themes": [
+        "Could Be Async",
+        "Too Many Participants"
+      ]
+    },
+    {
+      "meeting_id": "m-033",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Efficient standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-08T09:20:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-034",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good feedback from manager",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-08T10:35:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-035",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Retro had good insights but dragged on",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2026-01-08T16:05:00Z",
+      "themes": [
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-036",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-09T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-037",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Necessary but disrupted lunch plans",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-09T12:35:00Z",
+      "themes": [
+        "Focus Disruption"
+      ]
+    },
+    {
+      "meeting_id": "m-038",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Strong start to the week",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-12T09:20:00Z",
+      "themes": [
+        "Energizing"
+      ]
+    },
+    {
+      "meeting_id": "m-039",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Well-prepared sprint planning",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2026-01-12T11:05:00Z",
+      "themes": [
+        "Productive",
+        "Needs Preparation"
+      ]
+    },
+    {
+      "meeting_id": "m-040",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good 1:1 check-in",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-12T13:35:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-041",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Last minute meeting, no preparation time",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-12T15:35:00Z",
+      "themes": [
+        "Needs Preparation",
+        "Unplanned"
+      ]
+    },
+    {
+      "meeting_id": "m-042",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-13T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-043",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Excellent mentoring session",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-13T11:35:00Z",
+      "themes": [
+        "Career Growth"
+      ]
+    },
+    {
+      "meeting_id": "m-044",
+      "perceived_efficiency": 1,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 1,
+      "perceived_value": false,
+      "perceived_focus_disruption": 5,
+      "free_text_comment": "Way too many people, no clear outcome",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2026-01-13T15:05:00Z",
+      "themes": [
+        "Missing Agenda",
+        "Too Many Participants"
+      ]
+    },
+    {
+      "meeting_id": "m-045",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Normal standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-14T09:20:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-046",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Needed but too long for the topic",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-14T10:50:00Z",
+      "themes": [
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-047",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good alignment on priorities",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-14T13:35:00Z",
+      "themes": [
+        "Good Alignment"
+      ]
+    },
+    {
+      "meeting_id": "m-048",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-15T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-049",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Could have been a Slack message",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-15T10:35:00Z",
+      "themes": [
+        "Could Be Async"
+      ]
+    },
+    {
+      "meeting_id": "m-050",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Good action items from retro",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2026-01-15T16:05:00Z",
+      "themes": [
+        "Clear Action Items"
+      ]
+    },
+    {
+      "meeting_id": "m-051",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-16T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-052",
+      "perceived_efficiency": 2,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Too long for the content covered",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2026-01-16T12:50:00Z",
+      "themes": [
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-053",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Best standup this week",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-19T09:20:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-054",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Good content but needed better facilitation",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2026-01-19T11:05:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-055",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Productive check-in",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-19T14:35:00Z",
+      "themes": [
+        "Productive"
+      ]
+    },
+    {
+      "meeting_id": "m-056",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-20T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-057",
+      "perceived_efficiency": 3,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Unexpected meeting during focused work",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-20T11:35:00Z",
+      "themes": [
+        "Focused & Efficient",
+        "Unplanned"
+      ]
+    },
+    {
+      "meeting_id": "m-058",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good discussion on career path",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-20T13:35:00Z",
+      "themes": [
+        "Career Growth"
+      ]
+    },
+    {
+      "meeting_id": "m-059",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-21T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-060",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Too many attendees for the topic",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2026-01-21T11:35:00Z",
+      "themes": [
+        "Too Many Participants"
+      ]
+    },
+    {
+      "meeting_id": "m-061",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Great energy",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-22T09:20:00Z",
+      "themes": [
+        "Energizing"
+      ]
+    },
+    {
+      "meeting_id": "m-062",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Very productive technical discussion",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-22T10:35:00Z",
+      "themes": [
+        "Productive"
+      ]
+    },
+    {
+      "meeting_id": "m-063",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Some good discussions but went overtime",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2026-01-22T16:05:00Z",
+      "themes": [
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-064",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-23T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-065",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Quick but necessary sync",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-23T12:35:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-066",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-26T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-067",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Well-structured planning session",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2026-01-26T11:05:00Z",
+      "themes": [
+        "Productive"
+      ]
+    },
+    {
+      "meeting_id": "m-068",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Aligned on next steps",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-26T13:35:00Z",
+      "themes": [
+        "Good Alignment"
+      ]
+    },
+    {
+      "meeting_id": "m-069",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 5,
+      "free_text_comment": "Late afternoon ad-hoc completely killed productivity",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-26T15:50:00Z",
+      "themes": [
+        "Focus Disruption"
+      ]
+    },
+    {
+      "meeting_id": "m-070",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Standard standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-27T09:20:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-071",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Clear action items from 1:1",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-27T11:35:00Z",
+      "themes": [
+        "Clear Action Items"
+      ]
+    },
+    {
+      "meeting_id": "m-072",
+      "perceived_efficiency": 1,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 1,
+      "perceived_value": false,
+      "perceived_focus_disruption": 5,
+      "free_text_comment": "Painful meeting, no outcome, too long",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2026-01-27T15:05:00Z",
+      "themes": [
+        "Too Long",
+        "Missing Agenda"
+      ]
+    },
+    {
+      "meeting_id": "m-073",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-28T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-074",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Quick escalation, acceptable disruption",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-28T10:50:00Z",
+      "themes": [
+        "Focused & Efficient",
+        "Focus Disruption"
+      ]
+    },
+    {
+      "meeting_id": "m-075",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Excellent 1:1, resolved major blockers",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-01-28T13:35:00Z",
+      "themes": [
+        "Blocker Resolution"
+      ]
+    },
+    {
+      "meeting_id": "m-076",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Good standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-29T09:20:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-077",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Valuable retro with real improvements identified",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2026-01-29T16:05:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-078",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-01-30T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-079",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Needed but could be shorter",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-01-30T12:35:00Z",
+      "themes": [
+        "Too Long"
+      ]
+    },
+    {
+      "meeting_id": "m-080",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Energetic start to the week",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-02-02T09:20:00Z",
+      "themes": [
+        "Energizing"
+      ]
+    },
+    {
+      "meeting_id": "m-081",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Decent planning, some ambiguity remains",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Planning",
+      "feedback_timestamp": "2026-02-02T11:05:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-082",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Short but effective",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-02-02T14:35:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-083",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-02-03T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-084",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Surprise meeting, context switching cost was high",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-02-03T11:50:00Z",
+      "themes": [
+        "Focus Disruption",
+        "Unplanned"
+      ]
+    },
+    {
+      "meeting_id": "m-085",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Good sync",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-02-03T13:35:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-086",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Normal standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-02-04T09:20:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-087",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Quick but needed",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-02-04T10:35:00Z",
+      "themes": [
+        "Focused & Efficient"
+      ]
+    },
+    {
+      "meeting_id": "m-088",
+      "perceived_efficiency": 2,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 1,
+      "perceived_value": false,
+      "perceived_focus_disruption": 5,
+      "free_text_comment": "Could have been async, wasted afternoon",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Other",
+      "feedback_timestamp": "2026-02-04T15:05:00Z",
+      "themes": [
+        "Could Be Async",
+        "Time Wasted"
+      ]
+    },
+    {
+      "meeting_id": "m-089",
+      "perceived_efficiency": 5,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 5,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "Perfect standup",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-02-05T09:20:00Z",
+      "themes": [
+        "Positive Experience"
+      ]
+    },
+    {
+      "meeting_id": "m-090",
+      "perceived_efficiency": 4,
+      "emotional_impact": "motivated",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 2,
+      "free_text_comment": "Productive technical 1:1",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "1:1",
+      "feedback_timestamp": "2026-02-05T10:35:00Z",
+      "themes": [
+        "Productive"
+      ]
+    },
+    {
+      "meeting_id": "m-091",
+      "perceived_efficiency": 3,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 3,
+      "perceived_value": true,
+      "perceived_focus_disruption": 3,
+      "free_text_comment": "Retro had too many items to discuss",
+      "time_of_day_bucket": "Afternoon",
+      "meeting_type": "Retrospective",
+      "feedback_timestamp": "2026-02-05T16:05:00Z",
+      "themes": [
+        "Neutral"
+      ]
+    },
+    {
+      "meeting_id": "m-092",
+      "perceived_efficiency": 4,
+      "emotional_impact": "neutral",
+      "energy_after_meeting": 4,
+      "perceived_value": true,
+      "perceived_focus_disruption": 1,
+      "free_text_comment": "",
+      "time_of_day_bucket": "Morning",
+      "meeting_type": "Stand-up",
+      "feedback_timestamp": "2026-02-06T09:20:00Z",
+      "themes": []
+    },
+    {
+      "meeting_id": "m-093",
+      "perceived_efficiency": 3,
+      "emotional_impact": "stressed",
+      "energy_after_meeting": 2,
+      "perceived_value": false,
+      "perceived_focus_disruption": 4,
+      "free_text_comment": "Noon disruption, had to context switch",
+      "time_of_day_bucket": "Midday",
+      "meeting_type": "Ad-hoc",
+      "feedback_timestamp": "2026-02-06T12:35:00Z",
+      "themes": [
+        "Focus Disruption"
+      ]
+    }
   ]
 }

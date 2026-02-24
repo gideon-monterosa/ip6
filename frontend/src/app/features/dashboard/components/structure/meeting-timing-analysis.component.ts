@@ -1,6 +1,6 @@
 import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { TimingData } from '../../models/structure.model';
+import { TimingBucket } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -34,7 +34,7 @@ import {
   `,
 })
 export class MeetingTimingAnalysisComponent {
-  data = input.required<TimingData[]>();
+  data = input.required<TimingBucket[]>();
 
   series: ApexAxisChartSeries = [];
   chart: ApexChart = { type: 'bar', height: 300, toolbar: { show: false } };

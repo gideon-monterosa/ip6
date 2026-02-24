@@ -31,48 +31,172 @@
         class="hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow sm:block"
         aria-labelledby="hs-navbar-collapse"
         role="region">
-        <div class="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:ps-5">
+
+        <!-- Desktop Navigation (sm and above) -->
+        <div class="hidden sm:flex flex-row items-center justify-end gap-5 ps-5">
+          <!-- Dashboard Link -->
           <a routerLink="/home"
             routerLinkActive="font-medium text-primary-active"
             [routerLinkActiveOptions]="{ exact: true }"
             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
             Dashboard
           </a>
-          <a routerLink="/feedback"
-            routerLinkActive="font-medium text-primary-active"
-            class="relative text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
-            Feedback
+
+          <!-- Calendar Icon Button -->
+          <button
+            type="button"
+            routerLink="/calendar"
+            title="Calendar"
+            class="relative inline-flex items-center justify-center size-9 text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition"
+            aria-label="Calendar">
+            <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </button>
+
+          <!-- Inbox Icon Button -->
+          <button
+            type="button"
+            routerLink="/feedback"
+            title="Inbox"
+            class="relative inline-flex items-center justify-center size-9 text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition"
+            aria-label="Inbox">
+            <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
             @if (pendingCount() > 0) {
-              <span class="absolute -top-2 -right-4 inline-flex items-center justify-center size-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+              <span class="absolute top-0 right-0 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                {{ pendingCount() }}
+              </span>
+            }
+          </button>
+
+          <!-- Profile Menu Dropdown -->
+          <div class="hs-dropdown relative inline-flex">
+            <button
+              type="button"
+              class="hs-dropdown-toggle size-10 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-white font-bold text-sm transition"
+              aria-label="User menu"
+              aria-expanded="false">
+              {{ getUserInitial() }}
+            </button>
+
+            <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-layer border border-layer-line shadow-lg rounded-lg mt-2 divide-y divide-layer-line"
+              role="menu"
+              aria-orientation="vertical">
+
+              <!-- Dropdown Header -->
+              <div class="px-4 py-3">
+                <p class="text-sm text-muted-foreground-1">
+                  {{ currentUser()?.username }}
+                </p>
+              </div>
+
+              <!-- Menu Items -->
+              <div class="py-2">
+                <a
+                  routerLink="/settings"
+                  class="flex items-center gap-x-3 px-4 py-2 text-sm text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus transition"
+                  role="menuitem">
+                  <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  Settings
+                </a>
+
+                <button
+                  type="button"
+                  (click)="logout()"
+                  class="w-full flex items-center gap-x-3 px-4 py-2 text-sm text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus transition"
+                  role="menuitem">
+                  <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Navigation (below sm) - Flattened List Structure -->
+        <div class="flex sm:hidden flex-col mt-5">
+          <!-- Optional: User info header -->
+          <div class="px-4 py-2 mb-2 border-b border-layer-line">
+            <p class="text-xs text-muted-foreground-1">
+              {{ currentUser()?.username }}
+            </p>
+          </div>
+
+          <!-- Dashboard Link -->
+          <a routerLink="/home"
+            routerLinkActive="bg-layer-hover font-medium"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center gap-3 px-4 py-3 text-base text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus border-b border-layer-line transition">
+            <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="flex-1">Dashboard</span>
+          </a>
+
+          <!-- Inbox Link with Badge -->
+          <a routerLink="/feedback"
+            routerLinkActive="bg-layer-hover font-medium"
+            class="flex items-center gap-3 px-4 py-3 text-base text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus border-b border-layer-line transition">
+            <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span class="flex-1">Inbox</span>
+            @if (pendingCount() > 0) {
+              <span class="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold leading-none">
                 {{ pendingCount() }}
               </span>
             }
           </a>
+          <!-- Calendar Link -->
           <a routerLink="/calendar"
-             routerLinkActive="font-medium text-primary-active"
-             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
-            Calendar
+            routerLinkActive="bg-layer-hover font-medium"
+            class="flex items-center gap-3 px-4 py-3 text-base text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus border-b border-layer-line transition">
+            <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span class="flex-1">Calendar</span>
           </a>
+
+          <!-- Settings Link -->
           <a routerLink="/settings"
-            routerLinkActive="font-medium text-primary-active"
-            class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
-            Settings
+            routerLinkActive="bg-layer-hover font-medium"
+            class="flex items-center gap-3 px-4 py-3 text-base text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus border-b border-layer-line transition">
+            <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span class="flex-1">Settings</span>
           </a>
 
-          <span class="text-sm text-muted-foreground-1">{{ currentUser()?.username }}</span>
-
+          <!-- Logout Button -->
           <button
             type="button"
-            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground shadow-2xs hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus disabled:opacity-50 disabled:pointer-events-none transition"
-            (click)="logout()">
-            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                 stroke-linejoin="round">
+            (click)="logout()"
+            class="flex items-center gap-3 px-4 py-3 text-base text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus transition">
+            <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
               <polyline points="16 17 21 12 16 7"/>
               <line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
-            Logout
+            <span class="flex-1">Logout</span>
           </button>
         </div>
       </div>

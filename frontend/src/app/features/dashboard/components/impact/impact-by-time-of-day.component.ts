@@ -1,6 +1,6 @@
 import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { TimeOfDayImpact } from '../../models/impact.model';
+import { ImpactByTime } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_SERIES_PALETTE, CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -41,7 +41,7 @@ import {
   `,
 })
 export class ImpactByTimeOfDayComponent {
-  data = input.required<TimeOfDayImpact[]>();
+  data = input.required<ImpactByTime[]>();
   worstTime = '';
 
   series: ApexAxisChartSeries = [];

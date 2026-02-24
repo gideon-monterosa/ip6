@@ -1,6 +1,6 @@
 import { Component, input, effect, signal } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { MeetingTypeCount } from '../../models/structure.model';
+import { TypeDistribution } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_SERIES_PALETTE, CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -61,7 +61,7 @@ import {
   `,
 })
 export class MeetingTypeDistributionComponent {
-  data = input.required<MeetingTypeCount[]>();
+  data = input.required<TypeDistribution[]>();
   chartMode = signal<'bar' | 'donut'>('bar');
 
   barSeries: ApexAxisChartSeries = [];

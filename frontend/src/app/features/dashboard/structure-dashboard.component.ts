@@ -1,33 +1,44 @@
-import { Component, inject, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
-import { StructureService } from './services/structure.service';
-import { FilterService } from './services/filter.service';
-import { AuthService } from '../../core/services/auth.service';
-import { FilterPanelComponent } from './components/shared/filter-panel.component';
+import { Component, inject, input, effect, signal } from '@angular/core';
+import { StructureDashboardService } from './services/structure-dashboard.service';
 import { StructureKpiSummaryComponent } from './components/structure/structure-kpi-summary.component';
 import { MeetingTypeDistributionComponent } from './components/structure/meeting-type-distribution.component';
 import { MeetingTimingAnalysisComponent } from './components/structure/meeting-timing-analysis.component';
 import { FocusTimeAnalysisComponent } from './components/structure/focus-time-analysis.component';
 import { FragmentationScoreComponent } from './components/structure/fragmentation-score.component';
 import { RecurringAdhocRatioComponent } from './components/structure/recurring-adhoc-ratio.component';
+import { MeetingsTrendChartComponent } from './components/meetings-trend-chart.component';
+import { MeetingsByDayChartComponent } from './components/meetings-by-day-chart.component';
+import { DurationBreakdownChartComponent } from './components/duration-breakdown-chart.component';
+import { WeekMeetingsComponent } from './components/week-meetings.component';
+import {
+  StructureSummaryWeek,
+  DailyOverviewData,
+  DayData,
+  DurationData,
+  WeekMeeting,
+  TypeDistribution,
+  RecurringRatioData,
+  TimingBucket,
+  FocusBlockDay,
+  FragmentationDay,
+} from './models/dashboard.model';
 
 @Component({
   selector: 'app-structure-dashboard',
   imports: [
-    FilterPanelComponent,
     StructureKpiSummaryComponent,
     MeetingTypeDistributionComponent,
     MeetingTimingAnalysisComponent,
     FocusTimeAnalysisComponent,
     FragmentationScoreComponent,
     RecurringAdhocRatioComponent,
+    MeetingsTrendChartComponent,
+    MeetingsByDayChartComponent,
+    DurationBreakdownChartComponent,
+    WeekMeetingsComponent,
   ],
   template: `
     <div>
-      <!-- Filter Panel -->
-      <app-filter-panel />
-
       <!-- KPI Summary Row -->
       @if (summary()) {
         <div class='mb-6'>
@@ -35,52 +46,77 @@ import { RecurringAdhocRatioComponent } from './components/structure/recurring-a
         </div>
       }
 
-      <!-- Row 2: Meeting Types + Timing Analysis -->
+      <!-- Row 2: Daily Overview + Meetings by Day -->
       <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
+        <app-meetings-trend-chart [dailyData]='dailyOverview()' />
+        <app-meetings-by-day-chart [days]='meetingsByDay()' />
+      </div>
+
+      <!-- Row 3: Duration Breakdown + Meeting Types -->
+      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
+        <app-duration-breakdown-chart [breakdown]='durationBreakdown()' />
         @if (meetingTypes().length) {
           <app-meeting-type-distribution [data]='meetingTypes()' />
         }
+      </div>
+
+      <!-- Row 4: Timing Analysis + Recurring Ratio -->
+      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
         @if (timing().length) {
           <app-meeting-timing-analysis [data]='timing()' />
         }
+        @if (recurring()) {
+          <app-recurring-adhoc-ratio [ratio]='recurring()' />
+        }
       </div>
 
-      <!-- Row 3: Focus Time + Fragmentation + Recurring -->
-      <div class='grid lg:grid-cols-3 gap-4 sm:gap-6'>
+      <!-- Row 5: Focus Time + Fragmentation -->
+      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
         @if (focusBlocks().length) {
           <app-focus-time-analysis [data]='focusBlocks()' />
         }
         @if (fragmentation().length) {
           <app-fragmentation-score [data]='fragmentation()' />
         }
-        @if (recurring()) {
-          <app-recurring-adhoc-ratio [ratio]='recurring()' />
-        }
       </div>
+
+      <!-- Row 6: Meetings This Week -->
+      <app-week-meetings [meetings]='weekMeetings()' />
     </div>
   `,
 })
 export class StructureDashboardComponent {
-  private structureService = inject(StructureService);
-  private filterService = inject(FilterService);
+  private service = inject(StructureDashboardService);
 
-  private dashboardData = toSignal(
-    forkJoin({
-      meetings: this.structureService.loadMeetings(),
-      summary: this.structureService.getSummary(),
-      meetingTypes: this.structureService.getMeetingTypeDistribution(),
-      timing: this.structureService.getTimingAnalysis(),
-      focusBlocks: this.structureService.getFocusBlocks(),
-      fragmentation: this.structureService.getFragmentationScores(),
-      recurring: this.structureService.getRecurringRatio(),
-    }),
-    { initialValue: null },
-  );
+  weekStart = input.required<Date>();
+  weekEnd = input.required<Date>();
 
-  summary = computed(() => this.dashboardData()?.summary.summary ?? null);
-  meetingTypes = computed(() => this.dashboardData()?.meetingTypes.distribution ?? []);
-  timing = computed(() => this.dashboardData()?.timing.timing ?? []);
-  focusBlocks = computed(() => this.dashboardData()?.focusBlocks.focusBlocks ?? []);
-  fragmentation = computed(() => this.dashboardData()?.fragmentation.scores ?? []);
-  recurring = computed(() => this.dashboardData()?.recurring.ratio ?? null);
+  summary = signal<StructureSummaryWeek | null>(null);
+  dailyOverview = signal<DailyOverviewData[]>([]);
+  meetingsByDay = signal<DayData[]>([]);
+  durationBreakdown = signal<DurationData[]>([]);
+  weekMeetings = signal<WeekMeeting[]>([]);
+  meetingTypes = signal<TypeDistribution[]>([]);
+  recurring = signal<RecurringRatioData | null>(null);
+  timing = signal<TimingBucket[]>([]);
+  focusBlocks = signal<FocusBlockDay[]>([]);
+  fragmentation = signal<FragmentationDay[]>([]);
+
+  constructor() {
+    effect(() => {
+      const start = this.weekStart();
+      const end = this.weekEnd();
+
+      this.service.getStructureSummary(start, end).subscribe((d) => this.summary.set(d));
+      this.service.getDailyOverview(start, end).subscribe((d) => this.dailyOverview.set(d));
+      this.service.getMeetingsByDay(start, end).subscribe((d) => this.meetingsByDay.set(d));
+      this.service.getDurationBreakdown(start, end).subscribe((d) => this.durationBreakdown.set(d));
+      this.service.getWeekMeetings(start, end).subscribe((d) => this.weekMeetings.set(d));
+      this.service.getMeetingTypeDistribution(start, end).subscribe((d) => this.meetingTypes.set(d));
+      this.service.getRecurringRatio(start, end).subscribe((d) => this.recurring.set(d));
+      this.service.getTimingAnalysis(start, end).subscribe((d) => this.timing.set(d));
+      this.service.getFocusBlocks(start, end).subscribe((d) => this.focusBlocks.set(d));
+      this.service.getFragmentationScores(start, end).subscribe((d) => this.fragmentation.set(d));
+    });
+  }
 }

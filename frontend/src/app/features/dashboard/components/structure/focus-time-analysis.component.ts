@@ -1,6 +1,6 @@
 import { Component, input, effect, signal, computed } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { FocusBlock } from '../../models/structure.model';
+import { FocusBlockDay } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_PRIMARY, CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -53,7 +53,7 @@ import {
   `,
 })
 export class FocusTimeAnalysisComponent {
-  data = input.required<FocusBlock[]>();
+  data = input.required<FocusBlockDay[]>();
 
   blockOptions = [
     { label: '>= 60 min', value: 60 },

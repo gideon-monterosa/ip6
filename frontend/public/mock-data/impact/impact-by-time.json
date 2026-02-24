@@ -1,7 +1,0 @@
-{
-  "impacts": [
-    { "timeOfDay": "Morning", "avgEfficiency": 3.9, "avgEmotional": 0.4, "avgDisruption": 1.6 },
-    { "timeOfDay": "Midday", "avgEfficiency": 3.4, "avgEmotional": 0.1, "avgDisruption": 2.7 },
-    { "timeOfDay": "Afternoon", "avgEfficiency": 3.0, "avgEmotional": -0.2, "avgDisruption": 3.3 }
-  ]
-}

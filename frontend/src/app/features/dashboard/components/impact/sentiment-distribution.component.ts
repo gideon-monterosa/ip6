@@ -1,6 +1,6 @@
 import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { SentimentCount } from '../../models/impact.model';
+import { SentimentBucket } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { SEMANTIC_COLORS, CHART_GRID_BORDER } from '../../../../theme.constants';
 import {
@@ -37,7 +37,7 @@ import {
   `,
 })
 export class SentimentDistributionComponent {
-  data = input.required<SentimentCount[]>();
+  data = input.required<SentimentBucket[]>();
   motivatedPct = 0;
 
   series: ApexAxisChartSeries = [];

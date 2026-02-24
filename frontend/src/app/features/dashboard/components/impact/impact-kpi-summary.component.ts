@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { ImpactSummary } from '../../models/impact.model';
+import { ImpactSummaryWeek } from '../../models/dashboard.model';
 import { StatCardComponent } from '../stat-card.component';
 
 @Component({
@@ -11,29 +11,29 @@ import { StatCardComponent } from '../stat-card.component';
         <app-stat-card
           title='Avg Efficiency'
           [value]="s.avgEfficiency + ' / 5'"
-          [change]='percentChange(s.avgEfficiency, s.avgEfficiencyLastWeek)'
+          [change]='percentChange(s.avgEfficiency, s.prevAvgEfficiency)'
         />
         <app-stat-card
           title='Emotional Score'
           [value]="formatEmotional(s.avgEmotionalScore)"
-          [change]='percentChange(s.avgEmotionalScore + 2, s.avgEmotionalScoreLastWeek + 2)'
+          [change]='percentChange(s.avgEmotionalScore + 2, s.prevAvgEmotionalScore + 2)'
         />
         <app-stat-card
           title='Avg Energy After'
           [value]="s.avgEnergyAfter + ' / 5'"
-          [change]='percentChange(s.avgEnergyAfter, s.avgEnergyAfterLastWeek)'
+          [change]='percentChange(s.avgEnergyAfter, s.prevAvgEnergyAfter)'
         />
         <app-stat-card
           title='Meetings Valuable'
           [value]="s.percentageValuable + '%'"
-          [change]='percentChange(s.percentageValuable, s.percentageValuableLastWeek)'
+          [change]='percentChange(s.percentageValuable, s.prevPercentageValuable)'
         />
       }
     </div>
   `,
 })
 export class ImpactKpiSummaryComponent {
-  summary = input.required<ImpactSummary | null>();
+  summary = input.required<ImpactSummaryWeek | null>();
 
   percentChange(current: number, previous: number): number {
     if (previous === 0) return current > 0 ? 100 : 0;
