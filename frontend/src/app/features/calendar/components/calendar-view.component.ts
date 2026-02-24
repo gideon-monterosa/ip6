@@ -1,12 +1,14 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CalendarUIService } from '../services/calendar-ui.service';
+import { DailyFeedbackService } from '../../../shared/services/daily-feedback.service';
 import { UserService } from '../../../core/services/user.service';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
 import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
 import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
+import { EodSurveyModalComponent } from '../../feedback-inbox/components/eod-survey-modal.component';
 import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
-import { MeetingFeedback} from '../../feedback-inbox/models/feedback.model';
+import { MeetingFeedback, DailyFeedbackSubmission } from '../../feedback-inbox/models/feedback.model';
 import { MeetingService } from '../../../shared/services/meeting.service';
 import { UserSettings } from '../../../core/models/user.model';
 
@@ -17,7 +19,8 @@ import { UserSettings } from '../../../core/models/user.model';
     CalendarHeaderComponent,
     CalendarGridComponent,
     CalendarEventPopoverComponent,
-    FeedbackSurveyModalComponent
+    FeedbackSurveyModalComponent,
+    EodSurveyModalComponent,
   ],
   template: `
     <div class="flex flex-col h-[calc(100vh-80px)] max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -41,7 +44,9 @@ import { UserSettings } from '../../../core/models/user.model';
           [currentDate]="currentDate()"
           [events]="events()"
           [settings]="userSettings()"
-          (eventClick)="onEventSelected($event)">
+          [dailyFeedbacks]="calendarService.dailyFeedbacks()"
+          (eventClick)="onEventSelected($event)"
+          (eodFeedbackClick)="onEodFeedbackClick($event)">
         </app-calendar-grid>
       </div>
     </div>
@@ -63,10 +68,19 @@ import { UserSettings } from '../../../core/models/user.model';
         (close)="feedbackMeeting.set(null)"
       />
     }
+
+    @if (selectedEodDate()) {
+      <app-eod-survey-modal
+        [date]="selectedEodDate()!"
+        (submitFeedback)="onSubmitEodFeedback($event)"
+        (close)="selectedEodDate.set(null)"
+      />
+    }
   `
 })
 export class CalendarViewComponent implements OnInit {
-  private calendarService = inject(CalendarUIService);
+  calendarService = inject(CalendarUIService);
+  private dailyFeedbackService = inject(DailyFeedbackService);
   private meetingService = inject(MeetingService);
   private userService = inject(UserService);
 
@@ -76,6 +90,7 @@ export class CalendarViewComponent implements OnInit {
 
   selectedEvent = signal<Meeting | null>(null);
   feedbackMeeting = signal<Meeting | null>(null);
+  selectedEodDate = signal<string | null>(null);
 
   userSettings = signal<UserSettings | undefined>(undefined);
 
@@ -147,5 +162,26 @@ export class CalendarViewComponent implements OnInit {
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err)
     });
+  }
+
+  onEodFeedbackClick(event: { date: Date; status: string }): void {
+    if (event.status !== FeedbackStatus.SUBMITTED) {
+      const dateStr = this.formatDateToISO(event.date);
+      this.selectedEodDate.set(dateStr);
+    }
+  }
+
+  onSubmitEodFeedback(submission: DailyFeedbackSubmission): void {
+    this.dailyFeedbackService.submitFeedback(submission.date, submission.details).subscribe({
+      next: () => this.selectedEodDate.set(null),
+      error: (err: any) => console.error('EoD feedback submission failed', err)
+    });
+  }
+
+  private formatDateToISO(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
