@@ -1,4 +1,4 @@
-import { MeetingType } from '../../../shared/models/meeting.model';
+import { FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
 
 export enum DismissReason {
   NOT_RELEVANT = 'NOT_RELEVANT',
@@ -48,4 +48,23 @@ export interface MeetingFeedback {
   meeting_type_override?: MeetingType;
   issue_tags: IssueTag[];
   comment?: string;
+}
+
+export interface DailyFeedbackDetails {
+  productivityScore: number;
+  deepWorkScore: number;
+  energyScore: number;
+  meetingLoadScore: number;
+}
+
+export interface DailyFeedback {
+  date: string;
+  feedbackStatus: FeedbackStatus;
+  details?: DailyFeedbackDetails;
+  eligible: boolean;
+}
+
+export interface DailyFeedbackSubmission {
+  date: string;
+  details: DailyFeedbackDetails & { type: 'DAILY' };
 }

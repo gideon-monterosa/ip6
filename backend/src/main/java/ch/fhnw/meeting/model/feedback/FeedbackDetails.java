@@ -9,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         property = "type" // Dieses Feld steht dann im JSON
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = MeetingFeedbackDetails.class, name = "MEETING")
+        @JsonSubTypes.Type(value = MeetingFeedbackDetails.class, name = "MEETING"),
+        @JsonSubTypes.Type(value = DailyFeedbackDetails.class, name = "DAILY")
 })
 public interface FeedbackDetails {
 }

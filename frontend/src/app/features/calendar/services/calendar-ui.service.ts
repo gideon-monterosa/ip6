@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { MeetingService } from '../../../shared/services/meeting.service';
+import { DailyFeedbackService } from '../../../shared/services/daily-feedback.service';
 import { CalendarIntegrationService } from '../../../shared/services/calendar-integration.service';
 import { Meeting } from '../../../shared/models/meeting.model';
 
@@ -8,6 +9,7 @@ import { Meeting } from '../../../shared/models/meeting.model';
 })
 export class CalendarUIService {
   private meetingService = inject(MeetingService);
+  private dailyFeedbackService = inject(DailyFeedbackService);
   private integrationService = inject(CalendarIntegrationService);
 
   private currentDateSignal = signal<Date>(new Date());
@@ -21,6 +23,7 @@ export class CalendarUIService {
 
   public readonly isLoading = this.meetingService.isLoading;
   public readonly events = this.meetingService.meetings;
+  public readonly dailyFeedbacks = this.dailyFeedbackService.dailyFeedbacks;
 
   setSelectedEvent(event: Meeting | null): void {
     this.selectedEventSignal.set(event);
@@ -48,6 +51,10 @@ export class CalendarUIService {
     endOfWeek.setHours(23, 59, 59, 999);
 
     this.meetingService.loadMeetingsForDateRange(startOfWeek, endOfWeek).subscribe();
+
+    const startStr = startOfWeek.toISOString().split('T')[0];
+    const endStr = endOfWeek.toISOString().split('T')[0];
+    this.dailyFeedbackService.loadForDateRange(startStr, endStr).subscribe();
   }
 
   triggerSync(): void {

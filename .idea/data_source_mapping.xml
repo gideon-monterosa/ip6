@@ -2,5 +2,6 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/R__Insert_test_data.sql" value="69f54ada-cd9c-4009-bbed-8d17dcf88a74" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/69f54ada-cd9c-4009-bbed-8d17dcf88a74/console.sql" value="69f54ada-cd9c-4009-bbed-8d17dcf88a74" />
   </component>
 </project>
