@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +93,8 @@ public class DailyFeedbackService {
         List<DailyFeedbackDto> result = new ArrayList<>();
 
         for (LocalDate date = end; !date.isBefore(start); date = date.minusDays(1)) {
+            if (!isWorkingDay(date, user)) continue;
+
             DailyFeedback record = byDate.get(date);
             boolean eligible = !date.isAfter(LocalDate.now(ZONE));
 
@@ -128,6 +132,8 @@ public class DailyFeedbackService {
         List<DailyFeedbackDto> result = new ArrayList<>();
 
         for (LocalDate date = today; !date.isBefore(userCreatedDate); date = date.minusDays(1)) {
+            if (!isWorkingDay(date, user)) continue;
+
             LocalDateTime triggerDateTime = date.atTime(triggerTime).atZone(ZONE).toLocalDateTime();
 
             if (now.isBefore(triggerDateTime)) {
@@ -163,6 +169,16 @@ public class DailyFeedbackService {
                 .eligible(eligible)
                 .createdAt(record.getCreatedAt())
                 .build();
+    }
+
+    private boolean isWorkingDay(LocalDate date, User user) {
+        Set<DayOfWeek> workingDays = user.getWorkingDays();
+        if (workingDays == null || workingDays.isEmpty()) {
+            // Default: Monday–Friday
+            DayOfWeek dow = date.getDayOfWeek();
+            return dow != DayOfWeek.SATURDAY && dow != DayOfWeek.SUNDAY;
+        }
+        return workingDays.contains(date.getDayOfWeek());
     }
 
     private User getUser(String username) {

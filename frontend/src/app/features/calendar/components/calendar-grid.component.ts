@@ -42,7 +42,7 @@ import { UserSettings } from '../../../core/models/user.model';
                 {{ day | date:'d' }}
               </div>
               <!-- EoD feedback button -->
-              @if (!isFutureDate(day)) {
+              @if (!isFutureDate(day) && isWorkingDay(day)) {
                 @if (getDailyFeedbackForDay(day); as df) {
                   <button
                     type="button"
@@ -176,6 +176,11 @@ export class CalendarGridComponent {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
     return d > today;
+  }
+
+  isWorkingDay(date: Date): boolean {
+    const dayName = this.DAY_NAMES[date.getDay()];
+    return this.workingDays().includes(dayName);
   }
 
   isWorkingHourAxis(hour: number): boolean {
