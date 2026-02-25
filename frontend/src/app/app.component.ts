@@ -3,6 +3,7 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './layout/navbar/navbar.component';
 import { AuthService } from './core/services/auth.service';
 import { inject } from '@angular/core';
+import { TourService } from './core/services/tour.service';
 
 @Component({
   selector: 'app-root',
@@ -12,11 +13,10 @@ import { inject } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'meetings';
 
-  // Use inject() for dependency injection
   private authService = inject(AuthService);
   private router = inject(Router);
+  private tourService = inject(TourService);
 
-  // Consume signal directly from AuthService
   isAuthenticated = this.authService.isAuthenticated;
 
   ngOnInit(): void {
@@ -27,5 +27,9 @@ export class AppComponent implements OnInit {
         }, 100);
       }
     });
+  }
+
+  startTour(): void {
+    this.tourService.start();
   }
 }

@@ -2,6 +2,7 @@
 
 @import "preline/variants.css";
 @source "../node_modules/preline/dist/*.js";
+@import "shepherd.js/dist/css/shepherd.css";
 
 /* Preline default theme (semantic tokens: --primary, --background, --border, etc.) */
 @import "preline/css/themes/theme.css";

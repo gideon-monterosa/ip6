@@ -35,7 +35,8 @@
         <!-- Desktop Navigation (sm and above) -->
         <div class="hidden sm:flex flex-row items-center justify-end gap-5 ps-5">
           <!-- Dashboard Link -->
-          <a routerLink="/home"
+          <a id="tour-nav-dashboard"
+            routerLink="/home"
             routerLinkActive="font-medium text-primary-active"
             [routerLinkActiveOptions]="{ exact: true }"
             class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
@@ -43,7 +44,7 @@
           </a>
 
           <!-- Calendar Icon Button -->
-          <button
+          <button id="tour-nav-calendar"
             type="button"
             routerLink="/calendar"
             title="Calendar"
@@ -58,7 +59,7 @@
           </button>
 
           <!-- Inbox Icon Button -->
-          <button
+          <button id="tour-nav-inbox"
             type="button"
             routerLink="/feedback"
             title="Inbox"
@@ -77,7 +78,7 @@
 
           <!-- Profile Menu Dropdown -->
           <div class="hs-dropdown relative inline-flex">
-            <button
+            <button id="tour-nav-user-menu"
               type="button"
               class="hs-dropdown-toggle size-10 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-white font-bold text-sm transition"
               aria-label="User menu"
