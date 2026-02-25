@@ -52,14 +52,15 @@ export class MeetingService {
     const payload = {
       details: {
         type: 'MEETING',
+        focusDisruption: feedbackData.focus_disruption,
         rotiScore: feedbackData.roti_score,
         mood: feedbackData.mood,
         energyAfter: feedbackData.energy_after,
         issueTags: feedbackData.issue_tags,
+        positiveTags: feedbackData.positive_tags,
         comment: feedbackData.comment
       }
     };
-
     return this.http.post<void>(`${this.feedbackApiUrl}/${meetingId}/feedback`, payload).pipe(
       tap(() => this.updateLocalMeeting(meetingId, { feedbackStatus: FeedbackStatus.SUBMITTED }))
     );

@@ -34,12 +34,11 @@ import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../sh
             <label class="text-xs font-medium text-gray-700">Meeting Type</label>
             <div class="relative">
               <select
-                [value]="event().meetingType"
                 (change)="onTypeChange($event)"
                 class="w-full px-3 py-2.5 pe-9 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-900 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               >
                 @for (type of meetingTypes; track type) {
-                  <option [value]="type">{{ type }}</option>
+                  <option [value]="type" [selected]="type === event().meetingType">{{ type }}</option>
                 }
               </select>
               <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
