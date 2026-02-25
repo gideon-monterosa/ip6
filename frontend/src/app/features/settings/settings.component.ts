@@ -22,12 +22,14 @@ export class SettingsComponent implements OnInit {
 
   calendarStatus = signal<CalendarStatusResponse>({
     googleConnected: false,
-    microsoftConnected: false
+    microsoftConnected: false,
+    googleFreeBusyConnected: false,
   });
 
   isGoogleConnected = computed(() => this.calendarStatus().googleConnected);
   isMicrosoftConnected = computed(() => this.calendarStatus().microsoftConnected);
-  hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected());
+  isFreeBusyConnected = computed(() => this.calendarStatus().googleFreeBusyConnected);
+  hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected() || this.isFreeBusyConnected());
 
   settingsForm!: FormGroup;
   isSavingSettings = signal(false);
@@ -92,7 +94,7 @@ export class SettingsComponent implements OnInit {
       .map(d => d.value);
 
     const payload: UserSettings = {
-      workStartTime: formVal.workStartTime + ':00', // Anfügen der Sekunden für das LocalTime Format
+      workStartTime: formVal.workStartTime + ':00',
       workEndTime: formVal.workEndTime + ':00',
       workingDays: selectedDays
     };

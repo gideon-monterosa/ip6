@@ -1,6 +1,7 @@
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',
-  MICROSOFT = 'MICROSOFT'
+  MICROSOFT = 'MICROSOFT',
+  FREE_BUSY = 'FREE_BUSY'
 }
 
 export interface CalendarUrlResponse {
@@ -15,4 +16,5 @@ export interface CalendarConnectionRequest {
 export interface CalendarStatusResponse {
   googleConnected: boolean;
   microsoftConnected: boolean;
+  googleFreeBusyConnected: boolean;
 }
