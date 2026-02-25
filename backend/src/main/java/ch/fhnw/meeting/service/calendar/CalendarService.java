@@ -156,6 +156,8 @@ public class CalendarService {
         dto.setLocation(event.getLocation());
         dto.setOrganizer(event.getOrganizer());
         dto.setAttendeesCount(event.getAttendeesCount());
+        dto.setFeedbackStatus(event.getFeedbackStatus());
+        dto.setMeetingType(event.getMeetingType());
         return dto;
     }
 
