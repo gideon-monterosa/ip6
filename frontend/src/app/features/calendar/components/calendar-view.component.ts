@@ -56,6 +56,7 @@ import { UserSettings } from '../../../core/models/user.model';
         [event]="event"
         (close)="selectedEvent.set(null)"
         (dismiss)="onDismissEvent(event)"
+        (undoDismiss)="onUndoDismissEvent(event)"
         (giveFeedback)="onOpenFeedback(event)"
         (categoryChange)="onCategoryChange($event)"
       />
@@ -129,7 +130,20 @@ export class CalendarViewComponent implements OnInit {
 
   onDismissEvent(event: Meeting): void {
     this.meetingService.dismissFeedback(event.id).subscribe({
-      next: () => console.log('Event dismissed'),
+      next: () => {
+        console.log('Event dismissed');
+        this.selectedEvent.set(null);
+      },
+      error: (err: Error) => console.error(err)
+    });
+  }
+
+  onUndoDismissEvent(event: Meeting): void {
+    this.meetingService.undoDismiss(event.id).subscribe({
+      next: () => {
+        console.log('Event dismiss undone');
+        this.selectedEvent.set(null);
+      },
       error: (err: Error) => console.error(err)
     });
   }

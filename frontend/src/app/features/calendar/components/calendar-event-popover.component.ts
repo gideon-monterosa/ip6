@@ -34,11 +34,12 @@ import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../sh
             <label class="text-xs font-medium text-gray-700">Meeting Type</label>
             <div class="relative">
               <select
+                [value]="event().meetingType"
                 (change)="onTypeChange($event)"
                 class="w-full px-3 py-2.5 pe-9 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-900 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               >
                 @for (type of meetingTypes; track type) {
-                  <option [value]="type" [selected]="type === event().meetingType">{{ type }}</option>
+                  <option [value]="type">{{ type }}</option>
                 }
               </select>
               <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
@@ -57,8 +58,12 @@ import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../sh
               </div>
             </div>
           } @else if (isDismissed()) {
-            <div class="text-center py-4 text-gray-500 italic text-sm">
-              You dismissed feedback for this meeting.
+            <div class="flex flex-col items-center gap-2 py-3">
+              <span class="text-gray-500 italic text-sm">You dismissed feedback for this meeting.</span>
+              <button (click)="undoDismiss.emit()"
+                      class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors focus:outline-none focus:underline">
+                Undo Dismiss
+              </button>
             </div>
           } @else {
             <div class="flex flex-col gap-3">
@@ -85,8 +90,8 @@ export class CalendarEventPopoverComponent {
   event = input.required<Meeting>();
   close = output<void>();
   dismiss = output<void>();
+  undoDismiss = output<void>();
   giveFeedback = output<void>();
-
   categoryChange = output<{ meetingId: string; meetingType: MeetingType }>();
 
   meetingTypes = MEETING_TYPES;
