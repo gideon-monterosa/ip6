@@ -37,29 +37,6 @@
     <div class="overflow-y-auto p-4 sm:p-5 space-y-6">
       <form [formGroup]="feedbackForm">
 
-        <!-- Meeting Category Override -->
-        <div class="space-y-1.5 mb-6">
-          <label for="meeting-type" class="text-sm font-medium text-foreground">
-            Meeting category
-          </label>
-          <p class="text-xs text-muted-foreground-1">Change if the detected category is incorrect.</p>
-          <div class="relative">
-            <select
-              id="meeting-type"
-              formControlName="meeting_type_override"
-              class="w-full px-3 py-2.5 pe-9 text-sm border border-border rounded-lg bg-input text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-              aria-label="Override meeting category"
-            >
-              @for (type of meetingTypes; track type) {
-                <option [value]="type">{{ type }}</option>
-              }
-            </select>
-            <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
-              <svg class="size-4 text-muted-foreground-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </div>
-          </div>
-        </div>
-
         <!-- Q1: ROTI Score -->
         <fieldset class="space-y-2">
           <legend class="text-sm font-medium text-foreground">

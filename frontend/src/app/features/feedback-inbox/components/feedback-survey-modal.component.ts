@@ -26,7 +26,6 @@ import { MeetingFeedback, MoodType, IssueTag, ISSUE_TAG_LABELS } from '../models
 export class FeedbackSurveyModalComponent implements OnInit {
   meeting = input.required<Meeting>();
   submitFeedback = output<MeetingFeedback>();
-  categoryChange = output<{ meetingId: string; meetingType: MeetingType }>();
   close = output<void>();
 
   feedbackForm!: FormGroup;
@@ -61,7 +60,6 @@ export class FeedbackSurveyModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.feedbackForm = this.fb.group({
-      meeting_type_override: [this.meeting().meetingType],
       roti_score: [null, Validators.required],
       mood: [null, Validators.required],
       energy_after: [null, Validators.required],
@@ -127,13 +125,11 @@ export class FeedbackSurveyModalComponent implements OnInit {
     }
 
     const formValue = this.feedbackForm.value;
-    const overrideType = formValue.meeting_type_override;
     const feedback: MeetingFeedback = {
       meeting_id: this.meeting().id,
       roti_score: formValue.roti_score,
       mood: formValue.mood,
       energy_after: formValue.energy_after,
-      meeting_type_override: overrideType !== this.meeting().meetingType ? overrideType : undefined,
       issue_tags: Array.from(this.selectedIssueTags()),
       comment: formValue.comment || undefined,
     };
