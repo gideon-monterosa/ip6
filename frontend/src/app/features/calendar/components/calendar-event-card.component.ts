@@ -8,7 +8,7 @@ import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/mee
   imports: [DatePipe, NgStyle, NgClass],
   template: `
     <div
-      class="absolute inset-x-1 rounded px-2 py-1 text-xs overflow-hidden cursor-pointer transition-all shadow-sm group border-l-[3px] flex flex-col hover:!h-auto hover:!z-50 hover:shadow-md"
+      class="absolute inset-x-1 rounded px-2 py-1 text-xs overflow-hidden cursor-pointer transition-all shadow-sm group border-l-[3px] flex flex-col hover:!min-h-fit hover:!z-50 hover:shadow-md"
       [ngStyle]="positionStyle()"
       [ngClass]="statusClasses()"
       [title]="tooltip()"
