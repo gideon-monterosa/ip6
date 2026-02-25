@@ -86,9 +86,9 @@
             @if (isMicrosoftConnected()) {
               <span
                 class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800">
-        <span class="w-1.5 h-1.5 inline-block rounded-full bg-green-800"></span>
-        Connected
-      </span>
+              <span class="w-1.5 h-1.5 inline-block rounded-full bg-green-800"></span>
+                Connected
+              </span>
             }
           </div>
 
@@ -139,9 +139,9 @@
                     [disabled]="hasConnection() || isLoading()"
                     class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
               @if (isFreeBusyConnected()) {
-                Connect
+                Connected
               } @else {
-                Calendar Connected
+                Connect FreeBusy
               }
             </button>
           </div>

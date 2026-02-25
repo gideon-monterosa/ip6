@@ -128,6 +128,9 @@ export class SettingsComponent implements OnInit {
 
   connectCalendar(provider: AuthProvider): void {
     this.isLoading.set(true);
+
+    localStorage.setItem('pending_calendar_provider', provider);
+
     this.integrationService.getAuthorizationUrl(provider).subscribe({
       next: (response: any) => {
         window.location.href = response.url;
