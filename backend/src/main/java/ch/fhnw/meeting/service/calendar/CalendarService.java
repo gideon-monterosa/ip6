@@ -9,7 +9,7 @@ import ch.fhnw.meeting.model.calendar.Event;
 import ch.fhnw.meeting.repository.EventRepository;
 import ch.fhnw.meeting.repository.UserOAuthTokenRepository;
 import ch.fhnw.meeting.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j; // Empfohlen für Logging
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -103,8 +102,8 @@ public class CalendarService {
         if (dto.getStart() == null) return;
 
         try {
-            LocalDateTime startTime = parseDate(dto.getStart());
-            LocalDateTime endTime = dto.getEnd() != null ? parseDate(dto.getEnd()) : startTime.plusHours(1);
+            LocalDateTime startTime = dto.getStart();
+            LocalDateTime endTime = dto.getEnd() != null ? dto.getEnd() : startTime.plusHours(1);
 
             Optional<Event> existingEventOpt = eventRepository.findByExternalIdAndProviderAndUserId(
                     dto.getId(),
@@ -122,7 +121,6 @@ public class CalendarService {
                 event.setLocation(dto.getLocation());
                 event.setOrganizer(dto.getOrganizer());
                 event.setAttendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0);
-                // WICHTIG: meetingType hier absichtlich NICHT überschreiben, damit Änderungen vom Frontend beim nächsten Sync nicht verloren gehen.
             } else {
                 Event event = Event.builder()
                         .externalId(dto.getId())
@@ -152,8 +150,8 @@ public class CalendarService {
         dto.setTitle(event.getTitle());
         dto.setDescription(event.getDescription());
         dto.setLink(event.getLink());
-        dto.setStart(event.getStartTime().toString());
-        dto.setEnd(event.getEndTime().toString());
+        dto.setStart(event.getStartTime());
+        dto.setEnd(event.getEndTime());
         dto.setMeetingType(event.getMeetingType());
         dto.setLocation(event.getLocation());
         dto.setOrganizer(event.getOrganizer());
@@ -204,10 +202,15 @@ public class CalendarService {
 
     public CalendarStatusResponse getConnectionStatus(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) return new CalendarStatusResponse(false, false);
+
+        if (user.isEmpty()) return new CalendarStatusResponse(false, false, false);
+
         Long userId = user.get().getId();
+
         boolean google = tokenRepository.findByUserIdAndProvider(userId, AuthProvider.GOOGLE).isPresent();
         boolean ms = tokenRepository.findByUserIdAndProvider(userId, AuthProvider.MICROSOFT).isPresent();
-        return new CalendarStatusResponse(google, ms);
+        boolean freeBusy = tokenRepository.findByUserIdAndProvider(userId, AuthProvider.FREE_BUSY).isPresent();
+
+        return new CalendarStatusResponse(google, ms, freeBusy);
     }
 }
