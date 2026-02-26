@@ -49,6 +49,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> workingDays;
 
+    @Column(name = "google_calendar_enabled", nullable = false)
+    private Boolean googleCalendarEnabled = false;
+
+    @Column(name = "google_free_busy_enabled", nullable = false)
+    private Boolean googleFreeBusyEnabled = false;
+
+    @Column(name = "microsoft_calendar_enabled", nullable = false)
+    private Boolean microsoftCalendarEnabled = false;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

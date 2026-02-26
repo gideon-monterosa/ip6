@@ -37,6 +37,9 @@ public class UserService {
         dto.setWorkStartTime(user.getWorkStartTime());
         dto.setWorkEndTime(user.getWorkEndTime());
         dto.setWorkingDays(user.getWorkingDays());
+        dto.setGoogleCalendarEnabled(user.getGoogleCalendarEnabled());
+        dto.setGoogleFreeBusyEnabled(user.getGoogleFreeBusyEnabled());
+        dto.setMicrosoftCalendarEnabled(user.getMicrosoftCalendarEnabled());
         return dto;
     }
 }

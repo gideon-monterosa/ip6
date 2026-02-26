@@ -1,0 +1,4 @@
+ALTER TABLE users
+ADD COLUMN google_calendar_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+ADD COLUMN google_free_busy_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+ADD COLUMN microsoft_calendar_enabled BOOLEAN NOT NULL DEFAULT FALSE;
