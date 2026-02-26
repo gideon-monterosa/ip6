@@ -98,13 +98,13 @@ Authorization: Bearer {{auth_token}}
 [
   {
     "title": "Meeting 1",
-    "start": "2026-03-02T09:00:00",
-    "end": "2026-03-02T10:00:00",
+    "start": "2026-03-02T09:30:00",
+    "end": "2026-03-03T10:30:00",
     "meetingType": "Stand-up"
   },
   {
     "title": "Meeting 2",
-    "start": "2026-03-02T13:00:00",
+    "start": "2026-03-03T13:40:00",
     "end": "2026-03-02T14:00:00",
     "meetingType": "Planning"
   }
@@ -113,3 +113,25 @@ Authorization: Bearer {{auth_token}}
 ### Delete Internal Event
 DELETE http://localhost:8080/api/calendar/events/{{new_event_id}}
 Authorization: Bearer {{auth_token}}
+
+### SUBMIT FEEDBACK
+POST http://localhost:8080/api/feedback/f75f8813-61da-4043-b303-b9fb40076298/feedback
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "details": {
+    "type": "MEETING",
+    "focusDisruption": 3,
+    "rotiScore": 1,
+    "mood": "NEUTRAL",
+    "energyAfter": 3,
+    "issueTags": [
+      "TOO_CLOSE_TO_ANOTHER"
+    ],
+    "positiveTags": [],
+    "comment": "123456u7ezhgstfreafgs"
+  }
+}
+
+

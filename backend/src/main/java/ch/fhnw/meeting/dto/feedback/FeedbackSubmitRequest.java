@@ -1,9 +1,10 @@
 package ch.fhnw.meeting.dto.feedback;
 
-import ch.fhnw.meeting.model.feedback.FeedbackDetails;
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 public class FeedbackSubmitRequest {
-    private FeedbackDetails details;
+    private Map<String, Object> details;
 }

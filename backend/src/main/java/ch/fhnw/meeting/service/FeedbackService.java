@@ -32,9 +32,14 @@ public class FeedbackService {
         event.setFeedbackStatus(FeedbackStatus.SUBMITTED);
         eventRepository.save(event);
 
+        String type = "MEETING";
+        if (request.getDetails() != null && request.getDetails().containsKey("type")) {
+            type = request.getDetails().get("type").toString();
+        }
+
         Feedback feedback = Feedback.builder()
                 .event(event)
-                .feedbackType("MEETING")
+                .feedbackType(type)
                 .details(request.getDetails())
                 .build();
 
