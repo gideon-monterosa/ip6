@@ -61,6 +61,7 @@ import { UserSettings } from '../../../core/models/user.model';
         (dismiss)="onDismissEvent(event)"
         (undoDismiss)="onUndoDismissEvent(event)"
         (giveFeedback)="onOpenFeedback(event)"
+        (edit)="onEditEvent(event)"
         (categoryChange)="onCategoryChange($event)"
       />
     }
@@ -83,7 +84,8 @@ import { UserSettings } from '../../../core/models/user.model';
 
     @if (showEventModal()) {
       <app-calendar-event-modal
-        (close)="showEventModal.set(false)"
+        [meeting]="editingEvent()"
+        (close)="onCloseModal()"
         (save)="onSaveEvent($event)"
       />
     }
@@ -103,6 +105,7 @@ export class CalendarViewComponent implements OnInit {
   feedbackMeeting = signal<Meeting | null>(null);
   selectedEodDate = signal<string | null>(null);
   showEventModal = signal<boolean>(false);
+  editingEvent = signal<Meeting | null>(null);
 
   userSettings = signal<UserSettings | undefined>(undefined);
 
@@ -138,17 +141,33 @@ export class CalendarViewComponent implements OnInit {
 
   onAddEvent(): void {
     console.log('onAddEvent called, current showEventModal:', this.showEventModal());
+    this.editingEvent.set(null);
     this.showEventModal.set(true);
     console.log('showEventModal set to true, new value:', this.showEventModal());
   }
 
+  onEditEvent(event: Meeting): void {
+    this.editingEvent.set(event);
+    this.selectedEvent.set(null);
+    this.showEventModal.set(true);
+  }
+
+  onCloseModal(): void {
+    this.showEventModal.set(false);
+    this.editingEvent.set(null);
+  }
+
   onSaveEvent(eventData: any): void {
-    this.meetingService.createEvent(eventData).subscribe({
+    const editId = this.editingEvent()?.id;
+    const request = editId
+      ? this.meetingService.updateEvent(editId, eventData)
+      : this.meetingService.createEvent(eventData);
+
+    request.subscribe({
       next: () => {
-        this.showEventModal.set(false);
-        // CalendarUIService already updates via the meetingsSignal in MeetingService
+        this.onCloseModal();
       },
-      error: (err: any) => console.error('Failed to create event', err)
+      error: (err: any) => console.error('Failed to save event', err)
     });
   }
 

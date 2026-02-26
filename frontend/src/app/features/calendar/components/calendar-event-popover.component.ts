@@ -21,6 +21,15 @@ import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../sh
               <span>•</span>
               <span>{{ duration() }} min</span>
             </div>
+            @if (!event().provider) {
+              <div class="mt-2">
+                <button (click)="edit.emit()"
+                        class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors">
+                  <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                  Edit Event
+                </button>
+              </div>
+            }
           </div>
           <button (click)="close.emit()" class="text-gray-400 hover:text-gray-600 transition-colors">
             <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,6 +101,7 @@ export class CalendarEventPopoverComponent {
   dismiss = output<void>();
   undoDismiss = output<void>();
   giveFeedback = output<void>();
+  edit = output<void>();
   categoryChange = output<{ meetingId: string; meetingType: MeetingType }>();
 
   meetingTypes = MEETING_TYPES;
