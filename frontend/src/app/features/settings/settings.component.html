@@ -24,7 +24,9 @@
       <div class="grid gap-4 sm:grid-cols-2" >
         <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors"
              [class.border-primary]="isGoogleConnected()"
-             [class.border-border]="!isGoogleConnected()">
+             [class.border-border]="!isGoogleConnected()"
+             [class.opacity-50]="!googleCalendarEnabled()"
+             [class.pointer-events-none]="!googleCalendarEnabled()">
 
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-x-3">
@@ -57,7 +59,7 @@
           <div class="mt-auto">
             <button type="button"
                     (click)="connectCalendar(AuthProvider.GOOGLE)"
-                    [disabled]="hasConnection() || isLoading()"
+                    [disabled]="hasConnection() || isLoading() || !googleCalendarEnabled()"
                     class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
               @if (isGoogleConnected()) {
                 Connected
@@ -68,13 +70,15 @@
           </div>
         </div>
 
-        <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors opacity-50 pointer-events-none"
+        <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors"
              [class.border-primary]="isMicrosoftConnected()"
-             [class.border-border]="!isMicrosoftConnected()">
+             [class.border-border]="!isMicrosoftConnected()"
+             [class.opacity-50]="!microsoftCalendarEnabled()"
+             [class.pointer-events-none]="!microsoftCalendarEnabled()">
 
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-x-3">
-              <svg class="w-8 h-8 grayscale" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-8 h-8" [class.grayscale]="!microsoftCalendarEnabled()" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#f35325" d="M1 1h10v10H1z"/>
                 <path fill="#81bc06" d="M12 1h10v10H12z"/>
                 <path fill="#05a6f0" d="M1 12h10v10H1z"/>
@@ -94,16 +98,25 @@
 
           <div class="mt-auto">
             <button type="button"
-                    [disabled]="true"
+                    (click)="connectCalendar(AuthProvider.MICROSOFT)"
+                    [disabled]="hasConnection() || isLoading() || !microsoftCalendarEnabled()"
                     class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
-              Connect Microsoft (Disabled)
+              @if (isMicrosoftConnected()) {
+                Connected
+              } @else if (!microsoftCalendarEnabled()) {
+                Connect Microsoft (Disabled)
+              } @else {
+                Connect Microsoft
+              }
             </button>
           </div>
         </div>
 
         <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors"
              [class.border-primary]="isFreeBusyConnected()"
-             [class.border-border]="!isFreeBusyConnected()">
+             [class.border-border]="!isFreeBusyConnected()"
+             [class.opacity-50]="!googleFreeBusyEnabled()"
+             [class.pointer-events-none]="!googleFreeBusyEnabled()">
 
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-x-3">
@@ -136,7 +149,7 @@
           <div class="mt-auto">
             <button type="button"
                     (click)="connectCalendar(AuthProvider.FREE_BUSY)"
-                    [disabled]="hasConnection() || isLoading()"
+                    [disabled]="hasConnection() || isLoading() || !googleFreeBusyEnabled()"
                     class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
               @if (isFreeBusyConnected()) {
                 Connected

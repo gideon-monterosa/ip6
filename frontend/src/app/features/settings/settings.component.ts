@@ -31,6 +31,10 @@ export class SettingsComponent implements OnInit {
   isFreeBusyConnected = computed(() => this.calendarStatus().googleFreeBusyConnected);
   hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected() || this.isFreeBusyConnected());
 
+  googleCalendarEnabled = signal(true);
+  googleFreeBusyEnabled = signal(true);
+  microsoftCalendarEnabled = signal(false);
+
   settingsForm!: FormGroup;
   isSavingSettings = signal(false);
   saveSettingsSuccess = signal(false);
@@ -69,6 +73,10 @@ export class SettingsComponent implements OnInit {
         const startTime = settings.workStartTime ? settings.workStartTime.substring(0, 5) : '09:00';
         const endTime = settings.workEndTime ? settings.workEndTime.substring(0, 5) : '17:00';
 
+        this.googleCalendarEnabled.set(settings.googleCalendarEnabled);
+        this.googleFreeBusyEnabled.set(settings.googleFreeBusyEnabled);
+        this.microsoftCalendarEnabled.set(settings.microsoftCalendarEnabled);
+
         this.settingsForm.patchValue({
           workStartTime: startTime,
           workEndTime: endTime
@@ -94,6 +102,9 @@ export class SettingsComponent implements OnInit {
       .map(d => d.value);
 
     const payload: UserSettings = {
+      googleCalendarEnabled: this.googleCalendarEnabled(),
+      googleFreeBusyEnabled: this.googleFreeBusyEnabled(),
+      microsoftCalendarEnabled: this.microsoftCalendarEnabled(),
       workStartTime: formVal.workStartTime + ':00',
       workEndTime: formVal.workEndTime + ':00',
       workingDays: selectedDays
