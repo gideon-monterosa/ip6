@@ -62,6 +62,7 @@ import { UserSettings } from '../../../core/models/user.model';
         (undoDismiss)="onUndoDismissEvent(event)"
         (giveFeedback)="onOpenFeedback(event)"
         (edit)="onEditEvent(event)"
+        (delete)="onDeleteEvent(event)"
         (categoryChange)="onCategoryChange($event)"
       />
     }
@@ -150,6 +151,17 @@ export class CalendarViewComponent implements OnInit {
     this.editingEvent.set(event);
     this.selectedEvent.set(null);
     this.showEventModal.set(true);
+  }
+
+  onDeleteEvent(event: Meeting): void {
+    if (confirm(`Are you sure you want to delete "${event.title}"?`)) {
+      this.meetingService.deleteEvent(event.id).subscribe({
+        next: () => {
+          this.selectedEvent.set(null);
+        },
+        error: (err: any) => console.error('Failed to delete event', err)
+      });
+    }
   }
 
   onCloseModal(): void {

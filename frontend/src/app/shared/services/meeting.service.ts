@@ -66,6 +66,14 @@ export class MeetingService {
     );
   }
 
+  deleteEvent(meetingId: string): Observable<void> {
+    return this.http.delete<void>(`${this.calendarApiUrl}/events/${meetingId}`).pipe(
+      tap(() => {
+        this.meetingsSignal.update(current => current.filter(m => m.id !== meetingId));
+      })
+    );
+  }
+
   submitFeedback(meetingId: string, feedbackData: any): Observable<void> {
     const payload = {
       details: {

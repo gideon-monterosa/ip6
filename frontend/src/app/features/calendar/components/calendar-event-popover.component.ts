@@ -22,11 +22,16 @@ import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../sh
               <span>{{ duration() }} min</span>
             </div>
             @if (!event().provider) {
-              <div class="mt-2">
+              <div class="mt-2 flex items-center gap-2">
                 <button (click)="edit.emit()"
                         class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors">
                   <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                   Edit Event
+                </button>
+                <button (click)="delete.emit()"
+                        class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-colors">
+                  <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                  Delete
                 </button>
               </div>
             }
@@ -102,6 +107,7 @@ export class CalendarEventPopoverComponent {
   undoDismiss = output<void>();
   giveFeedback = output<void>();
   edit = output<void>();
+  delete = output<void>();
   categoryChange = output<{ meetingId: string; meetingType: MeetingType }>();
 
   meetingTypes = MEETING_TYPES;
