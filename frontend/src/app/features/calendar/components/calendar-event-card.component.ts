@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, Input } from '@angular/core';
 import { DatePipe, NgClass, NgStyle } from '@angular/common';
 import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
 
@@ -8,7 +8,7 @@ import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/mee
   imports: [DatePipe, NgStyle, NgClass],
   template: `
     <div
-      class="absolute inset-x-1 rounded px-2 py-1 text-xs overflow-hidden cursor-pointer transition-all shadow-sm group border-l-[3px] flex flex-col hover:!min-h-fit hover:!z-50 hover:shadow-md"
+      class="absolute rounded px-2 py-1 text-xs overflow-hidden cursor-pointer transition-all shadow-sm group border-l-[3px] flex flex-col hover:!min-h-fit hover:!z-50 hover:shadow-md"
       [ngStyle]="positionStyle()"
       [ngClass]="statusClasses()"
       [title]="tooltip()"
@@ -44,11 +44,13 @@ import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/mee
 })
 export class CalendarEventCardComponent {
   event = input.required<Meeting>();
+  eventLayout = input<{ left: string; width: string }>({ left: '0', width: '100%' });
 
-  private readonly cellHeight = 60; // 60px pro Stunde
+  private readonly cellHeight = 60;
 
   positionStyle = computed(() => {
     const e = this.event();
+    const l = this.eventLayout();
     const start = new Date(e.start);
     const end = new Date(e.end);
 
@@ -61,6 +63,8 @@ export class CalendarEventCardComponent {
     return {
       top: `${top}px`,
       height: `${Math.max(height, 24)}px`,
+      left: l.left,
+      width: l.width,
       zIndex: 10
     };
   });
