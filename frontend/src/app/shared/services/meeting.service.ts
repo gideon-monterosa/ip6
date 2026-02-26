@@ -48,6 +48,15 @@ export class MeetingService {
     );
   }
 
+  createEvent(event: any): Observable<Meeting> {
+    return this.http.post<any>(`${this.calendarApiUrl}/events`, event).pipe(
+      map(dto => this.mapDtoToMeeting(dto)),
+      tap(newMeeting => {
+        this.meetingsSignal.update(current => [...current, newMeeting]);
+      })
+    );
+  }
+
   submitFeedback(meetingId: string, feedbackData: any): Observable<void> {
     const payload = {
       details: {
@@ -88,6 +97,7 @@ export class MeetingService {
       title: dto.title,
       description: dto.description,
       link: dto.link,
+      location: dto.location,
       start: dto.start,
       end: dto.end,
       durationMinutes: durationMinutes,

@@ -16,6 +16,17 @@ import { DatePipe } from '@angular/common';
 
       <div class="flex items-center gap-x-3">
         <button
+          (click)="add.emit()"
+          type="button"
+          class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
+        >
+          <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="M12 5v14"/>
+          </svg>
+          Add Event
+        </button>
+
+        <button
           (click)="refresh.emit()"
           type="button"
           class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none transition-colors"
@@ -61,4 +72,5 @@ export class CalendarHeaderComponent {
   next = output<void>();
   today = output<void>();
   refresh = output<void>();
+  add = output<void>();
 }
