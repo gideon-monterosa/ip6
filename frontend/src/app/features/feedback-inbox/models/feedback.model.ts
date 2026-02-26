@@ -82,6 +82,8 @@ export interface MeetingFeedback {
   issue_tags: IssueTag[];
   positive_tags: PositiveTag[];
   comment?: string;
+  started_at: string;
+  submitted_at: string;
 }
 
 // ... Keep existing DailyFeedback interfaces ...

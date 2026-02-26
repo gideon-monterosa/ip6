@@ -57,12 +57,14 @@ export class FeedbackSurveyModalComponent implements OnInit {
   commentLength = signal(0);
 
   private fb: FormBuilder;
+  private startedAt!: string;
 
   constructor(fb: FormBuilder) {
     this.fb = fb;
   }
 
   ngOnInit(): void {
+    this.startedAt = new Date().toISOString();
     this.feedbackForm = this.fb.group({
       focus_disruption: [null, Validators.required],
       mood: [null, Validators.required],
@@ -146,6 +148,8 @@ export class FeedbackSurveyModalComponent implements OnInit {
       issue_tags: Array.from(this.selectedIssueTags()),
       positive_tags: Array.from(this.selectedPositiveTags()),
       comment: formValue.comment || undefined,
+      started_at: this.startedAt,
+      submitted_at: new Date().toISOString(),
     };
 
     this.submitFeedback.emit(feedback);

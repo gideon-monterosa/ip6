@@ -84,7 +84,9 @@ export class MeetingService {
         energyAfter: feedbackData.energy_after,
         issueTags: feedbackData.issue_tags,
         positiveTags: feedbackData.positive_tags,
-        comment: feedbackData.comment
+        comment: feedbackData.comment,
+        startedAt: feedbackData.started_at,
+        submittedAt: feedbackData.submitted_at
       }
     };
     return this.http.post<void>(`${this.feedbackApiUrl}/${meetingId}/feedback`, payload).pipe(
