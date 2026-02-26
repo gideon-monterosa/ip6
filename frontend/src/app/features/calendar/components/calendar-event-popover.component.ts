@@ -44,23 +44,34 @@ import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../sh
         </div>
 
         <div class="p-5">
-          <div class="mb-5 space-y-1.5">
-            <label class="text-xs font-medium text-gray-700">Meeting Type</label>
-            <div class="relative">
-              <select
-                [value]="event().meetingType"
-                (change)="onTypeChange($event)"
-                class="w-full px-3 py-2.5 pe-9 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-900 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              >
-                @for (type of meetingTypes; track type) {
-                  <option [value]="type">{{ type }}</option>
-                }
-              </select>
-              <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
-                <svg class="size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          @if (event().provider) {
+            <div class="mb-5 space-y-1.5">
+              <label class="text-xs font-medium text-gray-700">Meeting Type</label>
+              <div class="relative">
+                <select
+                  [value]="event().meetingType"
+                  (change)="onTypeChange($event)"
+                  class="w-full px-3 py-2.5 pe-9 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-900 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                >
+                  @for (type of meetingTypes; track type) {
+                    <option [value]="type">{{ type }}</option>
+                  }
+                </select>
+                <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
+                  <svg class="size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
               </div>
             </div>
-          </div>
+          } @else {
+            <div class="mb-5 space-y-1">
+              <label class="text-xs font-medium text-gray-700">Meeting Type</label>
+              <div class="text-sm font-medium text-gray-900">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                  {{ event().meetingType }}
+                </span>
+              </div>
+            </div>
+          }
 
           @if (isSubmitted()) {
             <div class="flex flex-col gap-3">
