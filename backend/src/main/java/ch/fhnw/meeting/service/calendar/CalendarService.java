@@ -6,6 +6,7 @@ import ch.fhnw.meeting.model.User;
 import ch.fhnw.meeting.model.UserOAuthToken;
 import ch.fhnw.meeting.model.calendar.AuthProvider;
 import ch.fhnw.meeting.model.calendar.Event;
+import ch.fhnw.meeting.model.calendar.MeetingType;
 import ch.fhnw.meeting.repository.EventRepository;
 import ch.fhnw.meeting.repository.UserOAuthTokenRepository;
 import ch.fhnw.meeting.repository.UserRepository;
@@ -214,5 +215,85 @@ public class CalendarService {
         boolean freeBusy = tokenRepository.findByUserIdAndProvider(userId, AuthProvider.FREE_BUSY).isPresent();
 
         return new CalendarStatusResponse(google, ms, freeBusy);
+    }
+
+    @Transactional
+    public EventDto createInternalEvent(EventDto dto, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + username));
+
+        Event event = Event.builder()
+                .externalId(java.util.UUID.randomUUID().toString())
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .startTime(dto.getStart())
+                .endTime(dto.getEnd())
+                .link(dto.getLink())
+                .provider(AuthProvider.INTERNAL)
+                .user(user)
+                .meetingType(dto.getMeetingType() != null ? dto.getMeetingType() : MeetingType.OTHER)
+                .location(dto.getLocation())
+                .organizer(dto.getOrganizer())
+                .attendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0)
+                .build();
+
+        return mapEntityToDto(eventRepository.save(event));
+    }
+
+    @Transactional
+    public EventDto updateInternalEvent(String externalId, EventDto dto, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + username));
+
+        Event event = eventRepository.findByExternalIdIgnoreCaseAndUserId(externalId, user.getId())
+                .orElseThrow(() -> new RuntimeException("Event nicht gefunden"));
+
+        event.setTitle(dto.getTitle());
+        event.setDescription(dto.getDescription());
+        event.setStartTime(dto.getStart());
+        event.setEndTime(dto.getEnd());
+        event.setLink(dto.getLink());
+        event.setMeetingType(dto.getMeetingType() != null ? dto.getMeetingType() : MeetingType.OTHER);
+        event.setLocation(dto.getLocation());
+        event.setOrganizer(dto.getOrganizer());
+        event.setAttendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0);
+
+        return mapEntityToDto(eventRepository.save(event));
+    }
+
+    @Transactional
+    public void deleteInternalEvent(String externalId, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + username));
+
+        Event event = eventRepository.findByExternalIdIgnoreCaseAndUserId(externalId, user.getId())
+                .orElseThrow(() -> new RuntimeException("Event nicht gefunden"));
+
+        eventRepository.delete(event);
+    }
+
+    @Transactional
+    public List<EventDto> createInternalEvents(List<EventDto> dtos, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + username));
+
+        List<Event> events = dtos.stream().map(dto -> Event.builder()
+                .externalId(java.util.UUID.randomUUID().toString())
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .startTime(dto.getStart())
+                .endTime(dto.getEnd())
+                .link(dto.getLink())
+                .provider(AuthProvider.INTERNAL)
+                .user(user)
+                .meetingType(dto.getMeetingType() != null ? dto.getMeetingType() : MeetingType.OTHER)
+                .location(dto.getLocation())
+                .organizer(dto.getOrganizer())
+                .attendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0)
+                .build()).toList();
+
+        return eventRepository.saveAll(events).stream()
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 }

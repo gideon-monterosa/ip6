@@ -57,3 +57,59 @@ Authorization: Bearer {{auth_token}}
 ### Get User Settings
 GET http://localhost:8080/api/user/settings
 Authorization: Bearer {{auth_token}}
+
+### Create Internal Event
+POST http://localhost:8080/api/calendar/events
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Neues Meeting",
+  "description": "Ein manuell erstelltes Meeting",
+  "start": "2026-03-01T10:00:00",
+  "end": "2026-03-01T11:00:00",
+  "meetingType": "Planning",
+  "location": "Büro"
+}
+
+> {%
+    client.global.set("new_event_id", response.body.id);
+%}
+
+### Update Internal Event
+PUT http://localhost:8080/api/calendar/events/{{new_event_id}}
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Geändertes Meeting 2",
+  "description": "Geänderte Beschreibung",
+  "start": "2026-03-01T10:30:00",
+  "end": "2026-03-01T11:30:00",
+  "meetingType": "Stand-up",
+  "location": "Online"
+}
+
+### Bulk Create Internal Events
+POST http://localhost:8080/api/calendar/events/bulk
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "title": "Meeting 1",
+    "start": "2026-03-02T09:00:00",
+    "end": "2026-03-02T10:00:00",
+    "meetingType": "Stand-up"
+  },
+  {
+    "title": "Meeting 2",
+    "start": "2026-03-02T13:00:00",
+    "end": "2026-03-02T14:00:00",
+    "meetingType": "Planning"
+  }
+]
+
+### Delete Internal Event
+DELETE http://localhost:8080/api/calendar/events/{{new_event_id}}
+Authorization: Bearer {{auth_token}}
