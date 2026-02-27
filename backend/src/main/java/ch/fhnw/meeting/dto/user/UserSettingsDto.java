@@ -13,4 +13,6 @@ public class UserSettingsDto {
     private Boolean googleCalendarEnabled;
     private Boolean googleFreeBusyEnabled;
     private Boolean microsoftCalendarEnabled;
+    private Boolean pushNotificationsEnabled;
+    private String fcmToken;
 }

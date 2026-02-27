@@ -5,6 +5,7 @@ import { AuthProvider, CalendarStatusResponse } from '../calendar/models/calenda
 import { CalendarIntegrationService } from '../../shared/services/calendar-integration.service';
 import { UserService } from '../../core/services/user.service';
 import { UserSettings } from '../../core/models/user.model';
+import { FirebaseService } from '../../core/services/firebase.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,6 +16,7 @@ import { UserSettings } from '../../core/models/user.model';
 export class SettingsComponent implements OnInit {
   private integrationService = inject(CalendarIntegrationService);
   private userService = inject(UserService);
+  private firebaseService = inject(FirebaseService);
   private fb = inject(FormBuilder);
 
   AuthProvider = AuthProvider;
@@ -34,6 +36,7 @@ export class SettingsComponent implements OnInit {
   googleCalendarEnabled = signal(true);
   googleFreeBusyEnabled = signal(true);
   microsoftCalendarEnabled = signal(false);
+  pushNotificationsEnabled = signal(false);
 
   settingsForm!: FormGroup;
   isSavingSettings = signal(false);
@@ -76,6 +79,7 @@ export class SettingsComponent implements OnInit {
         this.googleCalendarEnabled.set(settings.googleCalendarEnabled);
         this.googleFreeBusyEnabled.set(settings.googleFreeBusyEnabled);
         this.microsoftCalendarEnabled.set(settings.microsoftCalendarEnabled);
+        this.pushNotificationsEnabled.set(settings.pushNotificationsEnabled || false);
 
         this.settingsForm.patchValue({
           workStartTime: startTime,
@@ -92,7 +96,25 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  saveUserSettings(): void {
+  async togglePushNotifications() {
+    const newState = !this.pushNotificationsEnabled();
+    
+    if (newState) {
+      const token = await this.firebaseService.requestToken();
+      if (token) {
+        this.pushNotificationsEnabled.set(true);
+        // We save immediately when enabling to store the token
+        this.saveUserSettings(token);
+      } else {
+        alert('Push-Benachrichtigungen konnten nicht aktiviert werden. Bitte prüfen Sie die Browser-Berechtigungen.');
+      }
+    } else {
+      this.pushNotificationsEnabled.set(false);
+      this.saveUserSettings();
+    }
+  }
+
+  saveUserSettings(fcmToken?: string): void {
     this.isSavingSettings.set(true);
     this.saveSettingsSuccess.set(false);
 
@@ -105,6 +127,8 @@ export class SettingsComponent implements OnInit {
       googleCalendarEnabled: this.googleCalendarEnabled(),
       googleFreeBusyEnabled: this.googleFreeBusyEnabled(),
       microsoftCalendarEnabled: this.microsoftCalendarEnabled(),
+      pushNotificationsEnabled: this.pushNotificationsEnabled(),
+      fcmToken: fcmToken,
       workStartTime: formVal.workStartTime + ':00',
       workEndTime: formVal.workEndTime + ':00',
       workingDays: selectedDays

@@ -33,4 +33,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         ch.fhnw.meeting.model.calendar.AuthProvider provider,
         LocalDateTime startTime
     );
+
+    List<Event> findByEndTimeBeforeAndFeedbackStatusAndNotificationSentFalse(
+            LocalDateTime endTime,
+            ch.fhnw.meeting.model.feedback.FeedbackStatus feedbackStatus
+    );
 }

@@ -136,6 +136,7 @@ public class CalendarService {
                         .location(dto.getLocation())
                         .organizer(dto.getOrganizer())
                         .attendeesCount(dto.getAttendeesCount())
+                        .notificationSent(false)
                         .build();
                 eventRepository.save(event);
             }
@@ -235,6 +236,7 @@ public class CalendarService {
                 .location(dto.getLocation())
                 .organizer(dto.getOrganizer())
                 .attendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0)
+                .notificationSent(false)
                 .build();
 
         return mapEntityToDto(eventRepository.save(event));
@@ -290,6 +292,7 @@ public class CalendarService {
                 .location(dto.getLocation())
                 .organizer(dto.getOrganizer())
                 .attendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0)
+                .notificationSent(false)
                 .build()).toList();
 
         return eventRepository.saveAll(events).stream()

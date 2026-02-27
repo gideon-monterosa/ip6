@@ -78,4 +78,7 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(name = "feedback_status", nullable = false)
     private FeedbackStatus feedbackStatus = FeedbackStatus.PENDING;
+
+    @Column(name = "notification_sent", nullable = false)
+    private Boolean notificationSent = false;
 }

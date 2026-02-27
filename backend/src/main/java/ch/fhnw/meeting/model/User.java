@@ -58,6 +58,12 @@ public class User {
     @Column(name = "microsoft_calendar_enabled", nullable = false)
     private Boolean microsoftCalendarEnabled = false;
 
+    @Column(name = "push_notifications_enabled", nullable = false)
+    private Boolean pushNotificationsEnabled = false;
+
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

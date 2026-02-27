@@ -165,6 +165,39 @@
 
   <hr class="border-border my-6">
 
+  <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
+    <div class="sm:col-span-3">
+      <h2 class="text-lg font-semibold text-foreground">
+        Notifications
+      </h2>
+      <p class="text-sm text-muted-foreground-1 mt-1">
+        Get notified when a meeting ends so you can provide feedback quickly.
+      </p>
+    </div>
+
+    <div class="sm:col-span-9">
+      <div class="bg-card border shadow-2xs rounded-xl p-4 md:p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-medium text-foreground">Push Notifications</h3>
+            <p class="text-sm text-muted-foreground-1">Receive reminders in your browser.</p>
+          </div>
+          <button type="button"
+                  (click)="togglePushNotifications()"
+                  class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  [class.bg-primary]="pushNotificationsEnabled()"
+                  [class.bg-input]="!pushNotificationsEnabled()">
+            <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                  [class.translate-x-5]="pushNotificationsEnabled()"
+                  [class.translate-x-0]="!pushNotificationsEnabled()"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="border-border my-6">
+
   <div class="grid sm:grid-cols-12 gap-2 sm:gap-6" id="tour-settings-hours">
     <div class="sm:col-span-3">
       <h2 class="text-lg font-semibold text-foreground">

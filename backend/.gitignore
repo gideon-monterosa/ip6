@@ -34,3 +34,4 @@ build/
 
 ### Local Secrets ###
 secrets.properties
+/firebase.json
