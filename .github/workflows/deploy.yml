@@ -56,4 +56,12 @@ jobs:
           
           docker compose -f docker-compose.yml down
           docker compose -f docker-compose.yml up --build -d
+          
+          echo "Waiting for migrations to complete..."
+          docker compose logs -f flyway &
+          FLYWAY_PID=$!
+          
+          sleep 10
+          kill $FLYWAY_PID || true
+          
           docker system prune -f

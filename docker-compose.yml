@@ -41,11 +41,24 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      flyway:
+        condition: service_completed_successfully
     volumes:
       - ./backend/firebase.json:/app/firebase.json:ro
     networks:
       - meeting-network
     restart: always
+
+  flyway:
+    image: flyway/flyway:10
+    command: -url=jdbc:postgresql://postgres:5432/meetingdb -user=meetinguser -password=${POSTGRES_PASSWORD:-meetingpass} -connectRetries=60 migrate
+    volumes:
+      - ./backend/src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - meeting-network
 
   frontend:
     build:
