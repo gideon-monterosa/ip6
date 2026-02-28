@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, effect } from '@angular/core';
 import { FeedbackUIService } from './services/feedback-ui.service';
 import { MeetingService } from '../../shared/services/meeting.service';
 import { FeedbackCardComponent } from './components/feedback-card.component';
@@ -7,6 +7,8 @@ import { EodFeedbackCardComponent } from './components/eod-feedback-card.compone
 import { EodSurveyModalComponent } from './components/eod-survey-modal.component';
 import { Meeting, MeetingType } from '../../shared/models/meeting.model';
 import { MeetingFeedback, DailyFeedbackSubmission } from './models/feedback.model';
+import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-feedback-inbox',
@@ -29,6 +31,7 @@ import { MeetingFeedback, DailyFeedbackSubmission } from './models/feedback.mode
 })
 export class FeedbackInboxComponent implements OnInit, OnDestroy {
   public feedbackService = inject(FeedbackUIService);
+  private route = inject(ActivatedRoute);
 
   selectedMeeting = signal<Meeting | null>(null);
   selectedEodDate = signal<string | null>(null);
@@ -39,6 +42,21 @@ export class FeedbackInboxComponent implements OnInit, OnDestroy {
   private lastDismissedId: string | null = null;
   private lastDismissedEodDate: string | null = null;
   private undoTimeout: ReturnType<typeof setTimeout> | null = null;
+  private routeParams = toSignal(this.route.params);
+
+  constructor() {
+    effect(() => {
+      const id = this.routeParams()?.['id'];
+      if (id && !this.feedbackService.isLoading()) {
+        const meeting = this.feedbackService.filteredMeetings().find(
+          (m: Meeting) => m.id === id || m.externalId === id
+        );
+        if (meeting) {
+          setTimeout(() => this.selectedMeeting.set(meeting), 0);
+        }
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.feedbackService.loadRecentMeetingsForInbox();
