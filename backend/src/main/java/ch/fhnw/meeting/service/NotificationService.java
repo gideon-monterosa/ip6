@@ -42,9 +42,11 @@ public class NotificationService {
                             .build())
                     .putData("eventId", externalId)
                     .putData("type", "FEEDBACK_REMINDER")
-                    .putData("click_url", clickUrl) // Custom data for frontend/mobile app
+                    .putData("click_url", clickUrl)
                     .setWebpushConfig(WebpushConfig.builder()
-                            .setFcmOptions(WebpushFcmOptions.withLink(clickUrl)) // Standard for browsers
+                            .setFcmOptions(WebpushFcmOptions.withLink(clickUrl))
+                            .putHeader("ttl", "300")
+                            .putData("click_action", clickUrl)
                             .build())
                     .build();
 
