@@ -24,9 +24,14 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User nicht gefunden"));
 
-        user.setWorkStartTime(dto.getWorkStartTime());
-        user.setWorkEndTime(dto.getWorkEndTime());
-        user.setWorkingDays(dto.getWorkingDays());
+        if (dto.getWorkStartTime() != null) user.setWorkStartTime(dto.getWorkStartTime());
+        if (dto.getWorkEndTime() != null) user.setWorkEndTime(dto.getWorkEndTime());
+        if (dto.getWorkingDays() != null) user.setWorkingDays(dto.getWorkingDays());
+        if (dto.getGoogleCalendarEnabled() != null) user.setGoogleCalendarEnabled(dto.getGoogleCalendarEnabled());
+        if (dto.getGoogleFreeBusyEnabled() != null) user.setGoogleFreeBusyEnabled(dto.getGoogleFreeBusyEnabled());
+        if (dto.getMicrosoftCalendarEnabled() != null) user.setMicrosoftCalendarEnabled(dto.getMicrosoftCalendarEnabled());
+        if (dto.getPushNotificationsEnabled() != null) user.setPushNotificationsEnabled(dto.getPushNotificationsEnabled());
+        if (dto.getFcmToken() != null) user.setFcmToken(dto.getFcmToken());
 
         userRepository.save(user);
         return mapToDto(user);
@@ -37,6 +42,11 @@ public class UserService {
         dto.setWorkStartTime(user.getWorkStartTime());
         dto.setWorkEndTime(user.getWorkEndTime());
         dto.setWorkingDays(user.getWorkingDays());
+        dto.setGoogleCalendarEnabled(user.getGoogleCalendarEnabled());
+        dto.setGoogleFreeBusyEnabled(user.getGoogleFreeBusyEnabled());
+        dto.setMicrosoftCalendarEnabled(user.getMicrosoftCalendarEnabled());
+        dto.setPushNotificationsEnabled(user.getPushNotificationsEnabled());
+        dto.setFcmToken(user.getFcmToken());
         return dto;
     }
 }

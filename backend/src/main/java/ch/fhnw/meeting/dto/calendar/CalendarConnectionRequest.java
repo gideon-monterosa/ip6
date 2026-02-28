@@ -1,7 +1,6 @@
 package ch.fhnw.meeting.dto.calendar;
 
 import ch.fhnw.meeting.model.calendar.AuthProvider;
-// import java.util.Optional; // Entfernen
 
 public class CalendarConnectionRequest {
     private String code;

@@ -11,6 +11,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Table(name = "feedbacks")
@@ -33,7 +34,7 @@ public class Feedback {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "details", columnDefinition = "jsonb", nullable = false)
-    private FeedbackDetails details;
+    private Map<String, Object> details;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

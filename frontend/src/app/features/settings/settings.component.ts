@@ -5,6 +5,7 @@ import { AuthProvider, CalendarStatusResponse } from '../calendar/models/calenda
 import { CalendarIntegrationService } from '../../shared/services/calendar-integration.service';
 import { UserService } from '../../core/services/user.service';
 import { UserSettings } from '../../core/models/user.model';
+import { FirebaseService } from '../../core/services/firebase.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,6 +16,7 @@ import { UserSettings } from '../../core/models/user.model';
 export class SettingsComponent implements OnInit {
   private integrationService = inject(CalendarIntegrationService);
   private userService = inject(UserService);
+  private firebaseService = inject(FirebaseService);
   private fb = inject(FormBuilder);
 
   AuthProvider = AuthProvider;
@@ -22,12 +24,19 @@ export class SettingsComponent implements OnInit {
 
   calendarStatus = signal<CalendarStatusResponse>({
     googleConnected: false,
-    microsoftConnected: false
+    microsoftConnected: false,
+    googleFreeBusyConnected: false,
   });
 
   isGoogleConnected = computed(() => this.calendarStatus().googleConnected);
   isMicrosoftConnected = computed(() => this.calendarStatus().microsoftConnected);
-  hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected());
+  isFreeBusyConnected = computed(() => this.calendarStatus().googleFreeBusyConnected);
+  hasConnection = computed(() => this.isGoogleConnected() || this.isMicrosoftConnected() || this.isFreeBusyConnected());
+
+  googleCalendarEnabled = signal(true);
+  googleFreeBusyEnabled = signal(true);
+  microsoftCalendarEnabled = signal(false);
+  pushNotificationsEnabled = signal(false);
 
   settingsForm!: FormGroup;
   isSavingSettings = signal(false);
@@ -67,6 +76,11 @@ export class SettingsComponent implements OnInit {
         const startTime = settings.workStartTime ? settings.workStartTime.substring(0, 5) : '09:00';
         const endTime = settings.workEndTime ? settings.workEndTime.substring(0, 5) : '17:00';
 
+        this.googleCalendarEnabled.set(settings.googleCalendarEnabled);
+        this.googleFreeBusyEnabled.set(settings.googleFreeBusyEnabled);
+        this.microsoftCalendarEnabled.set(settings.microsoftCalendarEnabled);
+        this.pushNotificationsEnabled.set(settings.pushNotificationsEnabled || false);
+
         this.settingsForm.patchValue({
           workStartTime: startTime,
           workEndTime: endTime
@@ -82,7 +96,25 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  saveUserSettings(): void {
+  async togglePushNotifications() {
+    const newState = !this.pushNotificationsEnabled();
+    
+    if (newState) {
+      const token = await this.firebaseService.requestToken();
+      if (token) {
+        this.pushNotificationsEnabled.set(true);
+        // We save immediately when enabling to store the token
+        this.saveUserSettings(token);
+      } else {
+        alert('Push-Benachrichtigungen konnten nicht aktiviert werden. Bitte prüfen Sie die Browser-Berechtigungen.');
+      }
+    } else {
+      this.pushNotificationsEnabled.set(false);
+      this.saveUserSettings();
+    }
+  }
+
+  saveUserSettings(fcmToken?: string): void {
     this.isSavingSettings.set(true);
     this.saveSettingsSuccess.set(false);
 
@@ -92,7 +124,12 @@ export class SettingsComponent implements OnInit {
       .map(d => d.value);
 
     const payload: UserSettings = {
-      workStartTime: formVal.workStartTime + ':00', // Anfügen der Sekunden für das LocalTime Format
+      googleCalendarEnabled: this.googleCalendarEnabled(),
+      googleFreeBusyEnabled: this.googleFreeBusyEnabled(),
+      microsoftCalendarEnabled: this.microsoftCalendarEnabled(),
+      pushNotificationsEnabled: this.pushNotificationsEnabled(),
+      fcmToken: fcmToken,
+      workStartTime: formVal.workStartTime + ':00',
       workEndTime: formVal.workEndTime + ':00',
       workingDays: selectedDays
     };
@@ -126,6 +163,9 @@ export class SettingsComponent implements OnInit {
 
   connectCalendar(provider: AuthProvider): void {
     this.isLoading.set(true);
+
+    localStorage.setItem('pending_calendar_provider', provider);
+
     this.integrationService.getAuthorizationUrl(provider).subscribe({
       next: (response: any) => {
         window.location.href = response.url;

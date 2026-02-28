@@ -23,7 +23,7 @@ import { FeedbackStatus } from '../../../shared/models/meeting.model';
               </svg>
             </div>
             <h3 class="text-base font-semibold text-foreground">
-              End of Day &mdash; {{ parseDate(dailyFeedback().date) | date:'MMMM d, y' }}
+              End of Day - {{ parseDate(dailyFeedback().date) | date:'MMMM d, y' }}
             </h3>
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
               Daily

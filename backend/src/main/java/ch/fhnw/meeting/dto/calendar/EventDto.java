@@ -6,12 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Builder
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class EventDto {
     private String id;
     private String title;
     private String description;
-    private String start;
-    private String end;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private String link;
     private MeetingType meetingType;
     private String location;
@@ -44,19 +51,19 @@ public class EventDto {
         this.description = description;
     }
 
-    public String getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public String getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(String end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 

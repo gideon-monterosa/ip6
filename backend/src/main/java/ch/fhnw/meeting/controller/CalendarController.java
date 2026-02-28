@@ -83,9 +83,8 @@ public class CalendarController {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User nicht gefunden"));
 
-        Optional<Event> eventOpt = eventRepository.findByExternalIdAndProviderAndUserId(
+        Optional<Event> eventOpt = eventRepository.findByExternalIdIgnoreCaseAndUserId(
                 externalId,
-                AuthProvider.GOOGLE,
                 user.getId()
         );
 
@@ -97,5 +96,38 @@ public class CalendarController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/events")
+    public ResponseEntity<EventDto> createEvent(
+            @Valid @RequestBody EventDto eventDto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        EventDto createdEvent = calendarService.createInternalEvent(eventDto, userDetails.getUsername());
+        return ResponseEntity.ok(createdEvent);
+    }
+
+    @PutMapping("/events/{externalId}")
+    public ResponseEntity<EventDto> updateEvent(
+            @PathVariable String externalId,
+            @Valid @RequestBody EventDto eventDto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        EventDto updatedEvent = calendarService.updateInternalEvent(externalId, eventDto, userDetails.getUsername());
+        return ResponseEntity.ok(updatedEvent);
+    }
+
+    @DeleteMapping("/events/{externalId}")
+    public ResponseEntity<Void> deleteEvent(
+            @PathVariable String externalId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        calendarService.deleteInternalEvent(externalId, userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/events/bulk")
+    public ResponseEntity<List<EventDto>> createEventsBulk(
+            @Valid @RequestBody List<EventDto> eventDtos,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        List<EventDto> createdEvents = calendarService.createInternalEvents(eventDtos, userDetails.getUsername());
+        return ResponseEntity.ok(createdEvents);
     }
 }

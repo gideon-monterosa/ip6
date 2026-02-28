@@ -106,10 +106,11 @@ import { UserSettings } from '../../../core/models/user.model';
 
             @for (day of weekDays(); track day) {
               <div class="relative h-full">
-                @for (event of getEventsForDay(day); track event.id) {
+                @for (eventWithLayout of getEventsForDay(day); track eventWithLayout.event.id) {
                   <app-calendar-event-card
-                    [event]="event"
-                    (click)="onEventClick(event, $event)"
+                    [event]="eventWithLayout.event"
+                    [eventLayout]="eventWithLayout.layout"
+                    (click)="onEventClick(eventWithLayout.event, $event)"
                   />
                 }
               </div>
@@ -194,13 +195,61 @@ export class CalendarGridComponent {
     return isWorkingDay && isWorkingHour;
   }
 
-  getEventsForDay(date: Date): Meeting[] {
-    return this.events().filter(event => {
+  getEventsForDay(date: Date): { event: Meeting; layout: { left: string; width: string } }[] {
+    const dayEvents = this.events().filter(event => {
       const eventDate = new Date(event.start);
       return eventDate.getDate() === date.getDate() &&
         eventDate.getMonth() === date.getMonth() &&
         eventDate.getFullYear() === date.getFullYear();
     });
+
+    if (dayEvents.length === 0) return [];
+
+    // Sort by start time, then end time
+    dayEvents.sort((a, b) => {
+      const startDiff = new Date(a.start).getTime() - new Date(b.start).getTime();
+      if (startDiff !== 0) return startDiff;
+      return new Date(b.end).getTime() - new Date(a.end).getTime();
+    });
+
+    const results: { event: Meeting; layout: { left: string; width: string } }[] = [];
+    const columns: Meeting[][] = [];
+
+    dayEvents.forEach(event => {
+      let placed = false;
+      const eventStart = new Date(event.start).getTime();
+
+      for (let i = 0; i < columns.length; i++) {
+        const lastEventInColumn = columns[i][columns[i].length - 1];
+        if (new Date(lastEventInColumn.end).getTime() <= eventStart) {
+          columns[i].push(event);
+          placed = true;
+          break;
+        }
+      }
+
+      if (!placed) {
+        columns.push([event]);
+      }
+    });
+
+    // Now we have events in columns, but we need to know the total width they can occupy
+    // This simple approach assigns columns. For better visualization, we group overlapping events.
+
+    const totalColumns = columns.length;
+    columns.forEach((column, columnIndex) => {
+      column.forEach(event => {
+        results.push({
+          event,
+          layout: {
+            left: `${(columnIndex / totalColumns) * 100}%`,
+            width: `${(1 / totalColumns) * 100}%`
+          }
+        });
+      });
+    });
+
+    return results;
   }
 
   getDailyFeedbackForDay(date: Date): DailyFeedback | undefined {

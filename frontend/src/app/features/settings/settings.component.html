@@ -10,7 +10,7 @@
 
   <hr class="border-border my-6">
 
-  <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
+  <div class="grid sm:grid-cols-12 gap-2 sm:gap-6" id="tour-settings-provider">
     <div class="sm:col-span-3">
       <h2 class="text-lg font-semibold text-foreground">
         Calendar Provider
@@ -21,10 +21,12 @@
     </div>
 
     <div class="sm:col-span-9">
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div class="grid gap-4 sm:grid-cols-2" >
         <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors"
              [class.border-primary]="isGoogleConnected()"
-             [class.border-border]="!isGoogleConnected()">
+             [class.border-border]="!isGoogleConnected()"
+             [class.opacity-50]="!googleCalendarEnabled()"
+             [class.pointer-events-none]="!googleCalendarEnabled()">
 
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-x-3">
@@ -57,7 +59,7 @@
           <div class="mt-auto">
             <button type="button"
                     (click)="connectCalendar(AuthProvider.GOOGLE)"
-                    [disabled]="hasConnection() || isLoading()"
+                    [disabled]="hasConnection() || isLoading() || !googleCalendarEnabled()"
                     class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
               @if (isGoogleConnected()) {
                 Connected
@@ -70,11 +72,13 @@
 
         <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors"
              [class.border-primary]="isMicrosoftConnected()"
-             [class.border-border]="!isMicrosoftConnected()">
+             [class.border-border]="!isMicrosoftConnected()"
+             [class.opacity-50]="!microsoftCalendarEnabled()"
+             [class.pointer-events-none]="!microsoftCalendarEnabled()">
 
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-x-3">
-              <svg class="w-8 h-8" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-8 h-8" [class.grayscale]="!microsoftCalendarEnabled()" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#f35325" d="M1 1h10v10H1z"/>
                 <path fill="#81bc06" d="M12 1h10v10H12z"/>
                 <path fill="#05a6f0" d="M1 12h10v10H1z"/>
@@ -86,7 +90,7 @@
             @if (isMicrosoftConnected()) {
               <span
                 class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                <span class="w-1.5 h-1.5 inline-block rounded-full bg-green-800"></span>
+              <span class="w-1.5 h-1.5 inline-block rounded-full bg-green-800"></span>
                 Connected
               </span>
             }
@@ -95,12 +99,62 @@
           <div class="mt-auto">
             <button type="button"
                     (click)="connectCalendar(AuthProvider.MICROSOFT)"
-                    [disabled]="hasConnection() || isLoading()"
+                    [disabled]="hasConnection() || isLoading() || !microsoftCalendarEnabled()"
                     class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
               @if (isMicrosoftConnected()) {
                 Connected
+              } @else if (!microsoftCalendarEnabled()) {
+                Connect Microsoft (Disabled)
               } @else {
                 Connect Microsoft
+              }
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col bg-card border shadow-2xs rounded-xl p-4 md:p-5 transition-colors"
+             [class.border-primary]="isFreeBusyConnected()"
+             [class.border-border]="!isFreeBusyConnected()"
+             [class.opacity-50]="!googleFreeBusyEnabled()"
+             [class.pointer-events-none]="!googleFreeBusyEnabled()">
+
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-x-3">
+              <svg class="w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"/>
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"/>
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z"
+                  fill="#FBBC05"/>
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"/>
+              </svg>
+              <span class="font-semibold text-foreground">Google FreeBusy API</span>
+            </div>
+
+            @if (isFreeBusyConnected()) {
+              <span
+                class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span class="w-1.5 h-1.5 inline-block rounded-full bg-green-800"></span>
+                Connected
+              </span>
+            }
+          </div>
+
+          <div class="mt-auto">
+            <button type="button"
+                    (click)="connectCalendar(AuthProvider.FREE_BUSY)"
+                    [disabled]="hasConnection() || isLoading() || !googleFreeBusyEnabled()"
+                    class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:bg-primary-focus disabled:opacity-50 disabled:pointer-events-none transition-colors">
+              @if (isFreeBusyConnected()) {
+                Connected
+              } @else {
+                Connect FreeBusy
               }
             </button>
           </div>
@@ -112,6 +166,39 @@
   <hr class="border-border my-6">
 
   <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
+    <div class="sm:col-span-3">
+      <h2 class="text-lg font-semibold text-foreground">
+        Notifications
+      </h2>
+      <p class="text-sm text-muted-foreground-1 mt-1">
+        Get notified when a meeting ends so you can provide feedback quickly.
+      </p>
+    </div>
+
+    <div class="sm:col-span-9">
+      <div class="bg-card border shadow-2xs rounded-xl p-4 md:p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-medium text-foreground">Push Notifications</h3>
+            <p class="text-sm text-muted-foreground-1">Receive reminders in your browser.</p>
+          </div>
+          <button type="button"
+                  (click)="togglePushNotifications()"
+                  class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  [class.bg-primary]="pushNotificationsEnabled()"
+                  [class.bg-input]="!pushNotificationsEnabled()">
+            <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                  [class.translate-x-5]="pushNotificationsEnabled()"
+                  [class.translate-x-0]="!pushNotificationsEnabled()"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="border-border my-6">
+
+  <div class="grid sm:grid-cols-12 gap-2 sm:gap-6" id="tour-settings-hours">
     <div class="sm:col-span-3">
       <h2 class="text-lg font-semibold text-foreground">
         Working Hours

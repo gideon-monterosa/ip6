@@ -1,7 +1,6 @@
 package ch.fhnw.meeting.controller;
 
 import ch.fhnw.meeting.dto.calendar.CalendarConnectionRequest;
-import ch.fhnw.meeting.dto.calendar.CalendarStatusResponse;
 import ch.fhnw.meeting.dto.calendar.CalendarUrlResponse;
 import ch.fhnw.meeting.model.calendar.AuthProvider;
 import ch.fhnw.meeting.service.calendar.CalendarService;
@@ -50,7 +49,7 @@ public class CalendarAuthController {
         try {
             AuthProvider provider = request.getProvider() != null
                 ? request.getProvider()
-                : AuthProvider.GOOGLE;
+                : AuthProvider.FREE_BUSY;
 
             calendarService.connect(provider, request.getCode(), userDetails.getUsername());
 

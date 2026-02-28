@@ -5,6 +5,10 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Component
 public class GoogleEventFactory {
 
@@ -16,8 +20,8 @@ public class GoogleEventFactory {
         dto.setTitle(event.getSummary());
         dto.setDescription(event.getDescription());
         dto.setLink(event.getHtmlLink());
-        dto.setStart(formatDate(event.getStart()));
-        dto.setEnd(formatDate(event.getEnd()));
+        dto.setStart(mapToLocalDateTime(event.getStart()));
+        dto.setEnd(mapToLocalDateTime(event.getEnd()));
         dto.setLocation(event.getLocation());
 
         if (event.getOrganizer() != null) {
@@ -35,17 +39,27 @@ public class GoogleEventFactory {
         return dto;
     }
 
-    private String formatDate(EventDateTime eventDateTime) {
+    private LocalDateTime mapToLocalDateTime(EventDateTime eventDateTime) {
         if (eventDateTime == null) {
             return null;
         }
 
+        // 1. Fall: Es ist ein Termin mit Start- und Enduhrzeit
         if (eventDateTime.getDateTime() != null) {
-            return eventDateTime.getDateTime().toString();
+            return LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(eventDateTime.getDateTime().getValue()),
+                    ZoneId.systemDefault()
+            );
         }
+
+        // 2. Fall: Es ist ein ganztägiger Termin (ohne spezifische Uhrzeit)
         if (eventDateTime.getDate() != null) {
-            return eventDateTime.getDate().toString();
+            return LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(eventDateTime.getDate().getValue()),
+                    ZoneId.systemDefault()
+            );
         }
+
         return null;
     }
 }

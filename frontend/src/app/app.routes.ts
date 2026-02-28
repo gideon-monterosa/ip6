@@ -36,6 +36,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'feedback/:id',
+    loadComponent: () =>
+      import('./features/feedback-inbox/feedback-inbox.component').then(
+        (m) => m.FeedbackInboxComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'settings',
     loadComponent: () =>
       import('./features/settings/settings.component').then(

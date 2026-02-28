@@ -41,7 +41,7 @@ Authorization: Bearer {{auth_token}}
 
 
 ### Get Calendar events
-GET http://localhost:8080/api/calendar/events?start=2026-02-06T13:28:14.342Z&end=2026-02-27T13:28:14.342Z
+GET http://localhost:8080/api/calendar/events?start=2026-02-22T23:00:00.000Z&end=2026-03-01T22:59:59.999Z
 Accept: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -53,3 +53,85 @@ Authorization: Bearer {{auth_token}}
 {
   "meetingType": "Stand-up"
 }
+
+### Get User Settings
+GET http://localhost:8080/api/user/settings
+Authorization: Bearer {{auth_token}}
+
+### Create Internal Event
+POST http://localhost:8080/api/calendar/events
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Neues Meeting",
+  "description": "Ein manuell erstelltes Meeting",
+  "start": "2026-03-01T10:00:00",
+  "end": "2026-03-01T11:00:00",
+  "meetingType": "Planning",
+  "location": "Büro"
+}
+
+> {%
+    client.global.set("new_event_id", response.body.id);
+%}
+
+### Update Internal Event
+PUT http://localhost:8080/api/calendar/events/{{new_event_id}}
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Geändertes Meeting 2",
+  "description": "Geänderte Beschreibung",
+  "start": "2026-03-01T10:30:00",
+  "end": "2026-03-01T11:30:00",
+  "meetingType": "Stand-up",
+  "location": "Online"
+}
+
+### Bulk Create Internal Events
+POST http://localhost:8080/api/calendar/events/bulk
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "title": "Meeting 1",
+    "start": "2026-03-02T09:30:00",
+    "end": "2026-03-03T10:30:00",
+    "meetingType": "Stand-up"
+  },
+  {
+    "title": "Meeting 2",
+    "start": "2026-03-03T13:40:00",
+    "end": "2026-03-02T14:00:00",
+    "meetingType": "Planning"
+  }
+]
+
+### Delete Internal Event
+DELETE http://localhost:8080/api/calendar/events/{{new_event_id}}
+Authorization: Bearer {{auth_token}}
+
+### SUBMIT FEEDBACK
+POST http://localhost:8080/api/feedback/f75f8813-61da-4043-b303-b9fb40076298/feedback
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "details": {
+    "type": "MEETING",
+    "focusDisruption": 3,
+    "rotiScore": 1,
+    "mood": "NEUTRAL",
+    "energyAfter": 3,
+    "issueTags": [
+      "TOO_CLOSE_TO_ANOTHER"
+    ],
+    "positiveTags": [],
+    "comment": "123456u7ezhgstfreafgs"
+  }
+}
+
+

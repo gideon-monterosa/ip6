@@ -1,17 +1,13 @@
-FROM eclipse-temurin:21-jdk
-
+# Build stage
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
-
-# Copy Maven wrapper and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Download dependencies (cached layer)
-RUN ./mvnw dependency:go-offline -B
-
-# Copy source code
-COPY src src
-
-# For development: run Spring Boot
-CMD ["./mvnw", "spring-boot:run"]
+# Run stage
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

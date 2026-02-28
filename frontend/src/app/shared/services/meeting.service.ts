@@ -48,18 +48,47 @@ export class MeetingService {
     );
   }
 
+  createEvent(event: any): Observable<Meeting> {
+    return this.http.post<any>(`${this.calendarApiUrl}/events`, event).pipe(
+      map(dto => this.mapDtoToMeeting(dto)),
+      tap(newMeeting => {
+        this.meetingsSignal.update(current => [...current, newMeeting]);
+      })
+    );
+  }
+
+  updateEvent(meetingId: string, event: any): Observable<Meeting> {
+    return this.http.put<any>(`${this.calendarApiUrl}/events/${meetingId}`, event).pipe(
+      map(dto => this.mapDtoToMeeting(dto)),
+      tap(updatedMeeting => {
+        this.updateLocalMeeting(meetingId, updatedMeeting);
+      })
+    );
+  }
+
+  deleteEvent(meetingId: string): Observable<void> {
+    return this.http.delete<void>(`${this.calendarApiUrl}/events/${meetingId}`).pipe(
+      tap(() => {
+        this.meetingsSignal.update(current => current.filter(m => m.id !== meetingId));
+      })
+    );
+  }
+
   submitFeedback(meetingId: string, feedbackData: any): Observable<void> {
     const payload = {
       details: {
         type: 'MEETING',
+        focusDisruption: feedbackData.focus_disruption,
         rotiScore: feedbackData.roti_score,
         mood: feedbackData.mood,
         energyAfter: feedbackData.energy_after,
         issueTags: feedbackData.issue_tags,
-        comment: feedbackData.comment
+        positiveTags: feedbackData.positive_tags,
+        comment: feedbackData.comment,
+        startedAt: feedbackData.started_at,
+        submittedAt: feedbackData.submitted_at
       }
     };
-
     return this.http.post<void>(`${this.feedbackApiUrl}/${meetingId}/feedback`, payload).pipe(
       tap(() => this.updateLocalMeeting(meetingId, { feedbackStatus: FeedbackStatus.SUBMITTED }))
     );
@@ -87,6 +116,8 @@ export class MeetingService {
       title: dto.title,
       description: dto.description,
       link: dto.link,
+      location: dto.location,
+      provider: dto.provider,
       start: dto.start,
       end: dto.end,
       durationMinutes: durationMinutes,

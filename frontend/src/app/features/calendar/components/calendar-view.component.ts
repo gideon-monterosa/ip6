@@ -5,6 +5,7 @@ import { UserService } from '../../../core/services/user.service';
 import { CalendarHeaderComponent } from '../components/calendar-header.component';
 import { CalendarGridComponent } from '../components/calendar-grid.component';
 import { CalendarEventPopoverComponent } from './calendar-event-popover.component';
+import { CalendarEventModalComponent } from '../components/calendar-event-modal.component';
 import { FeedbackSurveyModalComponent } from '../../feedback-inbox/components/feedback-survey-modal.component';
 import { EodSurveyModalComponent } from '../../feedback-inbox/components/eod-survey-modal.component';
 import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
@@ -19,6 +20,7 @@ import { UserSettings } from '../../../core/models/user.model';
     CalendarHeaderComponent,
     CalendarGridComponent,
     CalendarEventPopoverComponent,
+    CalendarEventModalComponent,
     FeedbackSurveyModalComponent,
     EodSurveyModalComponent,
   ],
@@ -31,6 +33,7 @@ import { UserSettings } from '../../../core/models/user.model';
         (next)="onNextWeek()"
         (today)="onToday()"
         (refresh)="onRefresh()"
+        (add)="onAddEvent()"
       />
 
       <div class="relative flex-1 min-h-0">
@@ -56,7 +59,10 @@ import { UserSettings } from '../../../core/models/user.model';
         [event]="event"
         (close)="selectedEvent.set(null)"
         (dismiss)="onDismissEvent(event)"
+        (undoDismiss)="onUndoDismissEvent(event)"
         (giveFeedback)="onOpenFeedback(event)"
+        (edit)="onEditEvent(event)"
+        (delete)="onDeleteEvent(event)"
         (categoryChange)="onCategoryChange($event)"
       />
     }
@@ -76,6 +82,14 @@ import { UserSettings } from '../../../core/models/user.model';
         (close)="selectedEodDate.set(null)"
       />
     }
+
+    @if (showEventModal()) {
+      <app-calendar-event-modal
+        [meeting]="editingEvent()"
+        (close)="onCloseModal()"
+        (save)="onSaveEvent($event)"
+      />
+    }
   `
 })
 export class CalendarViewComponent implements OnInit {
@@ -91,10 +105,13 @@ export class CalendarViewComponent implements OnInit {
   selectedEvent = signal<Meeting | null>(null);
   feedbackMeeting = signal<Meeting | null>(null);
   selectedEodDate = signal<string | null>(null);
+  showEventModal = signal<boolean>(false);
+  editingEvent = signal<Meeting | null>(null);
 
   userSettings = signal<UserSettings | undefined>(undefined);
 
   ngOnInit(): void {
+    console.log('CalendarViewComponent initialized');
     this.calendarService.loadEventsForCurrentWeek();
 
     this.userService.getSettings().subscribe({
@@ -123,13 +140,69 @@ export class CalendarViewComponent implements OnInit {
     this.calendarService.triggerSync();
   }
 
+  onAddEvent(): void {
+    console.log('onAddEvent called, current showEventModal:', this.showEventModal());
+    this.editingEvent.set(null);
+    this.showEventModal.set(true);
+    console.log('showEventModal set to true, new value:', this.showEventModal());
+  }
+
+  onEditEvent(event: Meeting): void {
+    this.editingEvent.set(event);
+    this.selectedEvent.set(null);
+    this.showEventModal.set(true);
+  }
+
+  onDeleteEvent(event: Meeting): void {
+    if (confirm(`Are you sure you want to delete "${event.title}"?`)) {
+      this.meetingService.deleteEvent(event.id).subscribe({
+        next: () => {
+          this.selectedEvent.set(null);
+        },
+        error: (err: any) => console.error('Failed to delete event', err)
+      });
+    }
+  }
+
+  onCloseModal(): void {
+    this.showEventModal.set(false);
+    this.editingEvent.set(null);
+  }
+
+  onSaveEvent(eventData: any): void {
+    const editId = this.editingEvent()?.id;
+    const request = editId
+      ? this.meetingService.updateEvent(editId, eventData)
+      : this.meetingService.createEvent(eventData);
+
+    request.subscribe({
+      next: () => {
+        this.onCloseModal();
+      },
+      error: (err: any) => console.error('Failed to save event', err)
+    });
+  }
+
   onEventSelected(event: Meeting): void {
     this.selectedEvent.set(event);
   }
 
   onDismissEvent(event: Meeting): void {
     this.meetingService.dismissFeedback(event.id).subscribe({
-      next: () => console.log('Event dismissed'),
+      next: () => {
+        console.log('Event dismissed');
+        this.selectedEvent.set(null);
+      },
+      error: (err: Error) => console.error(err)
+    });
+  }
+
+  onUndoDismissEvent(event: Meeting): void {
+    this.meetingService.undoDismiss(event.id).subscribe({
+      next: () => {
+        console.log('Event dismiss undone');
+        this.selectedEvent.set(null);
+      },
       error: (err: Error) => console.error(err)
     });
   }

@@ -1,0 +1,39 @@
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    volumes:
+      - ./backend:/app
+      - maven-cache:/root/.m2
+    # In dev, we can override the CMD to use mvnw for hot-reloading if the Dockerfile uses java -jar
+    entrypoint: ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    # In dev, we override the NGINX start command to run the Angular dev server
+    entrypoint: ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]
+
+  proxy:
+    # You can keep the proxy running in dev to test the routing, 
+    # or disable it by setting replicas to 0 if you prefer direct port access.
+    ports:
+      - "80:80"
+
+volumes:
+  maven-cache:
+    driver: local

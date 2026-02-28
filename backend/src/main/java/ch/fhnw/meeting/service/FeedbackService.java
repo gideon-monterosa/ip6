@@ -26,16 +26,20 @@ public class FeedbackService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User nicht gefunden"));
 
-        Event event = eventRepository.findByExternalIdAndProviderAndUserId(
-                externalId, AuthProvider.GOOGLE, user.getId()
-        ).orElseThrow(() -> new RuntimeException("Event nicht gefunden"));
+        Event event = eventRepository.findByExternalIdIgnoreCaseAndUserId(externalId, user.getId())
+                .orElseThrow(() -> new RuntimeException("Event nicht gefunden"));
 
         event.setFeedbackStatus(FeedbackStatus.SUBMITTED);
         eventRepository.save(event);
 
+        String type = "MEETING";
+        if (request.getDetails() != null && request.getDetails().containsKey("type")) {
+            type = request.getDetails().get("type").toString();
+        }
+
         Feedback feedback = Feedback.builder()
                 .event(event)
-                .feedbackType("MEETING")
+                .feedbackType(type)
                 .details(request.getDetails())
                 .build();
 
@@ -47,9 +51,8 @@ public class FeedbackService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User nicht gefunden"));
 
-        Event event = eventRepository.findByExternalIdAndProviderAndUserId(
-                externalId, AuthProvider.GOOGLE, user.getId()
-        ).orElseThrow(() -> new RuntimeException("Event nicht gefunden"));
+        Event event = eventRepository.findByExternalIdIgnoreCaseAndUserId(externalId, user.getId())
+                .orElseThrow(() -> new RuntimeException("Event nicht gefunden"));
 
         event.setFeedbackStatus(status);
         eventRepository.save(event);

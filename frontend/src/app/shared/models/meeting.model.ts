@@ -27,6 +27,7 @@ export interface Meeting {
 
   description?: string;
   link?: string;
+  location?: string;
   provider?: string;
   externalId?: string;
   color?: string;

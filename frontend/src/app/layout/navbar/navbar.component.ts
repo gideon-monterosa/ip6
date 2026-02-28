@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
   private feedbackService = inject(FeedbackUIService);
 
   currentUser = this.authService.currentUser;
-  pendingCount = this.feedbackService.pendingCount;
+  pendingCount = this.feedbackService.totalPendingCount;
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
