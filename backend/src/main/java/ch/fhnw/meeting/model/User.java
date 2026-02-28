@@ -35,6 +35,7 @@ public class User {
     private String password;
 
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private String role = "USER";
 
     @Column(name = "work_start_time")
@@ -50,15 +51,19 @@ public class User {
     private Set<DayOfWeek> workingDays;
 
     @Column(name = "google_calendar_enabled", nullable = false)
+    @Builder.Default
     private Boolean googleCalendarEnabled = false;
 
     @Column(name = "google_free_busy_enabled", nullable = false)
+    @Builder.Default
     private Boolean googleFreeBusyEnabled = false;
 
     @Column(name = "microsoft_calendar_enabled", nullable = false)
+    @Builder.Default
     private Boolean microsoftCalendarEnabled = false;
 
     @Column(name = "push_notifications_enabled", nullable = false)
+    @Builder.Default
     private Boolean pushNotificationsEnabled = false;
 
     @Column(name = "fcm_token")
