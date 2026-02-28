@@ -5,9 +5,7 @@ services:
     environment:
       POSTGRES_DB: meetingdb
       POSTGRES_USER: meetinguser
-      POSTGRES_PASSWORD: meetingpass
-    ports:
-      - "5432:5432"
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-meetingpass}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -17,49 +15,73 @@ services:
       retries: 5
     networks:
       - meeting-network
+    restart: always
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: ip6-backend
-    ports:
-      - "8080:8080"
-      - "5005:5005"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meetingdb
-      SPRING_DATASOURCE_USERNAME: meetinguser
-      SPRING_DATASOURCE_PASSWORD: meetingpass
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: meetinguser
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-meetingpass}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      CORS_ALLOWED_ORIGINS: http://meetings.isenegger.dev,https://meetings.isenegger.dev
+      APP_FRONTEND_URL: https://meetings.isenegger.dev
+      GOOGLE_REDIRECT_URI: https://meetings.isenegger.dev/calendar-callback
+      MICROSOFT_REDIRECT_URI: https://meetings.isenegger.dev/calendar-callback
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_FREE_BUSY_CLIENT_ID: ${GOOGLE_FREE_BUSY_CLIENT_ID}
+      GOOGLE_FREE_BUSY_CLIENT_SECRET: ${GOOGLE_FREE_BUSY_CLIENT_SECRET}
+      MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID}
+      MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./backend:/app
-      - maven-cache:/root/.m2
+      - ./backend/firebase.json:/app/firebase.json:ro
     networks:
       - meeting-network
+    restart: always
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        FIREBASE_API_KEY: ${FIREBASE_API_KEY}
+        FIREBASE_AUTH_DOMAIN: ${FIREBASE_AUTH_DOMAIN}
+        FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+        FIREBASE_STORAGE_BUCKET: ${FIREBASE_STORAGE_BUCKET}
+        FIREBASE_MESSAGING_SENDER_ID: ${FIREBASE_MESSAGING_SENDER_ID}
+        FIREBASE_APP_ID: ${FIREBASE_APP_ID}
+        FIREBASE_MEASUREMENT_ID: ${FIREBASE_MEASUREMENT_ID}
+        FIREBASE_VAPID_KEY: ${FIREBASE_VAPID_KEY}
     container_name: ip6-frontend
-    ports:
-      - "4200:4200"
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     networks:
       - meeting-network
+    restart: always
+
+  proxy:
+    image: nginx:stable-alpine
+    container_name: ip6-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - meeting-network
+    restart: always
 
 volumes:
   postgres_data:
-    driver: local
-  maven-cache:
     driver: local
 
 networks:
