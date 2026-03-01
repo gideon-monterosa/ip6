@@ -14,6 +14,12 @@ services:
     volumes:
       - ./backend:/app
       - maven-cache:/root/.m2
+    environment:
+      CORS_ALLOWED_ORIGINS: http://localhost:4200
+      APP_FRONTEND_URL: http://localhost:4200
+      GOOGLE_REDIRECT_URI: http://localhost:4200/calendar-callback
+      MICROSOFT_REDIRECT_URI: http://localhost:4200/calendar-callback
+      SPRING_FLYWAY_ENABLED: "true"
     # In dev, we can override the CMD to use mvnw for hot-reloading if the Dockerfile uses java -jar
     entrypoint: ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
 

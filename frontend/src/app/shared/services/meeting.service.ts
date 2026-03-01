@@ -16,6 +16,9 @@ export class MeetingService {
   private meetingsSignal = signal<Meeting[]>([]);
   public readonly meetings = this.meetingsSignal.asReadonly();
 
+  private pendingMeetingsSignal = signal<Meeting[]>([]);
+  public readonly pendingMeetings = this.pendingMeetingsSignal.asReadonly();
+
   private isLoadingSignal = signal<boolean>(false);
   public readonly isLoading = this.isLoadingSignal.asReadonly();
 
@@ -35,6 +38,35 @@ export class MeetingService {
         error: (err) => {
           console.error('Fehler beim Laden der Meetings', err);
           this.isLoadingSignal.set(false);
+        }
+      })
+    );
+  }
+
+  loadPendingMeetings(): Observable<Meeting[]> {
+    const start = new Date();
+    start.setDate(start.getDate() - 14);
+    const end = new Date();
+    end.setDate(end.getDate() + 7);
+
+    const params = new HttpParams()
+      .set('start', start.toISOString())
+      .set('end', end.toISOString());
+
+    return this.http.get<any[]>(`${this.calendarApiUrl}/events`, { params }).pipe(
+      map(events => events.map(dto => this.mapDtoToMeeting(dto))),
+      map(meetings => {
+        const now = Date.now();
+        return meetings.filter(m => 
+          m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now
+        );
+      }),
+      tap({
+        next: (meetings) => {
+          this.pendingMeetingsSignal.set(meetings);
+        },
+        error: (err) => {
+          console.error('Fehler beim Laden der ausstehenden Feedbacks', err);
         }
       })
     );
@@ -130,5 +162,10 @@ export class MeetingService {
     this.meetingsSignal.update(current =>
       current.map(m => m.id === id ? { ...m, ...changes } : m)
     );
+    this.pendingMeetingsSignal.update(current => {
+      const now = Date.now();
+      return current.map(m => m.id === id ? { ...m, ...changes } : m)
+        .filter(m => m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now);
+    });
   }
 }

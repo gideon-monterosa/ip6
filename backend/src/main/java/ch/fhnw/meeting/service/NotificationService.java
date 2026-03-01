@@ -31,14 +31,13 @@ public class NotificationService {
         }
 
         try {
-            // Beispiel-Link: http://localhost:4200/feedback/xyz-123
             String clickUrl = String.format("%s/feedback/%s", frontendUrl, externalId);
 
             Message message = Message.builder()
                     .setToken(user.getFcmToken())
                     .setNotification(Notification.builder()
-                            .setTitle("Meeting beendet: " + eventTitle)
-                            .setBody("Wie war das Meeting? Bitte gib uns kurzes Feedback.")
+                            .setTitle("Meeting Ended: " + eventTitle)
+                            .setBody("How was the meeting? Tap to share your feedback.")
                             .build())
                     .putData("eventId", externalId)
                     .putData("type", "FEEDBACK_REMINDER")
@@ -54,6 +53,42 @@ public class NotificationService {
             log.info("Successfully sent message with link: " + response);
         } catch (Exception e) {
             log.error("Error sending FCM message to user {}: {}", user.getUsername(), e.getMessage());
+        }
+    }
+
+    public void sendEodFeedbackReminder(User user, String date) {
+        if (!user.getPushNotificationsEnabled() || user.getFcmToken() == null || user.getFcmToken().isEmpty()) {
+            return;
+        }
+
+        if (FirebaseApp.getApps().isEmpty()) {
+            log.warn("FirebaseApp is not initialized. Notifications cannot be sent to user {}.", user.getUsername());
+            return;
+        }
+
+        try {
+            String clickUrl = String.format("%s/feedback", frontendUrl);
+
+            Message message = Message.builder()
+                    .setToken(user.getFcmToken())
+                    .setNotification(Notification.builder()
+                            .setTitle("Almost done for today!")
+                            .setBody("Take a moment to reflect on your workday and track your progress.")
+                            .build())
+                    .putData("type", "EOD_FEEDBACK_REMINDER")
+                    .putData("date", date)
+                    .putData("click_url", clickUrl)
+                    .setWebpushConfig(WebpushConfig.builder()
+                            .setFcmOptions(WebpushFcmOptions.withLink(clickUrl))
+                            .putHeader("ttl", "3600")
+                            .putData("click_action", clickUrl)
+                            .build())
+                    .build();
+
+            String response = FirebaseMessaging.getInstance().send(message);
+            log.info("Successfully sent EOD message: " + response);
+        } catch (Exception e) {
+            log.error("Error sending EOD FCM message to user {}: {}", user.getUsername(), e.getMessage());
         }
     }
 }

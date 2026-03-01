@@ -17,13 +17,19 @@ export class FeedbackUIService {
 
   public readonly isLoading = this.meetingService.isLoading;
 
-  public readonly pendingMeetings = computed(() =>
-    this.meetingService.meetings().filter(m => m.feedbackStatus === FeedbackStatus.PENDING)
-  );
+  public readonly pendingMeetings = computed(() => {
+    const now = Date.now();
+    return this.meetingService.meetings().filter(m => 
+      m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now
+    );
+  });
 
-  public readonly dismissedMeetings = computed(() =>
-    this.meetingService.meetings().filter(m => m.feedbackStatus === FeedbackStatus.DISMISSED)
-  );
+  public readonly dismissedMeetings = computed(() => {
+    const now = Date.now();
+    return this.meetingService.meetings().filter(m => 
+      m.feedbackStatus === FeedbackStatus.DISMISSED && new Date(m.end).getTime() < now
+    );
+  });
 
   public readonly pendingCount = computed(() => this.pendingMeetings().length);
 
@@ -35,7 +41,7 @@ export class FeedbackUIService {
     return list.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
   });
 
-  // Daily feedback computed signals
+  // Daily feedback computed signals for the inbox view (filtered by current meetings list if needed)
   public readonly pendingDailyFeedbacks = computed(() =>
     this.dailyFeedbackService.dailyFeedbacks()
       .filter(d => d.feedbackStatus === FeedbackStatus.PENDING)
@@ -53,8 +59,9 @@ export class FeedbackUIService {
     return list.sort((a, b) => b.date.localeCompare(a.date));
   });
 
+  // This one is used by the Navbar and should be globally consistent
   public readonly totalPendingCount = computed(() =>
-    this.pendingMeetings().length + this.pendingDailyFeedbacks().length
+    this.meetingService.pendingMeetings().length + this.dailyFeedbackService.pendingDailyFeedbacks().length
   );
 
   toggleShowDismissed(): void {
@@ -68,6 +75,7 @@ export class FeedbackUIService {
     end.setDate(end.getDate() + 7);
 
     this.meetingService.loadMeetingsForDateRange(start, end).subscribe();
+    this.meetingService.loadPendingMeetings().subscribe();
     this.dailyFeedbackService.loadPending().subscribe();
   }
 
