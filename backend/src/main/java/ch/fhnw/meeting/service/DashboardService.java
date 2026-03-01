@@ -66,10 +66,10 @@ public class DashboardService {
 
     private String mapMeetingType(String type) {
         if ("ONE_ON_ONE".equals(type)) return "1:1";
-        if ("STANDUP".equals(type)) return "Stand-up";
+        if ("STAND_UP".equals(type)) return "Stand-up";
         if ("PLANNING".equals(type)) return "Planning";
         if ("RETROSPECTIVE".equals(type)) return "Retrospective";
-        if ("ADHOC".equals(type)) return "Ad-hoc";
+        if ("AD_HOC".equals(type)) return "Ad-hoc";
         return "Other";
     }
 
