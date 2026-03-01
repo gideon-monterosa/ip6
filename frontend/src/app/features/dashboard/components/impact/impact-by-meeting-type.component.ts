@@ -101,6 +101,7 @@ export class ImpactByMeetingTypeComponent {
         this.xaxis = { categories: items.map((d) => d.type) };
         this.series = [
           { name: 'Worth my time', data: items.map((d) => d.avgEfficiency) },
+          { name: 'Feeling', data: items.map((d) => Math.round((d.avgEmotional + 2) * 12.5) / 10) },
           { name: 'Energy', data: items.map((d) => d.avgEnergy) },
           { name: 'Disruption', data: items.map((d) => d.avgDisruption) },
         ];
