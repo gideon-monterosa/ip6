@@ -2,7 +2,7 @@ import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { TimingBucket } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
-import { CHART_GRID_BORDER } from '../../../../theme.constants';
+import { CHART_GRID_BORDER, CHART_PRIMARY, CHART_COLORS } from '../../../../theme.constants';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -49,14 +49,14 @@ export class MeetingTimingAnalysisComponent {
       return val + '';
     },
   };
-  plotOptions: ApexPlotOptions = { bar: { borderRadius: 6, columnWidth: '50%' } };
+  plotOptions: ApexPlotOptions = { bar: { borderRadius: 6, columnWidth: '50%', distributed: true } };
   grid: ApexGrid = { borderColor: CHART_GRID_BORDER, strokeDashArray: 4 };
   tooltip: ApexTooltip = { theme: 'light' };
   fill: ApexFill = {
     type: 'gradient',
     gradient: { shade: 'light', type: 'vertical', opacityFrom: 0.9, opacityTo: 0.7 },
   };
-  colors = ['#2563eb', '#eab308', '#f97316'];
+  colors = [CHART_PRIMARY, CHART_COLORS.chart6, CHART_COLORS.chart7];
 
   constructor() {
     effect(() => {
