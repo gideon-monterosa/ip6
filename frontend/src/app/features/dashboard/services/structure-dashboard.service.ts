@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, shareReplay } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import {
   RawMeeting,
   DailyOverviewData,
@@ -21,21 +22,21 @@ export class StructureDashboardService {
   private http = inject(HttpClient);
 
   private meetings$ = this.http
-    .get<{ meetings: RawMeeting[] }>('mock-data/structure/meetings.json')
+    .get<{ meetings: RawMeeting[] }>(`${environment.apiUrl}/api/dashboard/structure/meetings`)
     .pipe(
       map((res) => res.meetings),
       shareReplay(1),
     );
 
   private focusBlocks$ = this.http
-    .get<{ focusBlocks: FocusBlockDay[] }>('mock-data/structure/focus-blocks.json')
+    .get<{ focusBlocks: FocusBlockDay[] }>(`${environment.apiUrl}/api/dashboard/structure/focus-blocks`)
     .pipe(
       map((res) => res.focusBlocks),
       shareReplay(1),
     );
 
   private fragmentationScores$ = this.http
-    .get<{ scores: FragmentationDay[] }>('mock-data/structure/fragmentation-scores.json')
+    .get<{ scores: FragmentationDay[] }>(`${environment.apiUrl}/api/dashboard/structure/fragmentation-scores`)
     .pipe(
       map((res) => res.scores),
       shareReplay(1),
