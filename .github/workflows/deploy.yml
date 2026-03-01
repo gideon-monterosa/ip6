@@ -55,15 +55,6 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT" > backend/firebase.json
           
           docker compose -f docker-compose.yml down
-          
-          # Ensure volume exists for the check
-          docker volume create certbot_conf > /dev/null
-          if [ "$(docker run --rm -v certbot_conf:/etc/letsencrypt alpine sh -c 'test -d /etc/letsencrypt/live/meetings.isenegger.dev && echo 1 || echo 0')" = "0" ]; then
-            echo "First time setup: Initializing Let's Encrypt..."
-            chmod +x ./init-letsencrypt.sh
-            ./init-letsencrypt.sh
-          fi
-
           docker compose -f docker-compose.yml up --build -d
           
           echo "Waiting for migrations to complete..."
