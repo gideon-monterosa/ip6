@@ -9,7 +9,6 @@ import { RecurringAdhocRatioComponent } from './components/structure/recurring-a
 import { MeetingsTrendChartComponent } from './components/meetings-trend-chart.component';
 import { MeetingsByDayChartComponent } from './components/meetings-by-day-chart.component';
 import { DurationBreakdownChartComponent } from './components/duration-breakdown-chart.component';
-import { WeekMeetingsComponent } from './components/week-meetings.component';
 import {
   StructureSummaryWeek,
   DailyOverviewData,
@@ -34,8 +33,7 @@ import {
     RecurringAdhocRatioComponent,
     MeetingsTrendChartComponent,
     MeetingsByDayChartComponent,
-    DurationBreakdownChartComponent,
-    WeekMeetingsComponent,
+    DurationBreakdownChartComponent
   ],
   template: `
     <div>
@@ -79,9 +77,6 @@ import {
           <app-fragmentation-score [data]='fragmentation()' />
         }
       </div>
-
-      <!-- Row 6: Meetings This Week -->
-      <app-week-meetings [meetings]='weekMeetings()' />
     </div>
   `,
 })
