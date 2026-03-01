@@ -15,6 +15,9 @@ export class DailyFeedbackService {
   private dailyFeedbacksSignal = signal<DailyFeedback[]>([]);
   public readonly dailyFeedbacks = this.dailyFeedbacksSignal.asReadonly();
 
+  private pendingDailyFeedbacksSignal = signal<DailyFeedback[]>([]);
+  public readonly pendingDailyFeedbacks = this.pendingDailyFeedbacksSignal.asReadonly();
+
   private isLoadingSignal = signal<boolean>(false);
   public readonly isLoading = this.isLoadingSignal.asReadonly();
 
@@ -31,6 +34,7 @@ export class DailyFeedbackService {
       tap({
         next: (feedbacks) => {
           this.dailyFeedbacksSignal.set(feedbacks);
+          this.pendingDailyFeedbacksSignal.set(feedbacks);
           this.isLoadingSignal.set(false);
         },
         error: () => this.isLoadingSignal.set(false)
@@ -60,6 +64,10 @@ export class DailyFeedbackService {
   private updateLocalStatus(date: string, status: FeedbackStatus): void {
     this.dailyFeedbacksSignal.update(current =>
       current.map(df => df.date === date ? { ...df, feedbackStatus: status } : df)
+    );
+    this.pendingDailyFeedbacksSignal.update(current =>
+      current.map(df => df.date === date ? { ...df, feedbackStatus: status } : df)
+        .filter(df => df.feedbackStatus === FeedbackStatus.PENDING)
     );
   }
 }
