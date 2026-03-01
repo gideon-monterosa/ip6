@@ -55,6 +55,13 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT" > backend/firebase.json
           
           docker compose -f docker-compose.yml down
+          
+          if [ ! -d "./certbot/conf/live/meetings.isenegger.dev" ]; then
+            echo "First time setup: Initializing Let's Encrypt..."
+            chmod +x ./init-letsencrypt.sh
+            ./init-letsencrypt.sh
+          fi
+
           docker compose -f docker-compose.yml up --build -d
           
           echo "Waiting for migrations to complete..."
