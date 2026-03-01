@@ -50,6 +50,15 @@ echo "### Starting nginx ..."
 $DOCKER_COMPOSE up --force-recreate -d proxy
 echo
 
+echo "### Waiting for Nginx to initialize..."
+sleep 10
+
+if [ "$(docker inspect -f '{{.State.Status}}' ip6-proxy)" != "running" ]; then
+  echo "Error: Nginx proxy failed to start or is crashing. Logs:"
+  docker logs ip6-proxy
+  exit 1
+fi
+
 echo "### Deleting dummy certificate for ${domains[0]} ..."
 $DOCKER_COMPOSE run --rm --entrypoint "rm -Rf /etc/letsencrypt/live/${domains[0]} /etc/letsencrypt/archive/${domains[0]} /etc/letsencrypt/renewal/${domains[0]}.conf" certbot
 echo
