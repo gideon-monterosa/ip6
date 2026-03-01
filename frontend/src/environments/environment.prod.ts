@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://meetings.isenegger.dev/api',
+  apiUrl: 'https://meetings.isenegger.dev',
   firebaseConfig: {
     apiKey: "__FIREBASE_API_KEY__",
     authDomain: "__FIREBASE_AUTH_DOMAIN__",
