@@ -29,7 +29,9 @@ public class DashboardService {
         LocalDateTime end = LocalDateTime.now().plusMonths(3);
         
         List<Event> events = eventRepository.findAllByUserUsernameAndStartTimeBetweenOrderByStartTimeAsc(
-                username, start, end);
+                username, start, end).stream()
+                .filter(e -> e.getFeedbackStatus() != ch.fhnw.meeting.model.feedback.FeedbackStatus.DISMISSED)
+                .collect(Collectors.toList());
                 
         List<RawMeetingDto> dtos = events.stream().map(this::mapToRawMeetingDto).collect(Collectors.toList());
         return new MeetingsResponseDto(dtos);
