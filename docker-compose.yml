@@ -86,8 +86,8 @@ services:
       - "443:443"
     volumes:
       - ./proxy/conf.d:/etc/nginx/conf.d:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
+      - certbot_conf:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
     depends_on:
       - frontend
       - backend
@@ -100,13 +100,15 @@ services:
     container_name: ip6-certbot
     restart: unless-stopped
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   postgres_data:
     driver: local
+  certbot_conf:
+  certbot_www:
 
 networks:
   meeting-network:
