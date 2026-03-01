@@ -17,13 +17,19 @@ export class FeedbackUIService {
 
   public readonly isLoading = this.meetingService.isLoading;
 
-  public readonly pendingMeetings = computed(() =>
-    this.meetingService.meetings().filter(m => m.feedbackStatus === FeedbackStatus.PENDING)
-  );
+  public readonly pendingMeetings = computed(() => {
+    const now = Date.now();
+    return this.meetingService.meetings().filter(m => 
+      m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now
+    );
+  });
 
-  public readonly dismissedMeetings = computed(() =>
-    this.meetingService.meetings().filter(m => m.feedbackStatus === FeedbackStatus.DISMISSED)
-  );
+  public readonly dismissedMeetings = computed(() => {
+    const now = Date.now();
+    return this.meetingService.meetings().filter(m => 
+      m.feedbackStatus === FeedbackStatus.DISMISSED && new Date(m.end).getTime() < now
+    );
+  });
 
   public readonly pendingCount = computed(() => this.pendingMeetings().length);
 

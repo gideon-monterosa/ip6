@@ -55,7 +55,12 @@ export class MeetingService {
 
     return this.http.get<any[]>(`${this.calendarApiUrl}/events`, { params }).pipe(
       map(events => events.map(dto => this.mapDtoToMeeting(dto))),
-      map(meetings => meetings.filter(m => m.feedbackStatus === FeedbackStatus.PENDING)),
+      map(meetings => {
+        const now = Date.now();
+        return meetings.filter(m => 
+          m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now
+        );
+      }),
       tap({
         next: (meetings) => {
           this.pendingMeetingsSignal.set(meetings);
@@ -157,9 +162,10 @@ export class MeetingService {
     this.meetingsSignal.update(current =>
       current.map(m => m.id === id ? { ...m, ...changes } : m)
     );
-    this.pendingMeetingsSignal.update(current =>
-      current.map(m => m.id === id ? { ...m, ...changes } : m)
-        .filter(m => m.feedbackStatus === FeedbackStatus.PENDING)
-    );
+    this.pendingMeetingsSignal.update(current => {
+      const now = Date.now();
+      return current.map(m => m.id === id ? { ...m, ...changes } : m)
+        .filter(m => m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now);
+    });
   }
 }
