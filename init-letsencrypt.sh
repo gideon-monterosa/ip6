@@ -15,10 +15,14 @@ email="xeno.isenegger@students.fhnw.ch"
 staging=0
 
 # Ensure volumes exist
-docker volume create certbot_conf > /dev/null
-docker volume create certbot_www > /dev/null
+# Docker Compose prepends the folder name (ip6) to the volume names
+volume_conf="ip6_certbot_conf"
+volume_www="ip6_certbot_www"
 
-has_cert=$(docker run --rm -v certbot_conf:/etc/letsencrypt alpine sh -c "test -d /etc/letsencrypt/live/${domains[0]} && echo 1 || echo 0")
+docker volume create $volume_conf > /dev/null
+docker volume create $volume_www > /dev/null
+
+has_cert=$(docker run --rm -v $volume_conf:/etc/letsencrypt alpine sh -c "test -d /etc/letsencrypt/live/${domains[0]} && echo 1 || echo 0")
 
 if [ "$has_cert" = "1" ]; then
   read -p "Existing data found for ${domains[0]}. Continue and replace existing certificate? (y/N) " decision
@@ -28,7 +32,7 @@ if [ "$has_cert" = "1" ]; then
 fi
 
 echo "### Downloading recommended TLS parameters ..."
-docker run --rm -v certbot_conf:/etc/letsencrypt alpine sh -c "apk add --no-cache curl && \
+docker run --rm -v $volume_conf:/etc/letsencrypt alpine sh -c "apk add --no-cache curl && \
   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > /etc/letsencrypt/options-ssl-nginx.conf && \
   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > /etc/letsencrypt/ssl-dhparams.pem"
 echo
