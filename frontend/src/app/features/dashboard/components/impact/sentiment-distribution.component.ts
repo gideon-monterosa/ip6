@@ -11,6 +11,7 @@ import {
   ApexPlotOptions,
   ApexGrid,
   ApexTooltip,
+  ApexLegend,
 } from 'ng-apexcharts';
 
 @Component({
@@ -26,11 +27,12 @@ import {
         [plotOptions]='plotOptions'
         [grid]='grid'
         [tooltip]='tooltip'
+        [legend]='legend'
         [colors]='colors'
       />
-      @if (motivatedPct > 0) {
+      @if (positivePct > 0) {
         <p class='text-sm text-muted-foreground-1 mt-2'>
-          {{ motivatedPct }}% reported motivated feeling
+          {{ positivePct }}% reported positive feeling
         </p>
       }
     </app-chart-card>
@@ -38,7 +40,7 @@ import {
 })
 export class SentimentDistributionComponent {
   data = input.required<SentimentBucket[]>();
-  motivatedPct = 0;
+  positivePct = 0;
 
   series: ApexAxisChartSeries = [];
   chart: ApexChart = { type: 'bar', height: 280, toolbar: { show: false } };
@@ -49,6 +51,7 @@ export class SentimentDistributionComponent {
   };
   grid: ApexGrid = { borderColor: CHART_GRID_BORDER, strokeDashArray: 4 };
   tooltip: ApexTooltip = { theme: 'light' };
+  legend: ApexLegend = { show: true, position: 'top' };
   colors = [SEMANTIC_COLORS.danger, '#9ca3af', SEMANTIC_COLORS.success];
 
   constructor() {
@@ -56,14 +59,14 @@ export class SentimentDistributionComponent {
       const items = this.data();
       if (items.length) {
         const labelMap: Record<string, string> = {
-          stressed: 'Stressed',
+          stressed: 'Negative',
           neutral: 'Neutral',
-          motivated: 'Motivated',
+          motivated: 'Positive',
         };
         this.series = [{ name: 'Count', data: items.map((d) => d.count) }];
         this.xaxis = { categories: items.map((d) => labelMap[d.sentiment] ?? d.sentiment) };
-        const motivated = items.find((d) => d.sentiment === 'motivated');
-        this.motivatedPct = motivated?.percentage ?? 0;
+        const positive = items.find((d) => d.sentiment === 'motivated');
+        this.positivePct = positive?.percentage ?? 0;
       }
     });
   }

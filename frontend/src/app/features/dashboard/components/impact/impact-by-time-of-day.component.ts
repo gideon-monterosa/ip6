@@ -61,8 +61,8 @@ export class ImpactByTimeOfDayComponent {
       if (items.length) {
         this.xaxis = { categories: items.map((d) => d.timeOfDay) };
         this.series = [
-          { name: 'Efficiency', data: items.map((d) => d.avgEfficiency) },
-          { name: 'Emotion', data: items.map((d) => Math.round((d.avgEmotional + 2) * 12.5) / 10) },
+          { name: 'Worth my time', data: items.map((d) => d.avgEfficiency) },
+          { name: 'Feeling', data: items.map((d) => Math.round((d.avgEmotional + 2) * 12.5) / 10) },
           { name: 'Disruption', data: items.map((d) => d.avgDisruption) },
         ];
         const worst = items.reduce((prev, curr) =>

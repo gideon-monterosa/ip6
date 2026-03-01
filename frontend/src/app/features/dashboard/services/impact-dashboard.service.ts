@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, shareReplay } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import {
   RawFeedback,
   ImpactSummaryWeek,
@@ -18,14 +19,14 @@ export class ImpactDashboardService {
   private http = inject(HttpClient);
 
   private feedback$ = this.http
-    .get<{ feedback: RawFeedback[] }>('mock-data/impact/feedback.json')
+    .get<{ feedback: RawFeedback[] }>(`${environment.apiUrl}/api/dashboard/impact/feedback`)
     .pipe(
       map((res) => res.feedback),
       shareReplay(1),
     );
 
   private focusDisruption$ = this.http
-    .get<{ disruption: DisruptionDay[] }>('mock-data/impact/focus-disruption.json')
+    .get<{ disruption: DisruptionDay[] }>(`${environment.apiUrl}/api/dashboard/impact/focus-disruption`)
     .pipe(
       map((res) => res.disruption),
       shareReplay(1),
