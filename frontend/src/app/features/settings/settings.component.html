@@ -179,14 +179,25 @@
       <div class="bg-card border shadow-2xs rounded-xl p-4 md:p-5">
         <div class="flex items-center justify-between">
           <div>
-            <h3 class="font-medium text-foreground">Push Notifications</h3>
+            <h3 class="font-medium text-foreground flex items-center gap-x-2">
+              Push Notifications
+              @if (saveNotificationsSuccess()) {
+                <span class="text-xs text-green-600 flex items-center gap-1 font-medium animate-in fade-in duration-300">
+                  <svg class="size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Saved
+                </span>
+              }
+            </h3>
             <p class="text-sm text-muted-foreground-1">Receive reminders in your browser.</p>
           </div>
           <button type="button"
                   (click)="togglePushNotifications()"
                   class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   [class.bg-primary]="pushNotificationsEnabled()"
-                  [class.bg-input]="!pushNotificationsEnabled()">
+                  [class.bg-gray-300]="!pushNotificationsEnabled()">
             <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
                   [class.translate-x-5]="pushNotificationsEnabled()"
                   [class.translate-x-0]="!pushNotificationsEnabled()"></span>

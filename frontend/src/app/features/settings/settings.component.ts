@@ -41,6 +41,7 @@ export class SettingsComponent implements OnInit {
   settingsForm!: FormGroup;
   isSavingSettings = signal(false);
   saveSettingsSuccess = signal(false);
+  saveNotificationsSuccess = signal(false);
 
   availableDays = [
     { label: 'Monday', value: 'MONDAY' },
@@ -104,19 +105,23 @@ export class SettingsComponent implements OnInit {
       if (token) {
         this.pushNotificationsEnabled.set(true);
         // We save immediately when enabling to store the token
-        this.saveUserSettings(token);
+        this.saveUserSettings(token, true);
       } else {
         alert('Push-Benachrichtigungen konnten nicht aktiviert werden. Bitte prüfen Sie die Browser-Berechtigungen.');
       }
     } else {
       this.pushNotificationsEnabled.set(false);
-      this.saveUserSettings();
+      this.saveUserSettings(undefined, true);
     }
   }
 
-  saveUserSettings(fcmToken?: string): void {
-    this.isSavingSettings.set(true);
-    this.saveSettingsSuccess.set(false);
+  saveUserSettings(fcmToken?: string, isNotificationToggle = false): void {
+    if (!isNotificationToggle) {
+      this.isSavingSettings.set(true);
+      this.saveSettingsSuccess.set(false);
+    } else {
+      this.saveNotificationsSuccess.set(false);
+    }
 
     const formVal = this.settingsForm.value;
     const selectedDays = this.availableDays
@@ -136,9 +141,14 @@ export class SettingsComponent implements OnInit {
 
     this.userService.updateSettings(payload).subscribe({
       next: () => {
-        this.isSavingSettings.set(false);
-        this.saveSettingsSuccess.set(true);
-        setTimeout(() => this.saveSettingsSuccess.set(false), 3000);
+        if (!isNotificationToggle) {
+          this.isSavingSettings.set(false);
+          this.saveSettingsSuccess.set(true);
+          setTimeout(() => this.saveSettingsSuccess.set(false), 3000);
+        } else {
+          this.saveNotificationsSuccess.set(true);
+          setTimeout(() => this.saveNotificationsSuccess.set(false), 3000);
+        }
       },
       error: (err) => {
         console.error('Fehler beim Speichern', err);
