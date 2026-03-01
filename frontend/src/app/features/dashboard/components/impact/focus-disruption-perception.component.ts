@@ -27,7 +27,7 @@ import {
         </div>
         <div>
           <div class='text-sm font-medium text-foreground'>Average Disruption</div>
-          <div class='text-xs text-muted-foreground-1'>Scale: 1 (low) – 5 (high)</div>
+          <div class='text-xs text-muted-foreground-1'>Scale: 1 (Not at all) – 5 (Very much)</div>
         </div>
       </div>
       <!-- Trend line -->

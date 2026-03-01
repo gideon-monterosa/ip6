@@ -78,12 +78,12 @@ public class DashboardService {
         Map<String, Object> details = feedback.getDetails();
 
         Integer perceivedEfficiency = getIntegerFromMap(details, "rotiScore", 3);
-        String mood = getStringFromMap(details, "mood", "neutral").toLowerCase();
+        String mood = getStringFromMap(details, "mood", "NEUTRAL").toUpperCase();
 
         String emotionalImpact = "neutral";
-        if (mood.contains("good") || mood.contains("great") || mood.contains("motivated")) {
+        if ("POSITIVE".equals(mood)) {
             emotionalImpact = "motivated";
-        } else if (mood.contains("bad") || mood.contains("terrible") || mood.contains("stressed")) {
+        } else if ("NEGATIVE".equals(mood)) {
             emotionalImpact = "stressed";
         }
 
