@@ -7,6 +7,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: build
     ports:
       - "8080:8080"
       - "5005:5005"
@@ -14,12 +15,13 @@ services:
       - ./backend:/app
       - maven-cache:/root/.m2
     # In dev, we can override the CMD to use mvnw for hot-reloading if the Dockerfile uses java -jar
-    entrypoint: ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"]
+    entrypoint: ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: build
     ports:
       - "4200:4200"
     volumes:
