@@ -32,51 +32,53 @@ import {
     DurationBreakdownChartComponent
   ],
   template: `
-    <div>
-      <!-- KPI Summary Row -->
+    <div class="flex flex-col gap-10">
+      <!-- Row 1: KPI Summary -->
       @if (summary()) {
-        <div class='mb-6'>
+        <div>
           <app-structure-kpi-summary [summary]='summary()' />
         </div>
       }
 
-      <!-- Row 2: Daily Overview -->
+      <!-- Row 2: Volume & Trends (Daily Overview) -->
       @if (summary() && summary()!.totalMeetings > 0) {
-        <div class='mb-6'>
+        <div>
           <app-meetings-trend-chart [dailyData]='dailyOverview()' />
         </div>
       }
 
-      <!-- Row 3: Duration Breakdown + Meeting Types -->
-      @if (durationBreakdown().length || meetingTypes().length) {
-        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-          @if (durationBreakdown().length) {
-            <app-duration-breakdown-chart [breakdown]='durationBreakdown()' />
-          }
+      <!-- Row 3: Meeting Characteristics (Type & Duration) -->
+      @if (meetingTypes().length || durationBreakdown().length) {
+        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6'>
           @if (meetingTypes().length) {
             <app-meeting-type-distribution [data]='meetingTypes()' />
+          }
+          @if (durationBreakdown().length) {
+            <app-duration-breakdown-chart [breakdown]='durationBreakdown()' />
           }
         </div>
       }
 
-      <!-- Row 4: Timing Analysis + Focus Time + Fragmentation -->
-      @if (weekMeetings().length || focusBlocks().length || fragmentation().length) {
-        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-          @if (weekMeetings().length) {
-            <app-meeting-timing-analysis [meetings]='weekMeetings()' [settings]='userSettings()' />
+      <!-- Row 4: Weekly Timing Profile (Heatmap) -->
+      @if (weekMeetings().length) {
+        <div>
+          <app-meeting-timing-analysis [meetings]='weekMeetings()' [settings]='userSettings()' />
+        </div>
+      }
+
+      <!-- Row 5: Deep Work Impact (Focus & Fragmentation) -->
+      @if (focusBlocks().length || fragmentation().length) {
+        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6'>
+          @if (focusBlocks().length) {
+            <app-focus-time-analysis [data]='focusBlocks()' />
           }
-          <div class='grid gap-4 sm:gap-6'>
-            @if (focusBlocks().length) {
-              <app-focus-time-analysis [data]='focusBlocks()' />
-            }
-            @if (fragmentation().length) {
-              <app-fragmentation-score [data]='fragmentation()' />
-            }
-          </div>
+          @if (fragmentation().length) {
+            <app-fragmentation-score [data]='fragmentation()' />
+          }
         </div>
       }
     </div>
-  `,
+  `
 })
 export class StructureDashboardComponent {
   private service = inject(StructureDashboardService);
