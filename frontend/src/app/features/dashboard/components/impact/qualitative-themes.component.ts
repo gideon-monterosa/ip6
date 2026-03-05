@@ -3,6 +3,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ThemeFrequency } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_COLORS, CHART_GRID_BORDER } from '../../../../theme.constants';
+import { ISSUE_TAG_LABELS, POSITIVE_TAG_LABELS } from '../../../feedback-inbox/models/feedback.model';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -53,8 +54,12 @@ export class QualitativeThemesComponent {
       const items = this.data();
       if (items.length) {
         const sorted = [...items].sort((a, b) => b.frequency - a.frequency);
+        const labels = { ...ISSUE_TAG_LABELS, ...POSITIVE_TAG_LABELS } as Record<string, string>;
+
         this.series = [{ name: 'Mentions', data: sorted.map((d) => d.frequency) }];
-        this.xaxis = { categories: sorted.map((d) => d.theme) };
+        this.xaxis = {
+          categories: sorted.map((d) => labels[d.theme] || d.theme),
+        };
       }
     });
   }

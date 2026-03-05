@@ -5,7 +5,6 @@ import { MeetingTypeDistributionComponent } from './components/structure/meeting
 import { MeetingTimingAnalysisComponent } from './components/structure/meeting-timing-analysis.component';
 import { FocusTimeAnalysisComponent } from './components/structure/focus-time-analysis.component';
 import { FragmentationScoreComponent } from './components/structure/fragmentation-score.component';
-import { RecurringAdhocRatioComponent } from './components/structure/recurring-adhoc-ratio.component';
 import { MeetingsTrendChartComponent } from './components/meetings-trend-chart.component';
 import { MeetingsByDayChartComponent } from './components/meetings-by-day-chart.component';
 import { DurationBreakdownChartComponent } from './components/duration-breakdown-chart.component';
@@ -16,7 +15,6 @@ import {
   DurationData,
   WeekMeeting,
   TypeDistribution,
-  RecurringRatioData,
   TimingBucket,
   FocusBlockDay,
   FragmentationDay,
@@ -30,7 +28,6 @@ import {
     MeetingTimingAnalysisComponent,
     FocusTimeAnalysisComponent,
     FragmentationScoreComponent,
-    RecurringAdhocRatioComponent,
     MeetingsTrendChartComponent,
     MeetingsByDayChartComponent,
     DurationBreakdownChartComponent
@@ -63,9 +60,6 @@ import {
         @if (timing().length) {
           <app-meeting-timing-analysis [data]='timing()' />
         }
-        @if (recurring()) {
-          <app-recurring-adhoc-ratio [ratio]='recurring()' />
-        }
       </div>
 
       <!-- Row 5: Focus Time + Fragmentation -->
@@ -92,7 +86,6 @@ export class StructureDashboardComponent {
   durationBreakdown = signal<DurationData[]>([]);
   weekMeetings = signal<WeekMeeting[]>([]);
   meetingTypes = signal<TypeDistribution[]>([]);
-  recurring = signal<RecurringRatioData | null>(null);
   timing = signal<TimingBucket[]>([]);
   focusBlocks = signal<FocusBlockDay[]>([]);
   fragmentation = signal<FragmentationDay[]>([]);
@@ -108,7 +101,6 @@ export class StructureDashboardComponent {
       this.service.getDurationBreakdown(start, end).subscribe((d) => this.durationBreakdown.set(d));
       this.service.getWeekMeetings(start, end).subscribe((d) => this.weekMeetings.set(d));
       this.service.getMeetingTypeDistribution(start, end).subscribe((d) => this.meetingTypes.set(d));
-      this.service.getRecurringRatio(start, end).subscribe((d) => this.recurring.set(d));
       this.service.getTimingAnalysis(start, end).subscribe((d) => this.timing.set(d));
       this.service.getFocusBlocks(start, end).subscribe((d) => this.focusBlocks.set(d));
       this.service.getFragmentationScores(start, end).subscribe((d) => this.fragmentation.set(d));

@@ -10,7 +10,6 @@ import {
   WeekMeeting,
   StructureSummaryWeek,
   TypeDistribution,
-  RecurringRatioData,
   TimingBucket,
   FocusBlockDay,
   FragmentationDay,
@@ -196,24 +195,6 @@ export class StructureDashboardService {
           count,
           percentage: Math.round((count / total) * 1000) / 10,
         }));
-      }),
-    );
-  }
-
-  getRecurringRatio(weekStart: Date, weekEnd: Date): Observable<RecurringRatioData> {
-    return this.meetings$.pipe(
-      map((meetings) => {
-        const filtered = this.filterMeetings(meetings, weekStart, weekEnd);
-        const recurring = filtered.filter((m) => m.recurring).length;
-        const adHoc = filtered.length - recurring;
-        return {
-          recurringCount: recurring,
-          adHocCount: adHoc,
-          recurringPercentage:
-            filtered.length > 0
-              ? Math.round((recurring / filtered.length) * 1000) / 10
-              : 0,
-        };
       }),
     );
   }
