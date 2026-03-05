@@ -99,12 +99,6 @@ export interface TypeDistribution {
   percentage: number;
 }
 
-export interface RecurringRatioData {
-  recurringCount: number;
-  adHocCount: number;
-  recurringPercentage: number;
-}
-
 export interface TimingBucket {
   timeOfDay: string;
   count: number;
