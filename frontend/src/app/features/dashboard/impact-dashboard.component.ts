@@ -41,18 +41,20 @@ import {
       }
 
       <!-- Row 2: Sentiment + Efficiency -->
-      <div class='grid lg:grid-cols-5 gap-4 sm:gap-6 mb-6'>
-        @if (sentiment().length) {
-          <div class='lg:col-span-2'>
-            <app-sentiment-distribution [data]='sentiment()' />
-          </div>
-        }
-        @if (efficiency().length) {
-          <div class='lg:col-span-3'>
-            <app-efficiency-distribution [data]='efficiency()' />
-          </div>
-        }
-      </div>
+      @if (sentiment().length || efficiency().length) {
+        <div class='grid lg:grid-cols-5 gap-4 sm:gap-6 mb-6'>
+          @if (sentiment().length) {
+            <div class='lg:col-span-2'>
+              <app-sentiment-distribution [data]='sentiment()' />
+            </div>
+          }
+          @if (efficiency().length) {
+            <div class='lg:col-span-3'>
+              <app-efficiency-distribution [data]='efficiency()' />
+            </div>
+          }
+        </div>
+      }
 
       <!-- Row 3: Impact by Type (full width) -->
       @if (impactByType().length) {
@@ -62,16 +64,18 @@ import {
       }
 
       <!-- Row 4: Impact by Time + Disruption Perception -->
-      <div class='grid lg:grid-cols-3 gap-4 sm:gap-6 mb-6'>
-        @if (impactByTime().length) {
-          <div class='lg:col-span-2'>
-            <app-impact-by-time-of-day [data]='impactByTime()' />
-          </div>
-        }
-        @if (focusDisruption().length) {
-          <app-focus-disruption-perception [data]='focusDisruption()' />
-        }
-      </div>
+      @if (impactByTime().length || focusDisruption().length) {
+        <div class='grid lg:grid-cols-3 gap-4 sm:gap-6 mb-6'>
+          @if (impactByTime().length) {
+            <div class='lg:col-span-2'>
+              <app-impact-by-time-of-day [data]='impactByTime()' />
+            </div>
+          }
+          @if (focusDisruption().length) {
+            <app-focus-disruption-perception [data]='focusDisruption()' />
+          }
+        </div>
+      }
 
       <!-- Row 5: Qualitative Themes (full width) -->
       @if (themes().length) {

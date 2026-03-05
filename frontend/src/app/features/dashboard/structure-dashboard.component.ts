@@ -42,35 +42,41 @@ import {
       }
 
       <!-- Row 2: Daily Overview + Meetings by Day -->
-      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-        <app-meetings-trend-chart [dailyData]='dailyOverview()' />
-        <app-meetings-by-day-chart [days]='meetingsByDay()' />
-      </div>
+      @if (summary() && summary()!.totalMeetings > 0) {
+        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
+          <app-meetings-trend-chart [dailyData]='dailyOverview()' />
+          <app-meetings-by-day-chart [days]='meetingsByDay()' />
+        </div>
+      }
 
       <!-- Row 3: Duration Breakdown + Meeting Types -->
-      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-        <app-duration-breakdown-chart [breakdown]='durationBreakdown()' />
-        @if (meetingTypes().length) {
-          <app-meeting-type-distribution [data]='meetingTypes()' />
-        }
-      </div>
+      @if (durationBreakdown().length || meetingTypes().length) {
+        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
+          @if (durationBreakdown().length) {
+            <app-duration-breakdown-chart [breakdown]='durationBreakdown()' />
+          }
+          @if (meetingTypes().length) {
+            <app-meeting-type-distribution [data]='meetingTypes()' />
+          }
+        </div>
+      }
 
-      <!-- Row 4: Timing Analysis + Recurring Ratio -->
-      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-        @if (timing().length) {
-          <app-meeting-timing-analysis [data]='timing()' />
-        }
-      </div>
-
-      <!-- Row 5: Focus Time + Fragmentation -->
-      <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-        @if (focusBlocks().length) {
-          <app-focus-time-analysis [data]='focusBlocks()' />
-        }
-        @if (fragmentation().length) {
-          <app-fragmentation-score [data]='fragmentation()' />
-        }
-      </div>
+      <!-- Row 4: Timing Analysis + Focus Time + Fragmentation -->
+      @if (timing().length || focusBlocks().length || fragmentation().length) {
+        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
+          @if (timing().length) {
+            <app-meeting-timing-analysis [data]='timing()' />
+          }
+          <div class='grid gap-4 sm:gap-6'>
+            @if (focusBlocks().length) {
+              <app-focus-time-analysis [data]='focusBlocks()' />
+            }
+            @if (fragmentation().length) {
+              <app-fragmentation-score [data]='fragmentation()' />
+            }
+          </div>
+        </div>
+      }
     </div>
   `,
 })
