@@ -42,7 +42,7 @@ export class ImpactDashboardService {
     );
 
   private filterFeedback(feedback: RawFeedback[], weekStart: Date, weekEnd: Date): RawFeedback[] {
-    return feedback.filter((f) => isDateInWeek(f.feedback_timestamp, weekStart, weekEnd));
+    return feedback.filter((f) => isDateInWeek(f.meeting_start_time, weekStart, weekEnd));
   }
 
   private filterMeetings(meetings: RawMeeting[], weekStart: Date, weekEnd: Date): RawMeeting[] {

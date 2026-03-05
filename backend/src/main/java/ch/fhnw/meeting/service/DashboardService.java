@@ -115,6 +115,7 @@ public class DashboardService {
                 .freeTextComment(freeTextComment)
                 .timeOfDayBucket(getTimeOfDayBucket(event.getStartTime()))
                 .meetingType(event.getMeetingType() != null ? mapMeetingType(event.getMeetingType().name()) : "Other")
+                .meetingStartTime(event.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z")
                 .feedbackTimestamp(feedback.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z")
                 .themes(themes)
                 .build();

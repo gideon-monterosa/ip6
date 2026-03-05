@@ -57,6 +57,7 @@ export interface RawFeedback {
   free_text_comment: string;
   time_of_day_bucket: string;
   meeting_type: string;
+  meeting_start_time: string;
   feedback_timestamp: string;
   themes?: string[];
 }
