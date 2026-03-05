@@ -6,12 +6,10 @@ import { MeetingTimingAnalysisComponent } from './components/structure/meeting-t
 import { FocusTimeAnalysisComponent } from './components/structure/focus-time-analysis.component';
 import { FragmentationScoreComponent } from './components/structure/fragmentation-score.component';
 import { MeetingsTrendChartComponent } from './components/meetings-trend-chart.component';
-import { MeetingsByDayChartComponent } from './components/meetings-by-day-chart.component';
 import { DurationBreakdownChartComponent } from './components/duration-breakdown-chart.component';
 import {
   StructureSummaryWeek,
   DailyOverviewData,
-  DayData,
   DurationData,
   WeekMeeting,
   TypeDistribution,
@@ -29,7 +27,6 @@ import {
     FocusTimeAnalysisComponent,
     FragmentationScoreComponent,
     MeetingsTrendChartComponent,
-    MeetingsByDayChartComponent,
     DurationBreakdownChartComponent
   ],
   template: `
@@ -41,11 +38,10 @@ import {
         </div>
       }
 
-      <!-- Row 2: Daily Overview + Meetings by Day -->
+      <!-- Row 2: Daily Overview -->
       @if (summary() && summary()!.totalMeetings > 0) {
-        <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
+        <div class='mb-6'>
           <app-meetings-trend-chart [dailyData]='dailyOverview()' />
-          <app-meetings-by-day-chart [days]='meetingsByDay()' />
         </div>
       }
 
@@ -88,7 +84,6 @@ export class StructureDashboardComponent {
 
   summary = signal<StructureSummaryWeek | null>(null);
   dailyOverview = signal<DailyOverviewData[]>([]);
-  meetingsByDay = signal<DayData[]>([]);
   durationBreakdown = signal<DurationData[]>([]);
   weekMeetings = signal<WeekMeeting[]>([]);
   meetingTypes = signal<TypeDistribution[]>([]);
@@ -103,7 +98,6 @@ export class StructureDashboardComponent {
 
       this.service.getStructureSummary(start, end).subscribe((d) => this.summary.set(d));
       this.service.getDailyOverview(start, end).subscribe((d) => this.dailyOverview.set(d));
-      this.service.getMeetingsByDay(start, end).subscribe((d) => this.meetingsByDay.set(d));
       this.service.getDurationBreakdown(start, end).subscribe((d) => this.durationBreakdown.set(d));
       this.service.getWeekMeetings(start, end).subscribe((d) => this.weekMeetings.set(d));
       this.service.getMeetingTypeDistribution(start, end).subscribe((d) => this.meetingTypes.set(d));
