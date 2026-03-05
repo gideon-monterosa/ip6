@@ -7,6 +7,7 @@ import { ImpactByMeetingTypeComponent } from './components/impact/impact-by-meet
 import { ImpactByTimeOfDayComponent } from './components/impact/impact-by-time-of-day.component';
 import { FocusDisruptionPerceptionComponent } from './components/impact/focus-disruption-perception.component';
 import { QualitativeThemesComponent } from './components/impact/qualitative-themes.component';
+import { DurationRotiScatterplotComponent } from './components/impact/duration-roti-scatterplot.component';
 import {
   ImpactSummaryWeek,
   SentimentBucket,
@@ -15,6 +16,7 @@ import {
   ImpactByTime,
   DisruptionDay,
   ThemeFrequency,
+  DurationEfficiency,
 } from './models/dashboard.model';
 
 @Component({
@@ -27,6 +29,7 @@ import {
     ImpactByTimeOfDayComponent,
     FocusDisruptionPerceptionComponent,
     QualitativeThemesComponent,
+    DurationRotiScatterplotComponent,
   ],
   template: `
     <div>
@@ -72,7 +75,14 @@ import {
 
       <!-- Row 5: Qualitative Themes (full width) -->
       @if (themes().length) {
-        <app-qualitative-themes [data]='themes()' />
+        <div class='mb-6'>
+          <app-qualitative-themes [data]='themes()' />
+        </div>
+      }
+
+      <!-- Row 6: Duration vs ROTI Scatterplot -->
+      @if (durationEfficiency().length) {
+        <app-duration-roti-scatterplot [data]='durationEfficiency()' />
       }
     </div>
   `,
@@ -90,6 +100,7 @@ export class ImpactDashboardComponent {
   impactByTime = signal<ImpactByTime[]>([]);
   focusDisruption = signal<DisruptionDay[]>([]);
   themes = signal<ThemeFrequency[]>([]);
+  durationEfficiency = signal<DurationEfficiency[]>([]);
 
   constructor() {
     effect(() => {
@@ -103,6 +114,7 @@ export class ImpactDashboardComponent {
       this.service.getImpactByTime(start, end).subscribe((d) => this.impactByTime.set(d));
       this.service.getFocusDisruption(start, end).subscribe((d) => this.focusDisruption.set(d));
       this.service.getQualitativeThemes(start, end).subscribe((d) => this.themes.set(d));
+      this.service.getDurationEfficiency(start, end).subscribe((d) => this.durationEfficiency.set(d));
     });
   }
 }
