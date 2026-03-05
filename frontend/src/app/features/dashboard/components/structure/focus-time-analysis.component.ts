@@ -56,11 +56,11 @@ export class FocusTimeAnalysisComponent {
   data = input.required<FocusBlockDay[]>();
 
   blockOptions = [
-    { label: '>= 60 min', value: 60 },
-    { label: '>= 90 min', value: 90 },
     { label: '>= 120 min', value: 120 },
+    { label: '>= 90 min', value: 90 },
+    { label: '>= 60 min', value: 60 },
   ];
-  selectedBlock = signal(60);
+  selectedBlock = signal(120);
 
   totalBlocks = computed(() => {
     const items = this.data();
