@@ -1,5 +1,6 @@
 import { Component, inject, input, effect, signal } from '@angular/core';
 import { StructureDashboardService } from './services/structure-dashboard.service';
+import { UserService } from '../../core/services/user.service';
 import { StructureKpiSummaryComponent } from './components/structure/structure-kpi-summary.component';
 import { MeetingTypeDistributionComponent } from './components/structure/meeting-type-distribution.component';
 import { MeetingTimingAnalysisComponent } from './components/structure/meeting-timing-analysis.component';
@@ -7,6 +8,7 @@ import { FocusTimeAnalysisComponent } from './components/structure/focus-time-an
 import { FragmentationScoreComponent } from './components/structure/fragmentation-score.component';
 import { MeetingsTrendChartComponent } from './components/meetings-trend-chart.component';
 import { DurationBreakdownChartComponent } from './components/duration-breakdown-chart.component';
+import { UserSettings } from '../../core/models/user.model';
 import {
   StructureSummaryWeek,
   DailyOverviewData,
@@ -58,10 +60,10 @@ import {
       }
 
       <!-- Row 4: Timing Analysis + Focus Time + Fragmentation -->
-      @if (timing().length || focusBlocks().length || fragmentation().length) {
+      @if (weekMeetings().length || focusBlocks().length || fragmentation().length) {
         <div class='grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6'>
-          @if (timing().length) {
-            <app-meeting-timing-analysis [data]='timing()' />
+          @if (weekMeetings().length) {
+            <app-meeting-timing-analysis [meetings]='weekMeetings()' [settings]='userSettings()' />
           }
           <div class='grid gap-4 sm:gap-6'>
             @if (focusBlocks().length) {
@@ -78,6 +80,7 @@ import {
 })
 export class StructureDashboardComponent {
   private service = inject(StructureDashboardService);
+  private userService = inject(UserService);
 
   weekStart = input.required<Date>();
   weekEnd = input.required<Date>();
@@ -90,8 +93,11 @@ export class StructureDashboardComponent {
   timing = signal<TimingBucket[]>([]);
   focusBlocks = signal<FocusBlockDay[]>([]);
   fragmentation = signal<FragmentationDay[]>([]);
+  userSettings = signal<UserSettings | null>(null);
 
   constructor() {
+    this.userService.getSettings().subscribe(s => this.userSettings.set(s));
+
     effect(() => {
       const start = this.weekStart();
       const end = this.weekEnd();
