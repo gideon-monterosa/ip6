@@ -71,6 +71,7 @@ public class Event {
     @Column(name = "organizer")
     private String organizer;
 
+    @Builder.Default
     @Column(name = "attendees_count")
     private Integer attendeesCount = 0;
 
@@ -79,6 +80,11 @@ public class Event {
     @Column(name = "feedback_status", nullable = false)
     private FeedbackStatus feedbackStatus = FeedbackStatus.PENDING;
 
+    @Builder.Default
     @Column(name = "notification_sent", nullable = false)
     private Boolean notificationSent = false;
+
+    @Builder.Default
+    @Column(name = "categorized_by_ai", nullable = false)
+    private Boolean categorizedByAi = false;
 }
