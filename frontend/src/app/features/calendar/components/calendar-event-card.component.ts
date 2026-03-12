@@ -1,6 +1,7 @@
 import { Component, input, computed, Input } from '@angular/core';
 import { DatePipe, NgClass, NgStyle } from '@angular/common';
 import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/meeting.model';
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Component({
   selector: 'app-calendar-event-card',
@@ -51,8 +52,8 @@ export class CalendarEventCardComponent {
   positionStyle = computed(() => {
     const e = this.event();
     const l = this.eventLayout();
-    const start = new Date(e.start);
-    const end = new Date(e.end);
+    const start = parseLocal(e.start);
+    const end = parseLocal(e.end);
 
     const startMinutes = start.getHours() * 60 + start.getMinutes();
     const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
@@ -132,7 +133,7 @@ export class CalendarEventCardComponent {
 
   tooltip = computed(() => {
     const e = this.event();
-    return `${e.title} (${new Date(e.start).toLocaleTimeString()} - ${new Date(e.end).toLocaleTimeString()})`;
+    return `${e.title} (${parseLocal(e.start).toLocaleTimeString()} - ${parseLocal(e.end).toLocaleTimeString()})`;
   });
 
   isSubmitted = computed(() => this.event().feedbackStatus === FeedbackStatus.SUBMITTED);

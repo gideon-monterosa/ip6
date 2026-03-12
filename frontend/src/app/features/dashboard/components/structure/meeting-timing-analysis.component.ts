@@ -4,6 +4,7 @@ import { WeekMeeting } from '../../models/dashboard.model';
 import { UserSettings } from '../../../../core/models/user.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_GRID_BORDER, CHART_PRIMARY } from '../../../../theme.constants';
+import { parseLocal } from '../../../../core/utils/date.utils';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -19,7 +20,7 @@ import {
   selector: 'app-meeting-timing-analysis',
   imports: [NgApexchartsModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Weekly Meeting Intensity' subtitle='Combined meeting density across all work days'>
+    <app-chart-card title='Weekly Meeting Intensity' subtitle='Shows total meeting minutes across the week. Identifies which hour slots and work periods are most heavily booked.'>
       @if (series.length) {
         <apx-chart
           [series]='series'
@@ -91,33 +92,86 @@ export class MeetingTimingAnalysisComponent {
   }
 
   private buildHeatmap(meetings: WeekMeeting[], settings: UserSettings) {
-    const startHour = parseInt(settings.workStartTime.split(':')[0], 10);
-    const endHour = parseInt(settings.workEndTime.split(':')[0], 10);
-    const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
+    const [startH, startM] = settings.workStartTime.split(':').map(Number);
+    const [endH, endM] = settings.workEndTime.split(':').map(Number);
 
-    const hourLabels = hours.map(h => `${h}:00`);
-    const categories = ['Earlier', ...hourLabels, 'Later'];
+    const workStartTotal = startH * 60 + startM;
+    const workEndTotal = endH * 60 + endM;
 
-    const stats = new Map<string, { minutes: number, count: number }>();
-    categories.forEach(cat => stats.set(cat, { minutes: 0, count: 0 }));
+    const startHour = startH;
+    const endHour = endM === 0 ? endH - 1 : endH;
+
+    const hourLabels = [];
+    for (let h = startHour; h <= endHour; h++) {
+      hourLabels.push(`${h}:00 - ${h + 1}:00`);
+    }
+    const categories = ['Before', ...hourLabels, 'After'];
+
+    const stats = new Map<string, { minutes: number, count: number, meetingIds: Set<string> }>();
+    categories.forEach(cat => stats.set(cat, { minutes: 0, count: 0, meetingIds: new Set() }));
 
     meetings.forEach((m) => {
-      const date = new Date(m.startTime);
-      const hour = date.getHours();
+      const start = parseLocal(m.startTime);
+      const end = parseLocal(m.endTime);
 
-      let key: string;
-      if (hour < startHour) {
-        key = 'Earlier';
-      } else if (hour > endHour) {
-        key = 'Later';
-      } else {
-        key = `${hour}:00`;
-      }
+      if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) return;
 
-      const s = stats.get(key);
-      if (s) {
-        s.minutes += m.durationMinutes;
-        s.count += 1;
+      let iter = new Date(start);
+      // We step through the meeting minute by minute (or in larger chunks)
+      // For precision and to handle all edge cases, we iterate in chunks of minutes
+      while (iter < end) {
+        const h = iter.getHours();
+        const mInH = iter.getMinutes();
+        const timeInMin = h * 60 + mInH;
+
+        // Determine next boundary: either next full hour or meeting end
+        const nextHour = new Date(iter);
+        nextHour.setHours(h + 1, 0, 0, 0);
+        const chunkEnd = nextHour < end ? nextHour : end;
+        const duration = Math.round((chunkEnd.getTime() - iter.getTime()) / 60000);
+
+        if (duration > 0) {
+          // Now check if this chunk crosses work boundaries
+          const chunkStartTotal = timeInMin;
+          const chunkEndTotal = timeInMin + duration;
+
+          const processSubChunk = (s: number, e: number) => {
+            const dur = e - s;
+            if (dur <= 0) return;
+
+            let key: string;
+            if (e <= workStartTotal) {
+              key = 'Before';
+            } else if (s >= workEndTotal) {
+              key = 'After';
+            } else {
+              const hourIdx = Math.floor(s / 60);
+              if (hourIdx < startHour) key = 'Before';
+              else if (hourIdx > endHour) key = 'After';
+              else key = `${hourIdx}:00 - ${hourIdx + 1}:00`;
+            }
+
+            const stat = stats.get(key);
+            if (stat) {
+              stat.minutes += dur;
+              if (!stat.meetingIds.has(m.id)) {
+                stat.count += 1;
+                stat.meetingIds.add(m.id);
+              }
+            }
+          };
+
+          // Split chunk at work start/end if they fall inside
+          const boundaries = [chunkStartTotal, chunkEndTotal, workStartTotal, workEndTotal]
+            .filter(b => b >= chunkStartTotal && b <= chunkEndTotal)
+            .sort((a, b) => a - b);
+
+          const unique = Array.from(new Set(boundaries));
+          for (let i = 0; i < unique.length - 1; i++) {
+            processSubChunk(unique[i], unique[i+1]);
+          }
+        }
+        iter = chunkEnd;
       }
     });
 

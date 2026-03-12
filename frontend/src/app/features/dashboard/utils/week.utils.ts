@@ -3,9 +3,11 @@
  * Week starts on Monday 00:00:00 and ends on Sunday 23:59:59.
  */
 
+import { parseLocal } from '../../../core/utils/date.utils';
+
 /** Returns the Monday 00:00 of the ISO week that contains `date`. */
-export function getMonday(date: Date): Date {
-  const d = new Date(date);
+export function getMonday(date: Date | string): Date {
+  const d = typeof date === 'string' ? parseLocal(date) : new Date(date);
   const day = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
   const diff = day === 0 ? -6 : 1 - day;
   d.setDate(d.getDate() + diff);
@@ -14,15 +16,15 @@ export function getMonday(date: Date): Date {
 }
 
 /** Returns the Sunday 23:59:59.999 of the same ISO week given a Monday. */
-export function getSunday(monday: Date): Date {
-  const d = new Date(monday);
+export function getSunday(monday: Date | string): Date {
+  const d = typeof monday === 'string' ? parseLocal(monday) : new Date(monday);
   d.setDate(d.getDate() + 6);
   d.setHours(23, 59, 59, 999);
   return d;
 }
 
 /** Checks whether two dates fall in the same ISO week (same Monday). */
-export function isSameWeek(a: Date, b: Date): boolean {
+export function isSameWeek(a: Date | string, b: Date | string): boolean {
   const ma = getMonday(a);
   const mb = getMonday(b);
   return (
@@ -38,7 +40,7 @@ export function isDateInWeek(
   weekStart: Date,
   weekEnd: Date,
 ): boolean {
-  const d = typeof date === 'string' ? new Date(date) : date;
+  const d = typeof date === 'string' ? parseLocal(date) : date;
   return d >= weekStart && d <= weekEnd;
 }
 

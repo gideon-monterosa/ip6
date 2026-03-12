@@ -16,6 +16,8 @@ import {
 } from '../models/dashboard.model';
 import { isDateInWeek, getWeekDayLabels, toDateString } from '../utils/week.utils';
 
+import { parseLocal } from '../../../core/utils/date.utils';
+
 @Injectable({ providedIn: 'root' })
 export class StructureDashboardService {
   private http = inject(HttpClient);
@@ -173,7 +175,7 @@ export class StructureDashboardService {
           }))
           .sort(
             (a, b) =>
-              new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+              parseLocal(a.startTime).getTime() - parseLocal(b.startTime).getTime(),
           );
       }),
     );
