@@ -18,7 +18,7 @@ import {
   selector: 'app-efficiency-distribution',
   imports: [NgApexchartsModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Perceived Meeting Efficiency'>
+    <app-chart-card title="'Worth my time' Distribution">
       <apx-chart
         [series]='series'
         [chart]='chart'

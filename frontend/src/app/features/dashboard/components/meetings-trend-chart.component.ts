@@ -16,6 +16,7 @@ import {
   ApexDataLabels,
   ApexTooltip,
   ApexGrid,
+  ApexPlotOptions,
 } from 'ng-apexcharts';
 
 @Component({
@@ -36,6 +37,7 @@ import {
         <apx-chart
           [series]='series'
           [chart]='chart'
+          [plotOptions]='plotOptions'
           [xaxis]='xaxis'
           [yaxis]='yaxis'
           [stroke]='stroke'
@@ -53,16 +55,34 @@ export class MeetingsTrendChartComponent {
   dailyData = input.required<DailyOverviewData[]>();
 
   series: ApexAxisChartSeries = [];
-  chart: ApexChart = { type: 'area', height: 300, toolbar: { show: false } };
-  xaxis: ApexXAxis = { categories: [] };
-  yaxis: ApexYAxis = { title: { text: 'Count' } };
-  stroke: ApexStroke = { curve: 'smooth', width: 2 };
-  fill: ApexFill = {
-    type: 'gradient',
-    gradient: { opacityFrom: 0.5, opacityTo: 0.1 },
+  chart: ApexChart = { type: 'bar', height: 300, toolbar: { show: false } };
+  plotOptions: ApexPlotOptions = {
+    bar: {
+      horizontal: false,
+      columnWidth: '55%',
+      borderRadius: 4,
+    },
   };
+  xaxis: ApexXAxis = { categories: [] };
+  yaxis: ApexYAxis | ApexYAxis[] = [
+    {
+      title: { text: 'Count', style: { color: CHART_PRIMARY } },
+      labels: { style: { colors: CHART_PRIMARY } },
+    },
+    {
+      opposite: true,
+      title: { text: 'Hours', style: { color: CHART_COLORS.chart6 } },
+      labels: { style: { colors: CHART_COLORS.chart6 } },
+    },
+  ];
+  stroke: ApexStroke = { show: true, width: 2, colors: ['transparent'] };
+  fill: ApexFill = { opacity: 1 };
   dataLabels: ApexDataLabels = { enabled: false };
-  tooltip: ApexTooltip = { theme: 'light' };
+  tooltip: ApexTooltip = {
+    theme: 'light',
+    shared: true,
+    intersect: false,
+  };
   grid: ApexGrid = { borderColor: CHART_GRID_BORDER, strokeDashArray: 4 };
   colors = [CHART_PRIMARY, CHART_COLORS.chart6];
 
@@ -71,8 +91,8 @@ export class MeetingsTrendChartComponent {
       const data = this.dailyData();
       if (data.length) {
         this.series = [
-          { name: 'Meetings', data: data.map((d) => d.meetings) },
-          { name: 'Hours', data: data.map((d) => d.hours) },
+          { name: 'Meetings', type: 'bar', data: data.map((d) => d.meetings) },
+          { name: 'Hours', type: 'bar', data: data.map((d) => d.hours) },
         ];
         this.xaxis = { categories: data.map((d) => d.day) };
       }

@@ -56,7 +56,7 @@ import {
             <thead>
               <tr>
                 <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Type</th>
-                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Efficiency</th>
+                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Worth my time</th>
                 <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Emotion</th>
                 <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Energy</th>
                 <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Disruption</th>
@@ -100,7 +100,8 @@ export class ImpactByMeetingTypeComponent {
       if (items.length) {
         this.xaxis = { categories: items.map((d) => d.type) };
         this.series = [
-          { name: 'Efficiency', data: items.map((d) => d.avgEfficiency) },
+          { name: 'Worth my time', data: items.map((d) => d.avgEfficiency) },
+          { name: 'Feeling', data: items.map((d) => Math.round((d.avgEmotional + 2) * 12.5) / 10) },
           { name: 'Energy', data: items.map((d) => d.avgEnergy) },
           { name: 'Disruption', data: items.map((d) => d.avgDisruption) },
         ];

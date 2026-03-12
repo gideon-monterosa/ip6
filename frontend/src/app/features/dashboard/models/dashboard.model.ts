@@ -120,10 +120,10 @@ export interface FocusBlockDay {
 
 export interface FragmentationDay {
   date: string;
-  score: number;
-  meetingsContribution: number;
-  gapsContribution: number;
-  fragmentationContribution: number;
+  scorePercentage: number;
+  totalMeetingMinutes: number;
+  fragmentedMinutes: number;
+  flowBlocksCount: number;
 }
 
 export interface ImpactByType {

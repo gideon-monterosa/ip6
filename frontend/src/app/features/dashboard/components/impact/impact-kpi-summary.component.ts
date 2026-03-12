@@ -9,17 +9,17 @@ import { StatCardComponent } from '../stat-card.component';
     <div class='grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'>
       @if (summary(); as s) {
         <app-stat-card
-          title='Avg Efficiency'
+          title='Worth my time (Avg)'
           [value]="s.avgEfficiency + ' / 5'"
           [change]='percentChange(s.avgEfficiency, s.prevAvgEfficiency)'
         />
         <app-stat-card
-          title='Emotional Score'
+          title='Feeling after'
           [value]="formatEmotional(s.avgEmotionalScore)"
           [change]='percentChange(s.avgEmotionalScore + 2, s.prevAvgEmotionalScore + 2)'
         />
         <app-stat-card
-          title='Avg Energy After'
+          title='Energy level (Avg)'
           [value]="s.avgEnergyAfter + ' / 5'"
           [change]='percentChange(s.avgEnergyAfter, s.prevAvgEnergyAfter)'
         />
