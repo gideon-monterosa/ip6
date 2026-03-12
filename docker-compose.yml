@@ -41,11 +41,28 @@ services:
       MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID}
       MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET}
       SPRING_FLYWAY_ENABLED: "false"
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: meeting-bot
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - ./backend/firebase.json:/app/firebase.json:ro
+    networks:
+      - meeting-network
+    restart: always
+
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: ip6-ollama
+    environment:
+      - OLLAMA_NUM_PARALLEL=4
+    deploy:
+      resources:
+        limits:
+          memory: 16G
     networks:
       - meeting-network
     restart: always
