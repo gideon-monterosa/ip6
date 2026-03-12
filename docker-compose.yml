@@ -59,6 +59,8 @@ services:
     container_name: ip6-ollama
     environment:
       - OLLAMA_NUM_PARALLEL=4
+    ports:
+      - "11434:11434"
     deploy:
       resources:
         limits:
