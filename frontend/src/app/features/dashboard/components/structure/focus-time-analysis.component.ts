@@ -3,6 +3,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { FocusBlockDay } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_PRIMARY, CHART_GRID_BORDER } from '../../../../theme.constants';
+import { parseLocal } from '../../../../core/utils/date.utils';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -93,7 +94,12 @@ export class FocusTimeAnalysisComponent {
           return d.blocks120min;
         });
         this.series = [{ name: 'Focus Blocks', data: values }];
-        this.xaxis = { categories: items.map((d) => d.date) };
+        this.xaxis = {
+          categories: items.map((d) => {
+            const date = parseLocal(d.date);
+            return date.toLocaleDateString('en-US', { weekday: 'short' });
+          }),
+        };
       }
     });
   }
