@@ -19,7 +19,7 @@ import {
   selector: 'app-focus-time-analysis',
   imports: [NgApexchartsModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Uninterrupted Focus Time Blocks'>
+    <app-chart-card title='Uninterrupted Focus Time Blocks' subtitle='Highlights availability of deep work slots. Counts the number of continuous time blocks without meetings, categorized by duration.'>
       <div class='flex gap-2 mb-3'>
         @for (opt of blockOptions; track opt.value) {
           <button type='button'
