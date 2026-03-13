@@ -13,12 +13,16 @@ import {
   ApexTooltip,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is OBSOLETE and has been replaced by more comprehensive views in the structure dashboard.
+ * It is no longer displayed.
+ */
 @Component({
   selector: 'app-meetings-by-day-chart',
   imports: [NgApexchartsModule],
   template: `
     <div
-      class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5'
+      class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5 h-full flex flex-col'
     >
       <h4 class='text-sm font-medium text-muted-foreground-1 uppercase mb-3'>
         Meetings by Day

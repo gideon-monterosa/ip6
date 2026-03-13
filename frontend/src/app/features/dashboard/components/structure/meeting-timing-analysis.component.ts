@@ -16,6 +16,10 @@ import {
   ApexStroke,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is OBSOLETE and has been replaced by more comprehensive views in the structure dashboard.
+ * It is no longer displayed.
+ */
 @Component({
   selector: 'app-meeting-timing-analysis',
   imports: [NgApexchartsModule, ChartCardComponent],
