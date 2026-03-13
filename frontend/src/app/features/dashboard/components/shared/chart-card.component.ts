@@ -3,8 +3,8 @@ import { Component, input } from '@angular/core';
 @Component({
   selector: 'app-chart-card',
   template: `
-    <div class='bg-card border border-card-line shadow-2xs rounded-xl'>
-      <div class='p-4 md:p-5'>
+    <div class='bg-card border border-card-line shadow-2xs rounded-xl h-full'>
+      <div class='p-4 md:p-5 h-full flex flex-col'>
         <div class='flex items-center justify-between mb-3'>
           <div>
             <h4 class='text-sm font-medium text-muted-foreground-1 uppercase'>

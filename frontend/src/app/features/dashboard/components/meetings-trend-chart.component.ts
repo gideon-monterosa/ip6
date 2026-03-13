@@ -24,7 +24,7 @@ import {
   imports: [NgApexchartsModule],
   template: `
     <div
-      class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5'
+      class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5 h-full flex flex-col'
     >
       <h4 class='text-sm font-medium text-muted-foreground-1 uppercase'>
         Daily Overview
