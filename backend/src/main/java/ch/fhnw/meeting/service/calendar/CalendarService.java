@@ -13,6 +13,8 @@ import ch.fhnw.meeting.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -67,7 +69,6 @@ public class CalendarService {
 
             List<EventDto> remoteEvents = provider.getEventsInRange(user.getUsername(), start, end);
 
-            // Bestehende Daten aus der DB in remoteEvents übernehmen
             for (EventDto remoteEvent : remoteEvents) {
                 eventRepository.findByExternalIdAndProviderAndUserId(remoteEvent.getId(), token.getProvider(), user.getId())
                         .ifPresent(existing -> {
@@ -77,6 +78,9 @@ public class CalendarService {
                             remoteEvent.setNotificationSent(existing.getNotificationSent());
                         });
             }
+
+            log.info("Starte KI-Kategorisierung für {} Events...", remoteEvents.size());
+            categorizationService.categorizeEvents(remoteEvents);
 
             eventRepository.deleteByUserIdAndProviderAndStartTimeAfter(
                     user.getId(),
@@ -92,6 +96,19 @@ public class CalendarService {
             tokenRepository.save(token);
 
             log.info("Sync erfolgreich. {} Events gespeichert.", remoteEvents.size());
+
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            categorizationService.categorizeRemainingEventsAsync(user.getId(), token.getProvider());
+                        }
+                    }
+                );
+            } else {
+                categorizationService.categorizeRemainingEventsAsync(user.getId(), token.getProvider());
+            }
 
         } catch (IOException e) {
             log.error("Fehler beim Sync für User {}", user.getUsername(), e);
