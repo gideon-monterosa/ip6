@@ -19,7 +19,8 @@ import {
   selector: 'app-meeting-type-distribution',
   imports: [NgApexchartsModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Meeting Type Distribution'>
+    <app-chart-card title='Meeting Type Distribution'
+      subtitle='Visualizes how meeting count is distributed across different meeting categories.'>
       <div class='flex gap-2 mb-3'>
         <button type='button'
           class='px-2 py-1 text-xs rounded border transition-colors'

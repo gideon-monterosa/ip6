@@ -18,9 +18,12 @@ import {
     <div
       class='bg-card border border-card-line shadow-2xs rounded-xl p-4 md:p-5'
     >
-      <h4 class='text-sm font-medium text-muted-foreground-1 uppercase mb-3'>
+      <h4 class='text-sm font-medium text-muted-foreground-1 uppercase'>
         Duration Breakdown
       </h4>
+      <p class='text-xs text-muted-foreground-2 mb-3'>
+        Groups meetings by their length (short, medium, long). Highlights the prevalence of different meeting formats in your schedule.
+      </p>
       @if (breakdown().length === 0) {
         <div class="flex items-center justify-center h-[300px] text-sm text-muted-foreground-2">
           No meetings this week
