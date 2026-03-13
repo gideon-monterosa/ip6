@@ -3,6 +3,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { FocusBlockDay } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_PRIMARY, CHART_GRID_BORDER } from '../../../../theme.constants';
+import { parseLocal } from '../../../../core/utils/date.utils';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -18,7 +19,7 @@ import {
   selector: 'app-focus-time-analysis',
   imports: [NgApexchartsModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Uninterrupted Focus Time Blocks'>
+    <app-chart-card title='Uninterrupted Focus Time Blocks' subtitle='Highlights availability of deep work slots. Counts the number of continuous time blocks without meetings, categorized by duration.'>
       <div class='flex gap-2 mb-3'>
         @for (opt of blockOptions; track opt.value) {
           <button type='button'
@@ -56,11 +57,11 @@ export class FocusTimeAnalysisComponent {
   data = input.required<FocusBlockDay[]>();
 
   blockOptions = [
-    { label: '>= 60 min', value: 60 },
-    { label: '>= 90 min', value: 90 },
     { label: '>= 120 min', value: 120 },
+    { label: '>= 90 min', value: 90 },
+    { label: '>= 60 min', value: 60 },
   ];
-  selectedBlock = signal(60);
+  selectedBlock = signal(120);
 
   totalBlocks = computed(() => {
     const items = this.data();
@@ -93,7 +94,12 @@ export class FocusTimeAnalysisComponent {
           return d.blocks120min;
         });
         this.series = [{ name: 'Focus Blocks', data: values }];
-        this.xaxis = { categories: items.map((d) => d.date) };
+        this.xaxis = {
+          categories: items.map((d) => {
+            const date = parseLocal(d.date);
+            return date.toLocaleDateString('en-US', { weekday: 'short' });
+          }),
+        };
       }
     });
   }

@@ -13,6 +13,8 @@ import ch.fhnw.meeting.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,15 +35,18 @@ public class CalendarService {
     private final UserOAuthTokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final MeetingCategorizationService categorizationService;
 
 
     public CalendarService(List<CalendarProvider> providerList,
                            UserOAuthTokenRepository tokenRepository,
                            UserRepository userRepository,
-                           EventRepository eventRepository) {
+                           EventRepository eventRepository,
+                           MeetingCategorizationService categorizationService) {
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.categorizationService = categorizationService;
         this.providers = providerList.stream()
             .collect(Collectors.toMap(CalendarProvider::getProvider, Function.identity()));
     }
@@ -64,6 +69,19 @@ public class CalendarService {
 
             List<EventDto> remoteEvents = provider.getEventsInRange(user.getUsername(), start, end);
 
+            for (EventDto remoteEvent : remoteEvents) {
+                eventRepository.findByExternalIdAndProviderAndUserId(remoteEvent.getId(), token.getProvider(), user.getId())
+                        .ifPresent(existing -> {
+                            remoteEvent.setMeetingType(existing.getMeetingType());
+                            remoteEvent.setCategorizedByAi(existing.getCategorizedByAi());
+                            remoteEvent.setFeedbackStatus(existing.getFeedbackStatus());
+                            remoteEvent.setNotificationSent(existing.getNotificationSent());
+                        });
+            }
+
+            log.info("Starte KI-Kategorisierung für {} Events...", remoteEvents.size());
+            categorizationService.categorizeEvents(remoteEvents);
+
             eventRepository.deleteByUserIdAndProviderAndStartTimeAfter(
                     user.getId(),
                     token.getProvider(),
@@ -78,6 +96,19 @@ public class CalendarService {
             tokenRepository.save(token);
 
             log.info("Sync erfolgreich. {} Events gespeichert.", remoteEvents.size());
+
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            categorizationService.categorizeRemainingEventsAsync(user.getId(), token.getProvider());
+                        }
+                    }
+                );
+            } else {
+                categorizationService.categorizeRemainingEventsAsync(user.getId(), token.getProvider());
+            }
 
         } catch (IOException e) {
             log.error("Fehler beim Sync für User {}", user.getUsername(), e);
@@ -122,6 +153,10 @@ public class CalendarService {
                 event.setLocation(dto.getLocation());
                 event.setOrganizer(dto.getOrganizer());
                 event.setAttendeesCount(dto.getAttendeesCount() != null ? dto.getAttendeesCount() : 0);
+                event.setMeetingType(dto.getMeetingType());
+                event.setCategorizedByAi(dto.getCategorizedByAi() != null ? dto.getCategorizedByAi() : false);
+                event.setNotificationSent(dto.getNotificationSent() != null ? dto.getNotificationSent() : false);
+                event.setFeedbackStatus(dto.getFeedbackStatus() != null ? dto.getFeedbackStatus() : ch.fhnw.meeting.model.feedback.FeedbackStatus.PENDING);
             } else {
                 Event event = Event.builder()
                         .externalId(dto.getId())
@@ -136,7 +171,9 @@ public class CalendarService {
                         .location(dto.getLocation())
                         .organizer(dto.getOrganizer())
                         .attendeesCount(dto.getAttendeesCount())
-                        .notificationSent(false)
+                        .notificationSent(dto.getNotificationSent() != null ? dto.getNotificationSent() : false)
+                        .feedbackStatus(dto.getFeedbackStatus() != null ? dto.getFeedbackStatus() : ch.fhnw.meeting.model.feedback.FeedbackStatus.PENDING)
+                        .categorizedByAi(dto.getCategorizedByAi() != null ? dto.getCategorizedByAi() : false)
                         .build();
                 eventRepository.save(event);
             }
@@ -160,6 +197,8 @@ public class CalendarService {
         dto.setAttendeesCount(event.getAttendeesCount());
         dto.setFeedbackStatus(event.getFeedbackStatus());
         dto.setMeetingType(event.getMeetingType());
+        dto.setCategorizedByAi(event.getCategorizedByAi());
+        dto.setNotificationSent(event.getNotificationSent());
         return dto;
     }
 

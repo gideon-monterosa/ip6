@@ -46,6 +46,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      ollama:
+        condition: service_started
     volumes:
       - ./backend/firebase.json:/app/firebase.json:ro
     networks:
@@ -59,6 +61,7 @@ services:
     container_name: ip6-ollama
     environment:
       - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_HOST=0.0.0.0
     ports:
       - "11434:11434"
     deploy:

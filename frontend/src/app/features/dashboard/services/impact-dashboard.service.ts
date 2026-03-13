@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, map, shareReplay, forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   RawFeedback,
+  RawMeeting,
   ImpactSummaryWeek,
   ImpactByType,
   ImpactByTime,
@@ -11,6 +12,7 @@ import {
   SentimentBucket,
   ThemeFrequency,
   DisruptionDay,
+  DurationEfficiency,
 } from '../models/dashboard.model';
 import { isDateInWeek, toDateString } from '../utils/week.utils';
 
@@ -25,6 +27,13 @@ export class ImpactDashboardService {
       shareReplay(1),
     );
 
+  private meetings$ = this.http
+    .get<{ meetings: RawMeeting[] }>(`${environment.apiUrl}/api/dashboard/structure/meetings`)
+    .pipe(
+      map((res) => res.meetings),
+      shareReplay(1),
+    );
+
   private focusDisruption$ = this.http
     .get<{ disruption: DisruptionDay[] }>(`${environment.apiUrl}/api/dashboard/impact/focus-disruption`)
     .pipe(
@@ -33,7 +42,11 @@ export class ImpactDashboardService {
     );
 
   private filterFeedback(feedback: RawFeedback[], weekStart: Date, weekEnd: Date): RawFeedback[] {
-    return feedback.filter((f) => isDateInWeek(f.feedback_timestamp, weekStart, weekEnd));
+    return feedback.filter((f) => isDateInWeek(f.meeting_start_time, weekStart, weekEnd));
+  }
+
+  private filterMeetings(meetings: RawMeeting[], weekStart: Date, weekEnd: Date): RawMeeting[] {
+    return meetings.filter((m) => isDateInWeek(m.start_time, weekStart, weekEnd));
   }
 
   private emotionalScore(impact: string): number {
@@ -222,6 +235,32 @@ export class ImpactDashboardService {
       map((data) =>
         data.filter((d) => d.date >= startStr && d.date <= endStr),
       ),
+    );
+  }
+
+  getDurationEfficiency(weekStart: Date, weekEnd: Date): Observable<DurationEfficiency[]> {
+    return forkJoin({
+      meetings: this.meetings$,
+      feedback: this.feedback$,
+    }).pipe(
+      map(({ meetings, feedback }) => {
+        const filteredFeedback = this.filterFeedback(feedback, weekStart, weekEnd);
+        const meetingMap = new Map<string, RawMeeting>();
+        for (const m of meetings) {
+          meetingMap.set(m.meeting_id, m);
+        }
+
+        return filteredFeedback
+          .map((f) => {
+            const meeting = meetingMap.get(f.meeting_id);
+            if (!meeting) return null;
+            return {
+              duration: meeting.duration_minutes,
+              efficiency: f.perceived_efficiency,
+            };
+          })
+          .filter((d): d is DurationEfficiency => d !== null);
+      }),
     );
   }
 }

@@ -35,6 +35,9 @@ public class RawFeedbackDto {
     
     @JsonProperty("meeting_type")
     private String meetingType;
+
+    @JsonProperty("meeting_start_time")
+    private String meetingStartTime;
     
     @JsonProperty("feedback_timestamp")
     private String feedbackTimestamp;

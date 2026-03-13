@@ -4,6 +4,7 @@ import { MeetingService } from '../../../shared/services/meeting.service';
 import { DailyFeedbackService } from '../../../shared/services/daily-feedback.service';
 import { FeedbackStatus } from '../../../shared/models/meeting.model';
 import { MeetingFeedback, DailyFeedback, DailyFeedbackDetails } from '../models/feedback.model';
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +21,14 @@ export class FeedbackUIService {
   public readonly pendingMeetings = computed(() => {
     const now = Date.now();
     return this.meetingService.meetings().filter(m => 
-      m.feedbackStatus === FeedbackStatus.PENDING && new Date(m.end).getTime() < now
+      m.feedbackStatus === FeedbackStatus.PENDING && parseLocal(m.end).getTime() < now
     );
   });
 
   public readonly dismissedMeetings = computed(() => {
     const now = Date.now();
     return this.meetingService.meetings().filter(m => 
-      m.feedbackStatus === FeedbackStatus.DISMISSED && new Date(m.end).getTime() < now
+      m.feedbackStatus === FeedbackStatus.DISMISSED && parseLocal(m.end).getTime() < now
     );
   });
 
@@ -38,7 +39,7 @@ export class FeedbackUIService {
     const dismissed = this.dismissedMeetings();
     const list = this.showDismissedSignal() ? [...pending, ...dismissed] : [...pending];
 
-    return list.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+    return list.sort((a, b) => parseLocal(b.start).getTime() - parseLocal(a.start).getTime());
   });
 
   // Daily feedback computed signals for the inbox view (filtered by current meetings list if needed)

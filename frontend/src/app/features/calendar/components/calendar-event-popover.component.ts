@@ -1,6 +1,7 @@
 import { Component, input, output, computed } from '@angular/core';
 import { DatePipe, CommonModule } from '@angular/common';
 import { Meeting, FeedbackStatus, MeetingType, MEETING_TYPES } from '../../../shared/models/meeting.model';
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Component({
   selector: 'app-calendar-event-popover',
@@ -127,8 +128,8 @@ export class CalendarEventPopoverComponent {
   isDismissed = computed(() => this.event().feedbackStatus === FeedbackStatus.DISMISSED);
 
   duration = computed(() => {
-    const start = new Date(this.event().start).getTime();
-    const end = new Date(this.event().end).getTime();
+    const start = parseLocal(this.event().start).getTime();
+    const end = parseLocal(this.event().end).getTime();
     return Math.round((end - start) / (1000 * 60));
   });
 
