@@ -91,6 +91,7 @@ public class CalendarController {
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
             event.setMeetingType(request.getMeetingType());
+            event.setCategorizedByAi(true);
             eventRepository.save(event);
             return ResponseEntity.ok(event);
         } else {

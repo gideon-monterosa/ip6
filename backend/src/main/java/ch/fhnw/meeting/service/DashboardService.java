@@ -55,7 +55,7 @@ public class DashboardService {
                 .startTime(event.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z")
                 .endTime(event.getEndTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z")
                 .durationMinutes(durationMinutes)
-                .recurring(false) // Not supported in Event model currently
+                .recurring(event.getMeetingType() != null && event.getMeetingType() != ch.fhnw.meeting.model.calendar.MeetingType.AD_HOC)
                 .meetingType(event.getMeetingType() != null ? mapMeetingType(event.getMeetingType().name()) : "Other")
                 .organizer(event.getOrganizer() != null ? event.getOrganizer() : "Unknown")
                 .numberOfParticipants(event.getAttendeesCount() != null ? event.getAttendeesCount() : 1)
@@ -115,6 +115,7 @@ public class DashboardService {
                 .freeTextComment(freeTextComment)
                 .timeOfDayBucket(getTimeOfDayBucket(event.getStartTime()))
                 .meetingType(event.getMeetingType() != null ? mapMeetingType(event.getMeetingType().name()) : "Other")
+                .meetingStartTime(event.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z")
                 .feedbackTimestamp(feedback.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z")
                 .themes(themes)
                 .build();

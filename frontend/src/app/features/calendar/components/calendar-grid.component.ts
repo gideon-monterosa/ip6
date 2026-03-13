@@ -4,6 +4,7 @@ import { Meeting, FeedbackStatus } from '../../../shared/models/meeting.model';
 import { DailyFeedback } from '../../feedback-inbox/models/feedback.model';
 import { CalendarEventCardComponent } from '../components/calendar-event-card.component';
 import { UserSettings } from '../../../core/models/user.model';
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Component({
   selector: 'app-calendar-grid',
@@ -197,7 +198,7 @@ export class CalendarGridComponent {
 
   getEventsForDay(date: Date): { event: Meeting; layout: { left: string; width: string } }[] {
     const dayEvents = this.events().filter(event => {
-      const eventDate = new Date(event.start);
+      const eventDate = parseLocal(event.start);
       return eventDate.getDate() === date.getDate() &&
         eventDate.getMonth() === date.getMonth() &&
         eventDate.getFullYear() === date.getFullYear();
@@ -207,9 +208,9 @@ export class CalendarGridComponent {
 
     // Sort by start time, then end time
     dayEvents.sort((a, b) => {
-      const startDiff = new Date(a.start).getTime() - new Date(b.start).getTime();
+      const startDiff = parseLocal(a.start).getTime() - parseLocal(b.start).getTime();
       if (startDiff !== 0) return startDiff;
-      return new Date(b.end).getTime() - new Date(a.end).getTime();
+      return parseLocal(b.end).getTime() - parseLocal(a.end).getTime();
     });
 
     const results: { event: Meeting; layout: { left: string; width: string } }[] = [];
@@ -217,11 +218,11 @@ export class CalendarGridComponent {
 
     dayEvents.forEach(event => {
       let placed = false;
-      const eventStart = new Date(event.start).getTime();
+      const eventStart = parseLocal(event.start).getTime();
 
       for (let i = 0; i < columns.length; i++) {
         const lastEventInColumn = columns[i][columns[i].length - 1];
-        if (new Date(lastEventInColumn.end).getTime() <= eventStart) {
+        if (parseLocal(lastEventInColumn.end).getTime() <= eventStart) {
           columns[i].push(event);
           placed = true;
           break;

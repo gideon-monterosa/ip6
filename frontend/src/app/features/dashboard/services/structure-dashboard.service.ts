@@ -10,12 +10,13 @@ import {
   WeekMeeting,
   StructureSummaryWeek,
   TypeDistribution,
-  RecurringRatioData,
   TimingBucket,
   FocusBlockDay,
   FragmentationDay,
 } from '../models/dashboard.model';
 import { isDateInWeek, getWeekDayLabels, toDateString } from '../utils/week.utils';
+
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Injectable({ providedIn: 'root' })
 export class StructureDashboardService {
@@ -174,7 +175,7 @@ export class StructureDashboardService {
           }))
           .sort(
             (a, b) =>
-              new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+              parseLocal(a.startTime).getTime() - parseLocal(b.startTime).getTime(),
           );
       }),
     );
@@ -196,24 +197,6 @@ export class StructureDashboardService {
           count,
           percentage: Math.round((count / total) * 1000) / 10,
         }));
-      }),
-    );
-  }
-
-  getRecurringRatio(weekStart: Date, weekEnd: Date): Observable<RecurringRatioData> {
-    return this.meetings$.pipe(
-      map((meetings) => {
-        const filtered = this.filterMeetings(meetings, weekStart, weekEnd);
-        const recurring = filtered.filter((m) => m.recurring).length;
-        const adHoc = filtered.length - recurring;
-        return {
-          recurringCount: recurring,
-          adHocCount: adHoc,
-          recurringPercentage:
-            filtered.length > 0
-              ? Math.round((recurring / filtered.length) * 1000) / 10
-              : 0,
-        };
       }),
     );
   }

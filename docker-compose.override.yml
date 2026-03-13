@@ -20,7 +20,8 @@ services:
       GOOGLE_REDIRECT_URI: http://localhost:4200/calendar-callback
       MICROSOFT_REDIRECT_URI: http://localhost:4200/calendar-callback
       SPRING_FLYWAY_ENABLED: "true"
-    # In dev, we can override the CMD to use mvnw for hot-reloading if the Dockerfile uses java -jar
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.1:8b
     entrypoint: ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
 
   frontend:
@@ -33,12 +34,9 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    # In dev, we override the NGINX start command to run the Angular dev server
     entrypoint: ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]
 
   proxy:
-    # You can keep the proxy running in dev to test the routing, 
-    # or disable it by setting replicas to 0 if you prefer direct port access.
     ports:
       - "80:80"
 

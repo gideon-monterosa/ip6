@@ -1,6 +1,7 @@
 import { Component, input, output, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Meeting, MeetingType, MEETING_TYPES } from '../../../shared/models/meeting.model';
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Component({
   selector: 'app-calendar-event-modal',
@@ -105,13 +106,13 @@ export class CalendarEventModalComponent implements OnInit {
   ngOnInit(): void {
     const meeting = this.meeting();
     if (meeting) {
-      const start = new Date(meeting.start);
-      const end = new Date(meeting.end);
+      const start = parseLocal(meeting.start);
+      const end = parseLocal(meeting.end);
 
       this.eventForm.patchValue({
         title: meeting.title,
         description: meeting.description,
-        date: start.toISOString().split('T')[0],
+        date: this.formatDate(start),
         startTime: this.formatTime(start),
         endTime: this.formatTime(end),
         meetingType: meeting.meetingType,
@@ -121,13 +122,22 @@ export class CalendarEventModalComponent implements OnInit {
       // Default date to today
       const today = new Date();
       this.eventForm.patchValue({
-        date: today.toISOString().split('T')[0]
+        date: this.formatDate(today)
       });
     }
   }
 
+  private formatDate(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   private formatTime(date: Date): string {
-    return date.toTimeString().substring(0, 5);
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return `${hh}:${mm}`;
   }
 
   onSubmit(): void {

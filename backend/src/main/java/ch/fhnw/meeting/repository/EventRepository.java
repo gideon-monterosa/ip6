@@ -34,6 +34,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         LocalDateTime startTime
     );
 
+    List<Event> findByUserIdAndProviderAndCategorizedByAiFalse(
+        Long userId,
+        ch.fhnw.meeting.model.calendar.AuthProvider provider
+    );
+
     List<Event> findByEndTimeBeforeAndFeedbackStatusAndNotificationSentFalse(
             LocalDateTime endTime,
             ch.fhnw.meeting.model.feedback.FeedbackStatus feedbackStatus

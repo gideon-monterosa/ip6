@@ -27,6 +27,12 @@ public class EventDto {
 
     private FeedbackStatus feedbackStatus;
 
+    @Builder.Default
+    private Boolean categorizedByAi = false;
+
+    @Builder.Default
+    private Boolean notificationSent = false;
+
     public String getId() {
         return id;
     }
@@ -113,5 +119,21 @@ public class EventDto {
 
     public void setFeedbackStatus(FeedbackStatus feedbackStatus) {
         this.feedbackStatus = feedbackStatus;
+    }
+
+    public Boolean getCategorizedByAi() {
+        return categorizedByAi;
+    }
+
+    public void setCategorizedByAi(Boolean categorizedByAi) {
+        this.categorizedByAi = categorizedByAi;
+    }
+
+    public Boolean getNotificationSent() {
+        return notificationSent;
+    }
+
+    public void setNotificationSent(Boolean notificationSent) {
+        this.notificationSent = notificationSent;
     }
 }

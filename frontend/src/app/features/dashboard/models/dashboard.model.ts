@@ -1,5 +1,3 @@
-// ── Kept interfaces (still used by chart components) ──
-
 export interface DayData {
   day: string;
   count: number;
@@ -10,22 +8,18 @@ export interface DurationData {
   count: number;
 }
 
-// ── New interfaces for week-based dashboard ──
 
-/** Week selector state */
 export interface WeekRange {
-  start: Date;  // Monday 00:00
-  end: Date;    // Sunday 23:59:59
+  start: Date
+  end: Date;
 }
 
-/** Replaces WeekData for the daily overview chart */
 export interface DailyOverviewData {
-  day: string;       // "Mon 2/2", "Tue 2/3", etc.
+  day: string;
   meetings: number;
   hours: number;
 }
 
-/** For the "Meetings This Week" table */
 export interface WeekMeeting {
   id: string;
   title: string;
@@ -40,7 +34,6 @@ export interface WeekMeeting {
   timeOfDayBucket: string;
 }
 
-/** Raw meeting from meetings.json (for client-side filtering) */
 export interface RawMeeting {
   meeting_id: string;
   start_time: string;
@@ -54,22 +47,21 @@ export interface RawMeeting {
   time_of_day_bucket: string;
 }
 
-/** Raw feedback from feedback.json */
 export interface RawFeedback {
   meeting_id: string;
   perceived_efficiency: number;
-  emotional_impact: string;      // "motivated" | "neutral" | "stressed"
+  emotional_impact: string;
   energy_after_meeting: number;
   perceived_value: boolean;
   perceived_focus_disruption: number;
   free_text_comment: string;
   time_of_day_bucket: string;
   meeting_type: string;
+  meeting_start_time: string;
   feedback_timestamp: string;
   themes?: string[];
 }
 
-/** Structure summary computed for a week */
 export interface StructureSummaryWeek {
   totalMeetings: number;
   totalHours: number;
@@ -81,7 +73,6 @@ export interface StructureSummaryWeek {
   prevAvgMeetingsPerDay: number;
 }
 
-/** Impact summary computed for a week */
 export interface ImpactSummaryWeek {
   avgEfficiency: number;
   avgEmotionalScore: number;
@@ -97,12 +88,6 @@ export interface TypeDistribution {
   type: string;
   count: number;
   percentage: number;
-}
-
-export interface RecurringRatioData {
-  recurringCount: number;
-  adHocCount: number;
-  recurringPercentage: number;
 }
 
 export interface TimingBucket {
@@ -151,6 +136,11 @@ export interface SentimentBucket {
   sentiment: string;
   count: number;
   percentage: number;
+}
+
+export interface DurationEfficiency {
+  duration: number;
+  efficiency: number;
 }
 
 export interface ThemeFrequency {
