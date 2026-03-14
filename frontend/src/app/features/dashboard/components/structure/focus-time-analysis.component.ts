@@ -15,6 +15,9 @@ import {
   ApexTooltip,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is replaced by the Daily Flow Analysis.
+ */
 @Component({
   selector: 'app-focus-time-analysis',
   imports: [NgApexchartsModule, ChartCardComponent],

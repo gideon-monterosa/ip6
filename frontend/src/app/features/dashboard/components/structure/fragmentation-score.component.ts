@@ -17,6 +17,9 @@ import {
   ApexTooltip,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is replaced by the Daily Flow Analysis.
+ */
 @Component({
   selector: 'app-fragmentation-score',
   imports: [NgApexchartsModule, ChartCardComponent],

@@ -96,7 +96,7 @@ export interface TimingBucket {
   percentage: number;
 }
 
-export interface FocusBlockDay {
+export interface FlowBlockDay {
   date: string;
   blocks60min: number;
   blocks90min: number;
@@ -151,4 +151,22 @@ export interface ThemeFrequency {
 export interface DisruptionDay {
   date: string;
   avgDisruption: number;
+}
+
+export interface DailyFlowScore {
+  date: string;
+  score: number;
+  totalWorkingMinutes: number;
+  effectiveFlowMinutes: number;
+  potentialScore: number;
+  blocks: FlowBlock[];
+}
+
+export interface FlowBlock {
+  type: 'MEETING' | 'GAP_MICRO' | 'GAP_NORMAL' | 'GAP_FLOW';
+  startTime: string;
+  endTime: string;
+  durationMinutes: number;
+  factor: number;
+  effectiveMinutes: number;
 }

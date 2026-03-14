@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, map, shareReplay, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   RawMeeting,
@@ -11,12 +11,15 @@ import {
   StructureSummaryWeek,
   TypeDistribution,
   TimingBucket,
-  FocusBlockDay,
+  FlowBlockDay,
   FragmentationDay,
+  DailyFlowScore,
+  FlowBlock,
 } from '../models/dashboard.model';
 import { isDateInWeek, getWeekDayLabels, toDateString } from '../utils/week.utils';
 
 import { parseLocal } from '../../../core/utils/date.utils';
+import { UserSettings } from '../../../core/models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class StructureDashboardService {
@@ -30,7 +33,7 @@ export class StructureDashboardService {
     );
 
   private focusBlocks$ = this.http
-    .get<{ focusBlocks: FocusBlockDay[] }>(`${environment.apiUrl}/api/dashboard/structure/focus-blocks`)
+    .get<{ focusBlocks: FlowBlockDay[] }>(`${environment.apiUrl}/api/dashboard/structure/focus-blocks`)
     .pipe(
       map((res) => res.focusBlocks),
       shareReplay(1),
@@ -97,7 +100,7 @@ export class StructureDashboardService {
           const dateStr = toDateString(dayDate);
 
           const dayMeetings = filtered.filter(
-            (m) => m.start_time.split('T')[0] === dateStr,
+            (m) => m.start_time.replace('T', ' ').split(' ')[0] === dateStr,
           );
           return {
             day: label,
@@ -123,7 +126,7 @@ export class StructureDashboardService {
           const dateStr = toDateString(dayDate);
 
           const count = filtered.filter(
-            (m) => m.start_time.split('T')[0] === dateStr,
+            (m) => m.start_time.replace('T', ' ').split(' ')[0] === dateStr,
           ).length;
           return { day: label, count };
         });
@@ -228,7 +231,7 @@ export class StructureDashboardService {
     );
   }
 
-  getFocusBlocks(weekStart: Date, weekEnd: Date): Observable<FocusBlockDay[]> {
+  getFlowBlocks(weekStart: Date, weekEnd: Date): Observable<FlowBlockDay[]> {
     const startStr = toDateString(weekStart);
     const endStr = toDateString(new Date(weekEnd));
 
@@ -247,6 +250,157 @@ export class StructureDashboardService {
       map((scores) =>
         scores.filter((s) => s.date >= startStr && s.date <= endStr),
       ),
+    );
+  }
+
+  getDailyFlowScores(
+    weekStart: Date,
+    weekEnd: Date,
+    settings: UserSettings | null,
+  ): Observable<DailyFlowScore[]> {
+    if (!settings) return of([]);
+
+    const labels = getWeekDayLabels(weekStart);
+
+    return this.meetings$.pipe(
+      map((meetings) => {
+        const filtered = this.filterMeetings(meetings, weekStart, weekEnd);
+
+        return labels.map((_, i) => {
+          const dayDate = new Date(weekStart);
+          dayDate.setDate(dayDate.getDate() + i);
+          const dateStr = toDateString(dayDate);
+
+          const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+          const dayOfWeek = days[dayDate.getDay()];
+          const isWorkingDay = settings.workingDays.includes(dayOfWeek);
+
+          if (!isWorkingDay) {
+            return {
+              date: dateStr,
+              score: 0,
+              totalWorkingMinutes: 0,
+              effectiveFlowMinutes: 0,
+              potentialScore: 0,
+              blocks: [],
+            };
+          }
+
+          const [startH, startM] = settings.workStartTime.split(':').map(Number);
+          const [endH, endM] = settings.workEndTime.split(':').map(Number);
+
+          const workStart = new Date(dayDate);
+          workStart.setHours(startH, startM, 0, 0);
+
+          const workEnd = new Date(dayDate);
+          workEnd.setHours(endH, endM, 0, 0);
+
+          const totalWorkingMinutes = (workEnd.getTime() - workStart.getTime()) / (1000 * 60);
+
+          const dayMeetings = filtered
+            .filter((m) => m.start_time.replace('T', ' ').split(' ')[0] === dateStr)
+            .map((m) => {
+              const mStart = parseLocal(m.start_time);
+              const mEnd = parseLocal(m.end_time);
+
+              const clippedStart = new Date(Math.max(mStart.getTime(), workStart.getTime()));
+              const clippedEnd = new Date(Math.min(mEnd.getTime(), workEnd.getTime()));
+
+              return { start: clippedStart, end: clippedEnd };
+            })
+            .filter((m) => m.start.getTime() < m.end.getTime())
+            .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+          const mergedMeetings: { start: Date; end: Date }[] = [];
+          if (dayMeetings.length > 0) {
+            let current = { start: dayMeetings[0].start, end: dayMeetings[0].end };
+            for (let j = 1; j < dayMeetings.length; j++) {
+              const next = dayMeetings[j];
+              if (next.start.getTime() <= current.end.getTime()) {
+                current.end = new Date(Math.max(current.end.getTime(), next.end.getTime()));
+              } else {
+                mergedMeetings.push(current);
+                current = { start: next.start, end: next.end };
+              }
+            }
+            mergedMeetings.push(current);
+          }
+
+          const blocks: FlowBlock[] = [];
+          let currentTime = workStart.getTime();
+          let effectiveFlowMinutes = 0;
+          let totalMeetingMinutes = 0;
+          const FLOW_ENTRY_COST = 25;
+
+          for (const m of mergedMeetings) {
+            if (m.start.getTime() > currentTime) {
+              const gapDuration = (m.start.getTime() - currentTime) / (1000 * 60);
+              const effective = Math.max(0, gapDuration - FLOW_ENTRY_COST);
+
+              blocks.push({
+                type: gapDuration < 30 ? 'GAP_MICRO' : gapDuration < 90 ? 'GAP_NORMAL' : 'GAP_FLOW',
+                startTime: new Date(currentTime).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                }),
+                endTime: m.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                durationMinutes: gapDuration,
+                factor: 1.0, // Factor not used anymore in new logic
+                effectiveMinutes: effective,
+              });
+
+              effectiveFlowMinutes += effective;
+            }
+
+            const meetingDuration = (m.end.getTime() - m.start.getTime()) / (1000 * 60);
+            blocks.push({
+              type: 'MEETING',
+              startTime: m.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              endTime: m.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              durationMinutes: meetingDuration,
+              factor: 0,
+              effectiveMinutes: 0,
+            });
+            totalMeetingMinutes += meetingDuration;
+            currentTime = m.end.getTime();
+          }
+
+          if (currentTime < workEnd.getTime()) {
+            const gapDuration = (workEnd.getTime() - currentTime) / (1000 * 60);
+            const effective = Math.max(0, gapDuration - FLOW_ENTRY_COST);
+
+            blocks.push({
+              type: gapDuration < 30 ? 'GAP_MICRO' : gapDuration < 90 ? 'GAP_NORMAL' : 'GAP_FLOW',
+              startTime: new Date(currentTime).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              endTime: workEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              durationMinutes: gapDuration,
+              factor: 1.0,
+              effectiveMinutes: effective,
+            });
+
+            effectiveFlowMinutes += effective;
+          }
+
+          const score = (effectiveFlowMinutes / (totalWorkingMinutes - totalMeetingMinutes)) * 100;
+
+          const totalFreeMinutes = totalWorkingMinutes - totalMeetingMinutes;
+          const potentialScore = totalFreeMinutes > FLOW_ENTRY_COST
+            ? ((totalFreeMinutes - FLOW_ENTRY_COST) / totalFreeMinutes) * 100
+            : 0;
+
+          return {
+            date: dateStr,
+            score: Math.round(score),
+            totalWorkingMinutes,
+            effectiveFlowMinutes: Math.round(effectiveFlowMinutes),
+            potentialScore: Math.round(potentialScore),
+            blocks,
+          };
+        });
+      }),
     );
   }
 }
