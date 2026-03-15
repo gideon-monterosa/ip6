@@ -39,7 +39,7 @@ import {
           Meeting Structure Analysis
         </h2>
         <p class="text-base text-muted-foreground-1 mt-1 max-w-3xl">
-          Explore the composition of your meetings. This view provides insights into meeting distribution, timing patterns, and how they affect your productivity and flow.
+          Explore the composition of your meetings. This view provides insights into meeting distribution, timing patterns, and how they affect your flow.
         </p>
       </div>
 
