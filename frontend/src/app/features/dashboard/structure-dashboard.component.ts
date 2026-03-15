@@ -44,7 +44,14 @@ import {
         </div>
       }
 
-      <!-- Row 3: Meeting Characteristics (Type & Duration) -->
+      <!-- Row 3: Weekly Timing Profile (Heatmap) -->
+      @if (weekMeetings().length) {
+        <div>
+          <app-meeting-timing-analysis [meetings]='weekMeetings()' [settings]='userSettings()' />
+        </div>
+      }
+
+      <!-- Row 4: Meeting Characteristics (Type & Duration) -->
       @if (meetingTypes().length || durationBreakdown().length) {
         <div class='grid lg:grid-cols-2 gap-4 sm:gap-6'>
           @if (meetingTypes().length) {
@@ -53,13 +60,6 @@ import {
           @if (durationBreakdown().length) {
             <app-duration-breakdown-chart [breakdown]='durationBreakdown()' />
           }
-        </div>
-      }
-
-      <!-- Row 4: Weekly Timing Profile (Heatmap) -->
-      @if (weekMeetings().length) {
-        <div>
-          <app-meeting-timing-analysis [meetings]='weekMeetings()' [settings]='userSettings()' />
         </div>
       }
 
