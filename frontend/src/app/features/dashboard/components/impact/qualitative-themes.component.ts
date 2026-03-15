@@ -2,7 +2,7 @@ import { Component, input, effect } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ThemeFrequency } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
-import { CHART_GRID_BORDER, SEMANTIC_COLORS } from '../../../../theme.constants';
+import { CHART_GRID_BORDER, CHART_SEMANTIC } from '../../../../theme.constants';
 import { IssueTag, POSITIVE_TAG_LABELS, ISSUE_TAG_LABELS, PositiveTag } from '../../../feedback-inbox/models/feedback.model';
 import {
   ApexAxisChartSeries,
@@ -40,16 +40,29 @@ export class QualitativeThemesComponent {
   data = input.required<ThemeFrequency[]>();
 
   series: ApexAxisChartSeries = [];
-  chart: ApexChart = { type: 'bar', height: 600, stacked: true, toolbar: { show: false } };
+  chart: ApexChart = { 
+    type: 'bar', 
+    height: 600, 
+    stacked: true, 
+    toolbar: { show: false },
+    offsetY: 0,
+    offsetX: 10
+  };
   xaxis: ApexXAxis = {
     categories: [],
     labels: {
-      formatter: (val) => Math.abs(Number(val)).toString(),
+      formatter: (val) => {
+        const num = Number(val);
+        return Math.floor(num) === num ? Math.abs(num).toString() : '';
+      },
     },
+    axisTicks: { show: true },
+    axisBorder: { show: true }
   };
   yaxis: ApexYAxis = {
     labels: {
-      style: { fontWeight: 500 }
+      style: { fontWeight: 500 },
+      maxWidth: 250, // Increased to prevent cutoff
     }
   };
   dataLabels: ApexDataLabels = {
@@ -71,7 +84,7 @@ export class QualitativeThemesComponent {
       formatter: (val) => Math.abs(val).toString(),
     },
   };
-  colors = [SEMANTIC_COLORS.success, SEMANTIC_COLORS.danger];
+  colors = [CHART_SEMANTIC.positive, CHART_SEMANTIC.disruption];
 
   constructor() {
     effect(() => {
@@ -142,7 +155,20 @@ export class QualitativeThemesComponent {
           { name: 'Positive', data: positiveData },
           { name: 'Negative', data: negativeData },
         ];
-        this.xaxis = { ...this.xaxis, categories };
+
+        const maxVal = Math.max(
+          ...positiveData,
+          ...negativeData.map(Math.abs),
+          1 // min 1
+        );
+        
+        this.xaxis = { 
+          ...this.xaxis, 
+          categories,
+          min: -maxVal,
+          max: maxVal,
+          tickAmount: maxVal * 2
+        };
 
         const newHeight = Math.max(400, categories.length * 40 + 100);
         this.chart = { ...this.chart, height: newHeight };
