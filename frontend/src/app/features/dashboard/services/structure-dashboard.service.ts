@@ -330,16 +330,19 @@ export class StructureDashboardService {
           let currentTime = workStart.getTime();
           let effectiveFlowMinutes = 0;
           let totalMeetingMinutes = 0;
-          const FLOW_ENTRY_COST = 25;
+          const FLOW_DISRUPTION_COST = 25;
           let hasPriorMeeting = false;
 
           for (const m of mergedMeetings) {
             if (m.start.getTime() > currentTime) {
               const gapDuration = (m.start.getTime() - currentTime) / (1000 * 60);
-              const cost = hasPriorMeeting ? FLOW_ENTRY_COST : 0;
+              const cost = hasPriorMeeting ? Math.min(gapDuration, FLOW_DISRUPTION_COST) : 0;
               const effective = Math.max(0, gapDuration - cost);
 
-              const type = gapDuration < 30 ? 'GAP_MINIMAL' : gapDuration < 60 ? 'GAP_SHORT' : gapDuration < 120 ? 'GAP_MEDIUM' : 'GAP_LARGE';
+              let type: 'GAP_FRAGMENTED' | 'GAP_SHORT' | 'GAP_MEDIUM' | 'GAP_LARGE' = 'GAP_FRAGMENTED';
+              if (gapDuration >= 120) type = 'GAP_LARGE';
+              else if (gapDuration >= 60) type = 'GAP_MEDIUM';
+              else if (gapDuration > 25) type = 'GAP_SHORT';
 
               blocks.push({
                 type: type,
@@ -374,10 +377,13 @@ export class StructureDashboardService {
 
           if (currentTime < workEnd.getTime()) {
             const gapDuration = (workEnd.getTime() - currentTime) / (1000 * 60);
-            const cost = hasPriorMeeting ? FLOW_ENTRY_COST : 0;
+            const cost = hasPriorMeeting ? Math.min(gapDuration, FLOW_DISRUPTION_COST) : 0;
             const effective = Math.max(0, gapDuration - cost);
 
-            const type = gapDuration < 30 ? 'GAP_MINIMAL' : gapDuration < 60 ? 'GAP_SHORT' : gapDuration < 120 ? 'GAP_MEDIUM' : 'GAP_LARGE';
+            let type: 'GAP_FRAGMENTED' | 'GAP_SHORT' | 'GAP_MEDIUM' | 'GAP_LARGE' = 'GAP_FRAGMENTED';
+            if (gapDuration >= 120) type = 'GAP_LARGE';
+            else if (gapDuration >= 60) type = 'GAP_MEDIUM';
+            else if (gapDuration > 25) type = 'GAP_SHORT';
 
             blocks.push({
               type: type,

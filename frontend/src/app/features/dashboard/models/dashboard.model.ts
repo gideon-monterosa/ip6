@@ -163,7 +163,7 @@ export interface DailyFlowScore {
 }
 
 export interface FlowBlock {
-  type: 'MEETING' | 'GAP_MINIMAL' | 'GAP_SHORT' | 'GAP_MEDIUM' | 'GAP_LARGE';
+  type: 'MEETING' | 'GAP_FRAGMENTED' | 'GAP_SHORT' | 'GAP_MEDIUM' | 'GAP_LARGE';
   startTime: string;
   endTime: string;
   durationMinutes: number;

@@ -65,7 +65,7 @@ import {
       }
 
       <!-- Row 4: Meeting Characteristics (Type & Duration) -->
-      @if (meetingTypes().length || durationBreakdown().length) {
+      @if (meetingTypes().length || durationBreakdown().length) {/
         <div class='grid lg:grid-cols-2 gap-4 sm:gap-6'>
           @if (meetingTypes().length) {
             <app-meeting-type-distribution [data]='meetingTypes()' />

@@ -1,7 +1,7 @@
 import { Component, input, computed, signal, effect } from '@angular/core';
 import { DailyFlowScore, FlowBlock } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
-import { SEMANTIC_COLORS } from '../../../../theme.constants';
+import { SEMANTIC_COLORS, CHART_COLORS, CHART_PRIMARY } from '../../../../theme.constants';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -89,22 +89,12 @@ import { CommonModule } from '@angular/common';
                 <div class='flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider'>
                   <span>Daily Flow Schedule</span>
                   <div class='flex flex-wrap justify-end gap-x-4 gap-y-2'>
-                    <div class='flex items-center gap-1.5'>
-                      <div class='w-3 h-3 rounded-sm bg-slate-200 dark:bg-slate-700'></div>
-                      <span>Meeting</span>
-                    </div>
-                    <div class='flex items-center gap-1.5'>
-                      <div class='w-3 h-3 rounded-sm' [style.backgroundColor]="colors['GAP_LARGE']"></div>
-                      <span class='text-blue-700 dark:text-blue-400'>Large Flow (120m+)</span>
-                    </div>
-                    <div class='flex items-center gap-1.5'>
-                      <div class='w-3 h-3 rounded-sm' [style.backgroundColor]="colors['GAP_MEDIUM']"></div>
-                      <span class='text-blue-600 dark:text-blue-400'>Medium Flow</span>
-                    </div>
-                    <div class='flex items-center gap-1.5'>
-                      <div class='w-3 h-3 rounded-sm' [style.backgroundColor]="colors['GAP_SHORT']"></div>
-                      <span class='text-blue-400'>Short Flow</span>
-                    </div>
+                    @for (cat of categories; track cat.type) {
+                      <div class='flex items-center gap-1.5'>
+                        <div class='w-3 h-3 rounded-sm' [style.backgroundColor]="colors[cat.type]"></div>
+                        <span>{{ cat.shortLabel || cat.label }}</span>
+                      </div>
+                    }
                   </div>
                 </div>
 
@@ -112,18 +102,24 @@ import { CommonModule } from '@angular/common';
                   @for (block of data()!.blocks; track $index) {
                     <div class='h-12 relative flex-none' [style.width.%]='(block.durationMinutes / data()!.totalWorkingMinutes) * 100'>
                       <div
-                        class='absolute inset-y-0 left-[1px] right-[1px] group transition-colors rounded-[10px] cursor-default hover:brightness-95 dark:hover:brightness-110'
+                        class='absolute inset-y-0 left-[1px] right-[1px] group transition-colors rounded-[10px] cursor-default hover:brightness-95 dark:hover:brightness-110 flex items-center justify-center'
                         [style.backgroundColor]="colors[block.type]"
                       >
+                        @if (block.type === 'MEETING' && block.durationMinutes >= 15) {
+                          <svg xmlns="http://www.w3.org/2000/svg" class="size-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                          </svg>
+                        }
+
                         <!-- Tooltip -->
                         <div class='absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-4 py-2 bg-slate-900 text-white text-[11px] rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 whitespace-nowrap pointer-events-none shadow-2xl border border-white/10'>
-                          <p class='font-black mb-1 text-blue-400 uppercase tracking-tighter'>{{ block.type.replace('GAP_', '').replace('MEETING', 'Meeting') }}</p>
+                          <p class='font-black mb-1 text-blue-400 uppercase tracking-tighter'>{{ formatBlockType(block.type) }}</p>
                           <p class='font-medium'>{{ block.startTime }} - {{ block.endTime }}</p>
                           @if (block.type !== 'MEETING') {
                             <p class='opacity-70'>
                               {{ block.durationMinutes }} min
                               @if (block.costMinutes > 0) {
-                                (-{{ block.costMinutes }}m startup cost)
+                                (-{{ block.costMinutes }}m flow disruption cost)
                               }
                             </p>
                           } @else {
@@ -162,7 +158,7 @@ import { CommonModule } from '@angular/common';
                         <tr>
                           <th class='px-6 py-4'>Segment Type</th>
                           <th class='px-6 py-4'>Total Time</th>
-                          <th class='px-6 py-4'>Flow Entry Cost</th>
+                          <th class='px-6 py-4'>Flow Disruption Cost</th>
                           <th class='px-6 py-4 text-right'>Net Flow Potential</th>
                         </tr>
                       </thead>
@@ -183,7 +179,7 @@ import { CommonModule } from '@angular/common';
                       </tbody>
                       <tfoot class='bg-slate-50/50 dark:bg-slate-900/50 font-black border-t border-slate-100 dark:border-slate-800'>
                         <tr class='border-b border-slate-100 dark:border-slate-800/50'>
-                          <td colspan='3' class='px-6 py-3 text-right text-slate-500 uppercase tracking-tighter text-[10px]'>Total Disruption (Meetings + Entry Costs):</td>
+                          <td colspan='3' class='px-6 py-3 text-right text-slate-500 uppercase tracking-tighter text-[10px]'>Total Disruption + Meetings:</td>
                           <td class='px-6 py-3 text-right text-slate-600 dark:text-slate-400'>{{ totalDisruptionMinutes() }} min</td>
                         </tr>
                         <tr>
@@ -230,12 +226,27 @@ export class DailyFlowScoreComponent {
   showTable = signal(false);
 
   colors: Record<string, string> = {
-    'MEETING': '#e2e8f0', // Slate-200
-    'GAP_MINIMAL': '#cbd5e1', // Slate-300
-    'GAP_SHORT': '#93c5fd', // Blue-300
-    'GAP_MEDIUM': '#3b82f6', // Blue-500
-    'GAP_LARGE': '#1d4ed8'  // Blue-700
+    'MEETING': CHART_COLORS.chart9,
+    'GAP_FRAGMENTED': CHART_COLORS.chart10,
+    'GAP_SHORT': CHART_COLORS.chart3,
+    'GAP_MEDIUM': CHART_PRIMARY,
+    'GAP_LARGE': CHART_COLORS.chart4
   };
+
+  categories = [
+    { type: 'GAP_LARGE' as const, label: 'Large Flow Block (≥ 120m)', shortLabel: 'Large Flow (120m+)' },
+    { type: 'GAP_MEDIUM' as const, label: 'Medium Flow Block (60-120m)', shortLabel: 'Medium Flow' },
+    { type: 'GAP_SHORT' as const, label: 'Short Flow Block (> 25m)', shortLabel: 'Short Flow (> 25m)' },
+    { type: 'GAP_FRAGMENTED' as const, label: 'Fragmented Time (≤ 25m)', shortLabel: 'Fragmented (≤ 25m)' },
+    { type: 'MEETING' as const, label: 'Meetings', shortLabel: 'Meeting' },
+  ];
+
+
+  formatBlockType(type: string): string {
+    if (type === 'MEETING') return 'Meeting';
+    if (type === 'GAP_FRAGMENTED') return 'Fragmented Time';
+    return type.replace('GAP_', '').toLowerCase().replace(/^\w/, c => c.toUpperCase()) + ' Flow';
+  }
 
   totalFreeMinutes = computed(() => {
     const d = this.data();
@@ -292,15 +303,7 @@ export class DailyFlowScoreComponent {
     const d = this.data();
     if (!d) return [];
 
-    const categories = [
-      { type: 'GAP_LARGE', label: 'Large Flow Block (≥ 120m)' },
-      { type: 'GAP_MEDIUM', label: 'Medium Flow Block (60-120m)' },
-      { type: 'GAP_SHORT', label: 'Short Flow Block (30-60m)' },
-      { type: 'GAP_MINIMAL', label: 'Minimal Flow Block (< 30m)' },
-      { type: 'MEETING', label: 'Meetings' },
-    ];
-
-    return categories.map(cat => {
+    return this.categories.map(cat => {
       const blocks = d.blocks.filter(b => b.type === cat.type);
       const duration = blocks.reduce((sum, b) => sum + b.durationMinutes, 0);
       const effective = blocks.reduce((sum, b) => sum + b.effectiveMinutes, 0);
