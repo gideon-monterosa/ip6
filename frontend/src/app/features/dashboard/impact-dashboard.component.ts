@@ -32,7 +32,20 @@ import {
     DurationRotiScatterplotComponent,
   ],
   template: `
-    <div>
+    <div class="flex flex-col gap-6">
+      <!-- Dashboard Description -->
+      <div>
+        <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+          Meeting Impact Analysis
+        </h2>
+        <p class="text-base text-muted-foreground-1 mt-1 max-w-3xl">
+          Get insight into the provieded meeting feedback. See what impact meetings have on you and identify possible pain points.
+        </p>
+      </div>
+
       <!-- KPI Summary Row -->
       @if (summary()) {
         <div class='mb-6'>

@@ -29,7 +29,20 @@ import {
     DurationBreakdownChartComponent
   ],
   template: `
-    <div class="flex flex-col gap-10">
+    <div class="flex flex-col gap-6">
+      <!-- Dashboard Description -->
+      <div>
+        <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          Meeting Structure Analysis
+        </h2>
+        <p class="text-base text-muted-foreground-1 mt-1 max-w-3xl">
+          Explore the composition of your meetings. This view provides insights into meeting distribution, timing patterns, and how they affect your productivity and flow.
+        </p>
+      </div>
+
       <!-- Row 1: KPI Summary -->
       @if (summary()) {
         <div>

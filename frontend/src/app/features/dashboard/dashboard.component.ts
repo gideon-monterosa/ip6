@@ -16,26 +16,27 @@ import { TourService } from '../../core/services/tour.service';
     ImpactDashboardComponent,
   ],
   template: `
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <!-- Header -->
-      <div class="mb-6">
-        @if (currentUser()) {
-          <h1 class="text-2xl font-bold text-foreground">
-            Welcome back, {{ currentUser()!.username }}
-          </h1>
-          <p class="text-sm text-muted-foreground-1 mt-1">Here's your meeting analytics overview.</p>
-        }
+    <div class="max-w-[85rem] px-4 py-3 sm:px-6 lg:px-8 lg:py-4 mx-auto">
+      <!-- Header with Week Selector on the right -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <div>
+          @if (currentUser()) {
+            <h1 class="text-2xl font-bold text-foreground">
+              Welcome back, {{ currentUser()!.username }}
+            </h1>
+            <p class="text-sm text-muted-foreground-1">Here's your meeting analytics overview.</p>
+          }
+        </div>
+        
+        <div class="w-full sm:w-auto">
+          <app-week-selector
+            [weekStart]="selectedWeekStart()"
+            (weekChange)="onWeekChange($event)"
+          />
+        </div>
       </div>
 
-      <!-- Week Selector -->
-      <div class="mb-6">
-        <app-week-selector
-          [weekStart]="selectedWeekStart()"
-          (weekChange)="onWeekChange($event)"
-        />
-      </div>
-
-      <!-- Dashboard Tabs -->
+      <!-- Full-width Tabs -->
       <div class="mb-6">
         <app-dashboard-tabs
           [activeTab]="activeTab()"
@@ -44,17 +45,19 @@ import { TourService } from '../../core/services/tour.service';
       </div>
 
       <!-- Dashboard Content -->
-      @if (activeTab() === 'structure') {
-        <app-structure-dashboard
-          [weekStart]="selectedWeekStart()"
-          [weekEnd]="selectedWeekEnd()"
-        />
-      } @else {
-        <app-impact-dashboard
-          [weekStart]="selectedWeekStart()"
-          [weekEnd]="selectedWeekEnd()"
-        />
-      }
+      <div>
+        @if (activeTab() === 'structure') {
+          <app-structure-dashboard
+            [weekStart]="selectedWeekStart()"
+            [weekEnd]="selectedWeekEnd()"
+          />
+        } @else {
+          <app-impact-dashboard
+            [weekStart]="selectedWeekStart()"
+            [weekEnd]="selectedWeekEnd()"
+          />
+        }
+      </div>
     </div>
   `,
   styles: `
