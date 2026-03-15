@@ -57,8 +57,8 @@ export class ImpactTimelineChartComponent {
   legend: ApexLegend = { position: 'top', horizontalAlign: 'center' };
   markers: ApexMarkers = { size: 4, hover: { size: 6 } };
 
-  // Using standard colors: Green for Positive/ROTI, Blue for Energy, Orange for Feeling, Red for Disruption
-  colors = [CHART_SEMANTIC.step5, CHART_COLORS.chart5, CHART_SEMANTIC.step2, CHART_SEMANTIC.step1];
+  // Using standard colors: Green for Positive/ROTI, Blue for Energy, Red for Disruption
+  colors = [CHART_SEMANTIC.step5, CHART_COLORS.chart5, CHART_SEMANTIC.step1];
 
   constructor() {
     effect(() => {
@@ -74,12 +74,6 @@ export class ImpactTimelineChartComponent {
           {
             name: 'Energy Level',
             data: items.map(d => d.avgEnergy)
-          },
-          {
-            name: 'Feeling',
-            // Map feeling from [-1, 1] to [1, 5] for plotting, or just leave it if we want separate axes.
-            // Let's map it so they can be compared visually: -1 -> 1, 0 -> 3, 1 -> 5.
-            data: items.map(d => d.avgEmotional !== null ? Math.round(((d.avgEmotional + 1) * 2 + 1) * 10) / 10 : null)
           },
           {
             name: 'Focus Disruption',
