@@ -47,3 +47,12 @@ export const SEMANTIC_COLORS = {
   success: '#16a34a', // green-600
   danger:  '#dc2626', // red-600
 } as const;
+
+/** Standardized semantic colors for charts */
+export const CHART_SEMANTIC = {
+  positive: SEMANTIC_COLORS.success,
+  neutral:  '#d1d5db', // gray-300
+  negative: '#f97316', // orange-500
+  disruption: '#dc2626', // red-600
+  muted:    '#60a5fa', // blue-400 (muted blue)
+} as const;
