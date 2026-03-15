@@ -1,0 +1,103 @@
+# ==========================================
+# Configuration / User Settings
+# ==========================================
+@host = https://meetings.isenegger.dev/api
+@username = test13433
+@email = test102@test.com
+@password = 123456
+
+
+# ------------------------------------------
+# 1. Register User
+# ------------------------------------------
+
+POST {{host}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+# ------------------------------------------
+# 2. Login User & Capture Token
+# ------------------------------------------
+
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+> {%
+    let token = response.body.token || response.body.accessToken || response.body.jwt;
+
+    if (token) {
+        client.global.set("auth_token", token);
+        client.log("Successfully extracted and saved auth_token!");
+    } else {
+        client.log("Warning: Could not find the token in the response body.");
+    }
+%}
+###
+# ------------------------------------------
+# 3. Bulk Create Events (Dynamic Dates)
+# ------------------------------------------
+###
+< {%
+    let today = new Date();
+
+    let dayOfWeek = today.getDay();
+    let diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+    let monday = new Date(today);
+    monday.setDate(today.getDate() - diffToMonday);
+
+    function formatDate(date) {
+        let y = date.getFullYear();
+        let m = String(date.getMonth() + 1).padStart(2, '0');
+        let d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    let monDate = new Date(monday);
+    let tueDate = new Date(monday); tueDate.setDate(monday.getDate() + 1);
+    let wedDate = new Date(monday); wedDate.setDate(monday.getDate() + 2);
+    let friDate = new Date(monday); friDate.setDate(monday.getDate() + 4);
+
+    client.global.set("mon_date", formatDate(monDate));
+    client.global.set("tue_date", formatDate(tueDate));
+    client.global.set("wed_date", formatDate(wedDate));
+    client.global.set("fri_date", formatDate(friDate));
+%}
+POST {{host}}/calendar/events/bulk
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  { "title": "Daily Stand-up", "start": "{{mon_date}}T09:00:00", "end": "{{mon_date}}T09:30:00", "meetingType": "Stand-up" },
+  { "title": "1:1 with Alex", "start": "{{mon_date}}T09:50:00", "end": "{{mon_date}}T10:20:00", "meetingType": "1:1" },
+  { "title": "Ad-hoc UI Sync", "start": "{{mon_date}}T10:40:00", "end": "{{mon_date}}T11:10:00", "meetingType": "Ad-hoc" },
+  { "title": "Sprint Planning Prep", "start": "{{mon_date}}T11:30:00", "end": "{{mon_date}}T12:00:00", "meetingType": "Planning" },
+  { "title": "1:1 with Sarah", "start": "{{mon_date}}T13:00:00", "end": "{{mon_date}}T13:30:00", "meetingType": "1:1" },
+  { "title": "Architecture Review", "start": "{{mon_date}}T13:50:00", "end": "{{mon_date}}T14:20:00", "meetingType": "Other" },
+  { "title": "Quick Bug Triage", "start": "{{mon_date}}T14:40:00", "end": "{{mon_date}}T15:10:00", "meetingType": "Ad-hoc" },
+  { "title": "Cross-Team Sync", "start": "{{mon_date}}T15:30:00", "end": "{{mon_date}}T16:00:00", "meetingType": "Other" },
+
+  { "title": "Sprint Planning", "start": "{{tue_date}}T09:00:00", "end": "{{tue_date}}T10:00:00", "meetingType": "Planning" },
+  { "title": "Sprint Retrospective", "start": "{{tue_date}}T10:45:00", "end": "{{tue_date}}T11:45:00", "meetingType": "Retrospective" },
+  { "title": "Feature Kickoff: Payments", "start": "{{tue_date}}T13:30:00", "end": "{{tue_date}}T14:30:00", "meetingType": "Planning" },
+  { "title": "Focus Time: API Design", "start": "{{tue_date}}T16:15:00", "end": "{{tue_date}}T17:00:00", "meetingType": "Other" },
+
+  { "title": "Mid-week Stand-up", "start": "{{wed_date}}T11:30:00", "end": "{{wed_date}}T12:00:00", "meetingType": "Stand-up" },
+  { "title": "Ad-hoc DB Debugging", "start": "{{wed_date}}T13:00:00", "end": "{{wed_date}}T13:30:00", "meetingType": "Ad-hoc" },
+
+  { "title": "Friday Stand-up", "start": "{{fri_date}}T09:00:00", "end": "{{fri_date}}T09:30:00", "meetingType": "Stand-up" },
+  { "title": "1:1 with Manager", "start": "{{fri_date}}T11:30:00", "end": "{{fri_date}}T12:00:00", "meetingType": "1:1" },
+  { "title": "Project Post-mortem", "start": "{{fri_date}}T14:00:00", "end": "{{fri_date}}T14:30:00", "meetingType": "Retrospective" },
+  { "title": "End of Week Wrap-up", "start": "{{fri_date}}T16:30:00", "end": "{{fri_date}}T17:00:00", "meetingType": "Other" }
+]
