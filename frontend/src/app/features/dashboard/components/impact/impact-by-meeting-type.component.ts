@@ -15,9 +15,10 @@ import { CommonModule } from '@angular/common';
             <tr>
               <th class='px-3 py-2 text-start text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Meeting Type</th>
               <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>ROTI</th>
-              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Feeling</th>
               <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Energy</th>
               <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Disruption</th>
+              <th class='w-4'></th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Feeling</th>
             </tr>
           </thead>
           <tbody>
@@ -34,13 +35,6 @@ import { CommonModule } from '@angular/common';
                   {{ item.avgEfficiency.toFixed(1) }}
                 </td>
 
-                <!-- Feeling (-2 to 2) -->
-                <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
-                    [style.backgroundColor]='getHeatmapColor(item.avgEmotional, -2, 2)'
-                    [style.color]='getTextColor(item.avgEmotional, -2, 2)'>
-                  {{ (item.avgEmotional > 0 ? "+" : "") + item.avgEmotional.toFixed(1) }}
-                </td>
-
                 <!-- Energy (1-5) -->
                 <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
                     [style.backgroundColor]='getHeatmapColor(item.avgEnergy, 1, 5)'
@@ -53,6 +47,16 @@ import { CommonModule } from '@angular/common';
                     [style.backgroundColor]='getHeatmapColor(item.avgDisruption, 1, 5, true)'
                     [style.color]='getTextColor(item.avgDisruption, 1, 5, true)'>
                   {{ item.avgDisruption.toFixed(1) }}
+                </td>
+
+                <!-- Spacer -->
+                <td></td>
+
+                <!-- Feeling (-1 to 1) -->
+                <td class='px-3 py-3 text-center font-black text-sm rounded-lg transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgEmotional, -1, 1)'
+                    [style.color]='getTextColor(item.avgEmotional, -1, 1)'>
+                  {{ (item.avgEmotional > 0 ? "+" : "") + item.avgEmotional.toFixed(1) }}
                 </td>
               </tr>
             }
