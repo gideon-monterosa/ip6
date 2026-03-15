@@ -331,22 +331,27 @@ export class StructureDashboardService {
           let effectiveFlowMinutes = 0;
           let totalMeetingMinutes = 0;
           const FLOW_ENTRY_COST = 25;
+          let hasPriorMeeting = false;
 
           for (const m of mergedMeetings) {
             if (m.start.getTime() > currentTime) {
               const gapDuration = (m.start.getTime() - currentTime) / (1000 * 60);
-              const effective = Math.max(0, gapDuration - FLOW_ENTRY_COST);
+              const cost = hasPriorMeeting ? FLOW_ENTRY_COST : 0;
+              const effective = Math.max(0, gapDuration - cost);
+
+              const type = gapDuration < 30 ? 'GAP_MINIMAL' : gapDuration < 60 ? 'GAP_SHORT' : gapDuration < 120 ? 'GAP_MEDIUM' : 'GAP_LARGE';
 
               blocks.push({
-                type: gapDuration < 30 ? 'GAP_MICRO' : gapDuration < 90 ? 'GAP_NORMAL' : 'GAP_FLOW',
+                type: type,
                 startTime: new Date(currentTime).toLocaleTimeString([], {
                   hour: '2-digit',
                   minute: '2-digit',
                 }),
                 endTime: m.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 durationMinutes: gapDuration,
-                factor: 1.0, // Factor not used anymore in new logic
+                factor: 1.0,
                 effectiveMinutes: effective,
+                costMinutes: cost,
               });
 
               effectiveFlowMinutes += effective;
@@ -360,17 +365,22 @@ export class StructureDashboardService {
               durationMinutes: meetingDuration,
               factor: 0,
               effectiveMinutes: 0,
+              costMinutes: 0,
             });
             totalMeetingMinutes += meetingDuration;
             currentTime = m.end.getTime();
+            hasPriorMeeting = true;
           }
 
           if (currentTime < workEnd.getTime()) {
             const gapDuration = (workEnd.getTime() - currentTime) / (1000 * 60);
-            const effective = Math.max(0, gapDuration - FLOW_ENTRY_COST);
+            const cost = hasPriorMeeting ? FLOW_ENTRY_COST : 0;
+            const effective = Math.max(0, gapDuration - cost);
+
+            const type = gapDuration < 30 ? 'GAP_MINIMAL' : gapDuration < 60 ? 'GAP_SHORT' : gapDuration < 120 ? 'GAP_MEDIUM' : 'GAP_LARGE';
 
             blocks.push({
-              type: gapDuration < 30 ? 'GAP_MICRO' : gapDuration < 90 ? 'GAP_NORMAL' : 'GAP_FLOW',
+              type: type,
               startTime: new Date(currentTime).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -379,17 +389,16 @@ export class StructureDashboardService {
               durationMinutes: gapDuration,
               factor: 1.0,
               effectiveMinutes: effective,
+              costMinutes: cost,
             });
 
             effectiveFlowMinutes += effective;
           }
 
-          const score = (effectiveFlowMinutes / (totalWorkingMinutes - totalMeetingMinutes)) * 100;
-
           const totalFreeMinutes = totalWorkingMinutes - totalMeetingMinutes;
-          const potentialScore = totalFreeMinutes > FLOW_ENTRY_COST
-            ? ((totalFreeMinutes - FLOW_ENTRY_COST) / totalFreeMinutes) * 100
-            : 0;
+          const score = totalFreeMinutes > 0 ? (effectiveFlowMinutes / totalFreeMinutes) * 100 : 0;
+
+          const potentialScore = totalFreeMinutes > 0 ? 100 : 0;
 
           return {
             date: dateStr,
