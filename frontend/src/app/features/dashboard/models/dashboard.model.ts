@@ -126,6 +126,14 @@ export interface ImpactByTime {
   avgDisruption: number;
 }
 
+export interface ImpactTimelineHour {
+  hour: string;
+  avgEfficiency: number | null;
+  avgEmotional: number | null;
+  avgEnergy: number | null;
+  avgDisruption: number | null;
+}
+
 export interface EfficiencyBucket {
   scale: number;
   count: number;

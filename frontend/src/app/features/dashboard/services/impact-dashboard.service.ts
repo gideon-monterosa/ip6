@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, shareReplay, forkJoin } from 'rxjs';
+import { Observable, map, shareReplay, forkJoin, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   RawFeedback,
@@ -13,8 +13,11 @@ import {
   ThemeFrequency,
   DisruptionDay,
   DurationEfficiency,
+  ImpactTimelineHour,
 } from '../models/dashboard.model';
 import { isDateInWeek, toDateString } from '../utils/week.utils';
+import { UserSettings } from '../../../core/models/user.model';
+import { parseLocal } from '../../../core/utils/date.utils';
 
 @Injectable({ providedIn: 'root' })
 export class ImpactDashboardService {
@@ -238,28 +241,112 @@ export class ImpactDashboardService {
     );
   }
 
-  getDurationEfficiency(weekStart: Date, weekEnd: Date): Observable<DurationEfficiency[]> {
+  getImpactTimeline(weekStart: Date, weekEnd: Date, settings: UserSettings | null): Observable<ImpactTimelineHour[]> {
+    if (!settings) return of([]);
+
     return forkJoin({
       meetings: this.meetings$,
       feedback: this.feedback$,
     }).pipe(
       map(({ meetings, feedback }) => {
         const filteredFeedback = this.filterFeedback(feedback, weekStart, weekEnd);
-        const meetingMap = new Map<string, RawMeeting>();
-        for (const m of meetings) {
-          meetingMap.set(m.meeting_id, m);
+        const filteredMeetings = this.filterMeetings(meetings, weekStart, weekEnd);
+
+        const feedbackMap = new Map<string, RawFeedback>();
+        for (const f of filteredFeedback) {
+          feedbackMap.set(f.meeting_id, f);
         }
 
-        return filteredFeedback
-          .map((f) => {
-            const meeting = meetingMap.get(f.meeting_id);
-            if (!meeting) return null;
-            return {
-              duration: meeting.duration_minutes,
-              efficiency: f.perceived_efficiency,
-            };
-          })
-          .filter((d): d is DurationEfficiency => d !== null);
+        const [startH] = settings.workStartTime.split(':').map(Number);
+        const [endH] = settings.workEndTime.split(':').map(Number);
+
+        interface HourBucket {
+          count: number;
+          sumEfficiency: number;
+          sumEmotional: number;
+          sumEnergy: number;
+          sumDisruption: number;
+        }
+
+        const createEmptyBucket = (): HourBucket => ({
+          count: 0, sumEfficiency: 0, sumEmotional: 0, sumEnergy: 0, sumDisruption: 0
+        });
+
+        const beforeWorkBucket = createEmptyBucket();
+        const afterWorkBucket = createEmptyBucket();
+        const hourlyBuckets = new Map<number, HourBucket>();
+        
+        for (let h = startH; h < endH; h++) {
+          hourlyBuckets.set(h, createEmptyBucket());
+        }
+
+        const addFeedbackToBucket = (b: HourBucket, f: RawFeedback) => {
+          b.count++;
+          b.sumEfficiency += f.perceived_efficiency;
+          b.sumEmotional += this.emotionalScore(f.emotional_impact);
+          b.sumEnergy += f.energy_after_meeting;
+          b.sumDisruption += f.perceived_focus_disruption;
+        };
+
+        for (const m of filteredMeetings) {
+          const f = feedbackMap.get(m.meeting_id);
+          if (!f) continue;
+
+          const mStart = parseLocal(m.start_time);
+          const mEnd = parseLocal(m.end_time);
+          
+          const workStart = new Date(mStart);
+          workStart.setHours(startH, 0, 0, 0);
+          
+          const workEnd = new Date(mStart);
+          workEnd.setHours(endH, 0, 0, 0);
+
+          if (mStart < workStart) {
+            addFeedbackToBucket(beforeWorkBucket, f);
+          }
+
+          if (mEnd > workEnd) {
+            addFeedbackToBucket(afterWorkBucket, f);
+          }
+
+          for (let h = startH; h < endH; h++) {
+            const bucketStart = new Date(mStart);
+            bucketStart.setHours(h, 0, 0, 0);
+            
+            const bucketEnd = new Date(mStart);
+            bucketEnd.setHours(h + 1, 0, 0, 0);
+
+            if (mStart < bucketEnd && mEnd > bucketStart) {
+              addFeedbackToBucket(hourlyBuckets.get(h)!, f);
+            }
+          }
+        }
+
+        const formatBucket = (label: string, b: HourBucket): ImpactTimelineHour => {
+          if (b.count === 0) {
+            return { label, avgEfficiency: null, avgEmotional: null, avgEnergy: null, avgDisruption: null } as any;
+          }
+          return {
+            hour: label,
+            avgEfficiency: Math.round((b.sumEfficiency / b.count) * 10) / 10,
+            avgEmotional: Math.round((b.sumEmotional / b.count) * 100) / 100,
+            avgEnergy: Math.round((b.sumEnergy / b.count) * 10) / 10,
+            avgDisruption: Math.round((b.sumDisruption / b.count) * 10) / 10,
+          };
+        };
+
+        const result: ImpactTimelineHour[] = [];
+        
+        result.push(formatBucket('Before Work', beforeWorkBucket));
+
+        for (let h = startH; h < endH; h++) {
+          const label = `${h.toString().padStart(2, '0')}:00 - ${(h + 1).toString().padStart(2, '0')}:00`;
+          result.push(formatBucket(label, hourlyBuckets.get(h)!));
+        }
+
+        result.push(formatBucket('After Work', afterWorkBucket));
+
+        return result;
       }),
     );
   }

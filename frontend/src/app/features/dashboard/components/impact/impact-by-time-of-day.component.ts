@@ -4,6 +4,9 @@ import { ChartCardComponent } from '../shared/chart-card.component';
 import { CHART_SEMANTIC } from '../../../../theme.constants';
 import { CommonModule } from '@angular/common';
 
+/**
+ * @deprecated This component is being phased out in favor of the Impact Timeline chart.
+ */
 @Component({
   selector: 'app-impact-by-time-of-day',
   imports: [CommonModule, ChartCardComponent],

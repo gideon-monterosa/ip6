@@ -1,18 +1,16 @@
 import { Component, inject, input, effect, signal } from '@angular/core';
 import { ImpactDashboardService } from './services/impact-dashboard.service';
+import { UserService } from '../../core/services/user.service';
 import { ImpactKpiSummaryComponent } from './components/impact/impact-kpi-summary.component';
-import { SentimentDistributionComponent } from './components/impact/sentiment-distribution.component';
-import { EfficiencyDistributionComponent } from './components/impact/efficiency-distribution.component';
 import { ImpactByMeetingTypeComponent } from './components/impact/impact-by-meeting-type.component';
-import { ImpactByTimeOfDayComponent } from './components/impact/impact-by-time-of-day.component';
 import { QualitativeThemesComponent } from './components/impact/qualitative-themes.component';
+import { ImpactTimelineChartComponent } from './components/impact/impact-timeline-chart.component';
+import { UserSettings } from '../../core/models/user.model';
 import {
   ImpactSummaryWeek,
-  SentimentBucket,
-  EfficiencyBucket,
   ImpactByType,
-  ImpactByTime,
   ThemeFrequency,
+  ImpactTimelineHour,
 } from './models/dashboard.model';
 
 /**
@@ -22,11 +20,9 @@ import {
   selector: 'app-impact-dashboard',
   imports: [
     ImpactKpiSummaryComponent,
-    SentimentDistributionComponent,
-    EfficiencyDistributionComponent,
     ImpactByMeetingTypeComponent,
-    ImpactByTimeOfDayComponent,
     QualitativeThemesComponent,
+    ImpactTimelineChartComponent,
   ],
   template: `
     <div class="flex flex-col gap-6">
@@ -50,19 +46,10 @@ import {
         </div>
       }
 
-      <!-- Row 2: Sentiment + Efficiency -->
-      @if (sentiment().length || efficiency().length) {
-        <div class='grid lg:grid-cols-5 gap-4 sm:gap-6 mb-6'>
-          @if (sentiment().length) {
-            <div class='lg:col-span-2'>
-              <app-sentiment-distribution [data]='sentiment()' />
-            </div>
-          }
-          @if (efficiency().length) {
-            <div class='lg:col-span-3'>
-              <app-efficiency-distribution [data]='efficiency()' />
-            </div>
-          }
+      <!-- Row 2: Impact Timeline -->
+      @if (impactTimeline().length) {
+        <div class='mb-6'>
+          <app-impact-timeline-chart [data]='impactTimeline()' />
         </div>
       }
 
@@ -73,14 +60,7 @@ import {
         </div>
       }
 
-      <!-- Row 4: Impact by Time (full width) -->
-      @if (impactByTime().length) {
-        <div class='mb-6'>
-          <app-impact-by-time-of-day [data]='impactByTime()' />
-        </div>
-      }
-
-      <!-- Row 5: Qualitative Themes (full width) -->
+      <!-- Row 4: Qualitative Themes (full width) -->
       @if (themes().length) {
         <div class='mb-6'>
           <app-qualitative-themes [data]='themes()' />
@@ -91,28 +71,32 @@ import {
 })
 export class ImpactDashboardComponent {
   private service = inject(ImpactDashboardService);
+  private userService = inject(UserService);
 
   weekStart = input.required<Date>();
   weekEnd = input.required<Date>();
 
   summary = signal<ImpactSummaryWeek | null>(null);
-  sentiment = signal<SentimentBucket[]>([]);
-  efficiency = signal<EfficiencyBucket[]>([]);
   impactByType = signal<ImpactByType[]>([]);
-  impactByTime = signal<ImpactByTime[]>([]);
   themes = signal<ThemeFrequency[]>([]);
+  impactTimeline = signal<ImpactTimelineHour[]>([]);
+  userSettings = signal<UserSettings | null>(null);
 
   constructor() {
+    this.userService.getSettings().subscribe(s => this.userSettings.set(s));
+
     effect(() => {
       const start = this.weekStart();
       const end = this.weekEnd();
+      const settings = this.userSettings();
 
       this.service.getImpactSummary(start, end).subscribe((d) => this.summary.set(d));
-      this.service.getSentimentDistribution(start, end).subscribe((d) => this.sentiment.set(d));
-      this.service.getEfficiencyDistribution(start, end).subscribe((d) => this.efficiency.set(d));
       this.service.getImpactByType(start, end).subscribe((d) => this.impactByType.set(d));
-      this.service.getImpactByTime(start, end).subscribe((d) => this.impactByTime.set(d));
       this.service.getQualitativeThemes(start, end).subscribe((d) => this.themes.set(d));
+      
+      if (settings) {
+        this.service.getImpactTimeline(start, end, settings).subscribe((d) => this.impactTimeline.set(d));
+      }
     });
   }
 }

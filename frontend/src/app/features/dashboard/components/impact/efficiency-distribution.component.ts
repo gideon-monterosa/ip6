@@ -14,6 +14,9 @@ import {
   ApexTooltip,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is being phased out in favor of the Heatmap views.
+ */
 @Component({
   selector: 'app-efficiency-distribution',
   imports: [NgApexchartsModule, ChartCardComponent],
