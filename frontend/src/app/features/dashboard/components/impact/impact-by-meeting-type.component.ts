@@ -1,111 +1,99 @@
-import { Component, input, effect, signal } from '@angular/core';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { Component, input } from '@angular/core';
 import { ImpactByType } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
-import { CHART_SERIES_PALETTE, CHART_GRID_BORDER } from '../../../../theme.constants';
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexXAxis,
-  ApexYAxis,
-  ApexDataLabels,
-  ApexPlotOptions,
-  ApexGrid,
-  ApexTooltip,
-  ApexLegend,
-} from 'ng-apexcharts';
+import { CHART_SEMANTIC } from '../../../../theme.constants';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-impact-by-meeting-type',
-  imports: [NgApexchartsModule, ChartCardComponent],
+  imports: [CommonModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Impact by Meeting Type'>
-      <div class='flex gap-2 mb-3'>
-        <button type='button'
-          class='px-2 py-1 text-xs rounded border transition-colors'
-          [class.bg-primary]='viewMode() === "chart"'
-          [class.text-white]='viewMode() === "chart"'
-          [class.border-primary]='viewMode() === "chart"'
-          [class.border-gray-300]='viewMode() !== "chart"'
-          (click)='viewMode.set("chart")'>Chart</button>
-        <button type='button'
-          class='px-2 py-1 text-xs rounded border transition-colors'
-          [class.bg-primary]='viewMode() === "table"'
-          [class.text-white]='viewMode() === "table"'
-          [class.border-primary]='viewMode() === "table"'
-          [class.border-gray-300]='viewMode() !== "table"'
-          (click)='viewMode.set("table")'>Table</button>
+    <app-chart-card title='Impact Analysis by Meeting Type' subtitle='Heatmap showing average scores across key metrics'>
+      <div class='overflow-x-auto'>
+        <table class='min-w-full border-separate border-spacing-1'>
+          <thead>
+            <tr>
+              <th class='px-3 py-2 text-start text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Meeting Type</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>ROTI</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Feeling</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Energy</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Disruption</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of data(); track item.type) {
+              <tr>
+                <td class='px-3 py-3 font-bold text-sm text-foreground bg-muted/30 rounded-l-lg'>
+                  {{ item.type }}
+                </td>
+                
+                <!-- ROTI (1-5) -->
+                <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgEfficiency, 1, 5)'
+                    [style.color]='getTextColor(item.avgEfficiency, 1, 5)'>
+                  {{ item.avgEfficiency.toFixed(1) }}
+                </td>
+
+                <!-- Feeling (-2 to 2) -->
+                <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgEmotional, -2, 2)'
+                    [style.color]='getTextColor(item.avgEmotional, -2, 2)'>
+                  {{ (item.avgEmotional > 0 ? "+" : "") + item.avgEmotional.toFixed(1) }}
+                </td>
+
+                <!-- Energy (1-5) -->
+                <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgEnergy, 1, 5)'
+                    [style.color]='getTextColor(item.avgEnergy, 1, 5)'>
+                  {{ item.avgEnergy.toFixed(1) }}
+                </td>
+
+                <!-- Disruption (1-5, Inverted) -->
+                <td class='px-3 py-3 text-center font-black text-sm rounded-r-lg transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgDisruption, 1, 5, true)'
+                    [style.color]='getTextColor(item.avgDisruption, 1, 5, true)'>
+                  {{ item.avgDisruption.toFixed(1) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
 
-      @if (viewMode() === 'chart') {
-        <apx-chart
-          [series]='series'
-          [chart]='chart'
-          [xaxis]='xaxis'
-          [yaxis]='yaxis'
-          [dataLabels]='dataLabels'
-          [plotOptions]='plotOptions'
-          [grid]='grid'
-          [tooltip]='tooltip'
-          [legend]='legend'
-          [colors]='colors'
-        />
-      } @else {
-        <div class='overflow-x-auto'>
-          <table class='min-w-full divide-y divide-card-divider text-sm'>
-            <thead>
-              <tr>
-                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Type</th>
-                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Worth my time</th>
-                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Emotion</th>
-                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Energy</th>
-                <th class='px-3 py-2 text-start text-xs font-medium text-muted-foreground-1 uppercase'>Disruption</th>
-              </tr>
-            </thead>
-            <tbody class='divide-y divide-card-divider'>
-              @for (item of data(); track item.type) {
-                <tr class='hover:bg-muted'>
-                  <td class='px-3 py-2 font-medium text-foreground'>{{ item.type }}</td>
-                  <td class='px-3 py-2' [class.text-green-600]='item.avgEfficiency >= 4' [class.text-red-600]='item.avgEfficiency < 3'>{{ item.avgEfficiency }}</td>
-                  <td class='px-3 py-2' [class.text-green-600]='item.avgEmotional > 0' [class.text-red-600]='item.avgEmotional < 0'>{{ item.avgEmotional }}</td>
-                  <td class='px-3 py-2' [class.text-green-600]='item.avgEnergy >= 4' [class.text-red-600]='item.avgEnergy < 3'>{{ item.avgEnergy }}</td>
-                  <td class='px-3 py-2' [class.text-green-600]='item.avgDisruption <= 2' [class.text-red-600]='item.avgDisruption > 3'>{{ item.avgDisruption }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
+      <div class='flex flex-wrap gap-4 mt-6 pt-4 border-t border-card-line justify-center'>
+        <div class='flex items-center gap-1.5'>
+          <div class='size-3 rounded-sm' [style.backgroundColor]='CHART_SEMANTIC.step5'></div>
+          <span class='text-[10px] font-bold text-muted-foreground-1 uppercase'>Highest Impact</span>
         </div>
-      }
+        <div class='flex items-center gap-1.5'>
+          <div class='size-3 rounded-sm' [style.backgroundColor]='CHART_SEMANTIC.step3'></div>
+          <span class='text-[10px] font-bold text-muted-foreground-1 uppercase'>Neutral</span>
+        </div>
+        <div class='flex items-center gap-1.5'>
+          <div class='size-3 rounded-sm' [style.backgroundColor]='CHART_SEMANTIC.step1'></div>
+          <span class='text-[10px] font-bold text-muted-foreground-1 uppercase'>Lowest Impact / Disruption</span>
+        </div>
+      </div>
     </app-chart-card>
   `,
 })
 export class ImpactByMeetingTypeComponent {
   data = input.required<ImpactByType[]>();
-  viewMode = signal<'chart' | 'table'>('chart');
+  CHART_SEMANTIC = CHART_SEMANTIC;
 
-  series: ApexAxisChartSeries = [];
-  chart: ApexChart = { type: 'bar', height: 320, toolbar: { show: false } };
-  xaxis: ApexXAxis = { categories: [] };
-  yaxis: ApexYAxis = { max: 5, min: 0, title: { text: 'Score' } };
-  dataLabels: ApexDataLabels = { enabled: false };
-  plotOptions: ApexPlotOptions = { bar: { borderRadius: 4, columnWidth: '70%' } };
-  grid: ApexGrid = { borderColor: CHART_GRID_BORDER, strokeDashArray: 4 };
-  tooltip: ApexTooltip = { theme: 'light' };
-  legend: ApexLegend = { position: 'top', fontSize: '12px' };
-  colors = [CHART_SERIES_PALETTE[0], CHART_SERIES_PALETTE[1], CHART_SERIES_PALETTE[2], CHART_SERIES_PALETTE[3]];
+  getHeatmapColor(value: number, min: number, max: number, inverted: boolean = false): string {
+    const range = max - min;
+    let normalized = (value - min) / range;
+    if (inverted) normalized = 1 - normalized;
 
-  constructor() {
-    effect(() => {
-      const items = this.data();
-      if (items.length) {
-        this.xaxis = { categories: items.map((d) => d.type) };
-        this.series = [
-          { name: 'Worth my time', data: items.map((d) => d.avgEfficiency) },
-          { name: 'Feeling', data: items.map((d) => Math.round((d.avgEmotional + 2) * 12.5) / 10) },
-          { name: 'Energy', data: items.map((d) => d.avgEnergy) },
-          { name: 'Disruption', data: items.map((d) => d.avgDisruption) },
-        ];
-      }
-    });
+    if (normalized <= 0.2) return CHART_SEMANTIC.step1;
+    if (normalized <= 0.4) return CHART_SEMANTIC.step2;
+    if (normalized <= 0.6) return CHART_SEMANTIC.step3;
+    if (normalized <= 0.8) return CHART_SEMANTIC.step4;
+    return CHART_SEMANTIC.step5;
+  }
+
+  getTextColor(value: number, min: number, max: number, inverted: boolean = false): string {
+    return '#ffffff'; // All steps are now saturated enough for white text
   }
 }

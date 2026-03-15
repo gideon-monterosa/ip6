@@ -5,7 +5,6 @@ import { SentimentDistributionComponent } from './components/impact/sentiment-di
 import { EfficiencyDistributionComponent } from './components/impact/efficiency-distribution.component';
 import { ImpactByMeetingTypeComponent } from './components/impact/impact-by-meeting-type.component';
 import { ImpactByTimeOfDayComponent } from './components/impact/impact-by-time-of-day.component';
-import { FocusDisruptionPerceptionComponent } from './components/impact/focus-disruption-perception.component';
 import { QualitativeThemesComponent } from './components/impact/qualitative-themes.component';
 import {
   ImpactSummaryWeek,
@@ -13,7 +12,6 @@ import {
   EfficiencyBucket,
   ImpactByType,
   ImpactByTime,
-  DisruptionDay,
   ThemeFrequency,
 } from './models/dashboard.model';
 
@@ -28,7 +26,6 @@ import {
     EfficiencyDistributionComponent,
     ImpactByMeetingTypeComponent,
     ImpactByTimeOfDayComponent,
-    FocusDisruptionPerceptionComponent,
     QualitativeThemesComponent,
   ],
   template: `
@@ -76,17 +73,10 @@ import {
         </div>
       }
 
-      <!-- Row 4: Impact by Time + Disruption Perception -->
-      @if (impactByTime().length || focusDisruption().length) {
-        <div class='grid lg:grid-cols-3 gap-4 sm:gap-6 mb-6'>
-          @if (impactByTime().length) {
-            <div class='lg:col-span-2'>
-              <app-impact-by-time-of-day [data]='impactByTime()' />
-            </div>
-          }
-          @if (focusDisruption().length) {
-            <app-focus-disruption-perception [data]='focusDisruption()' />
-          }
+      <!-- Row 4: Impact by Time (full width) -->
+      @if (impactByTime().length) {
+        <div class='mb-6'>
+          <app-impact-by-time-of-day [data]='impactByTime()' />
         </div>
       }
 
@@ -110,7 +100,6 @@ export class ImpactDashboardComponent {
   efficiency = signal<EfficiencyBucket[]>([]);
   impactByType = signal<ImpactByType[]>([]);
   impactByTime = signal<ImpactByTime[]>([]);
-  focusDisruption = signal<DisruptionDay[]>([]);
   themes = signal<ThemeFrequency[]>([]);
 
   constructor() {
@@ -123,7 +112,6 @@ export class ImpactDashboardComponent {
       this.service.getEfficiencyDistribution(start, end).subscribe((d) => this.efficiency.set(d));
       this.service.getImpactByType(start, end).subscribe((d) => this.impactByType.set(d));
       this.service.getImpactByTime(start, end).subscribe((d) => this.impactByTime.set(d));
-      this.service.getFocusDisruption(start, end).subscribe((d) => this.focusDisruption.set(d));
       this.service.getQualitativeThemes(start, end).subscribe((d) => this.themes.set(d));
     });
   }

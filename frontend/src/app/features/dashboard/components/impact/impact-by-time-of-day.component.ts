@@ -1,75 +1,91 @@
-import { Component, input, effect } from '@angular/core';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { Component, input } from '@angular/core';
 import { ImpactByTime } from '../../models/dashboard.model';
 import { ChartCardComponent } from '../shared/chart-card.component';
-import { CHART_SERIES_PALETTE, CHART_GRID_BORDER } from '../../../../theme.constants';
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexXAxis,
-  ApexYAxis,
-  ApexDataLabels,
-  ApexPlotOptions,
-  ApexGrid,
-  ApexTooltip,
-  ApexLegend,
-} from 'ng-apexcharts';
+import { CHART_SEMANTIC } from '../../../../theme.constants';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-impact-by-time-of-day',
-  imports: [NgApexchartsModule, ChartCardComponent],
+  imports: [CommonModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Impact by Time of Day'>
-      <apx-chart
-        [series]='series'
-        [chart]='chart'
-        [xaxis]='xaxis'
-        [yaxis]='yaxis'
-        [dataLabels]='dataLabels'
-        [plotOptions]='plotOptions'
-        [grid]='grid'
-        [tooltip]='tooltip'
-        [legend]='legend'
-        [colors]='colors'
-      />
-      @if (worstTime) {
-        <p class='text-sm text-muted-foreground-1 mt-2'>
-          {{ worstTime }} meetings perceived as most disruptive
-        </p>
-      }
+    <app-chart-card title='Impact Analysis by Time of Day' subtitle='Heatmap showing average scores across key metrics'>
+      <div class='overflow-x-auto'>
+        <table class='min-w-full border-separate border-spacing-1'>
+          <thead>
+            <tr>
+              <th class='px-3 py-2 text-start text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Time of Day</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>ROTI</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Feeling</th>
+              <th class='px-3 py-2 text-center text-xs font-bold text-muted-foreground-1 uppercase tracking-wider'>Disruption</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of data(); track item.timeOfDay) {
+              <tr>
+                <td class='px-3 py-3 font-bold text-sm text-foreground bg-muted/30 rounded-l-lg'>
+                  {{ item.timeOfDay }}
+                </td>
+                
+                <!-- ROTI (1-5) -->
+                <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgEfficiency, 1, 5)'
+                    [style.color]='getTextColor(item.avgEfficiency, 1, 5)'>
+                  {{ item.avgEfficiency.toFixed(1) }}
+                </td>
+
+                <!-- Feeling (-2 to 2) -->
+                <td class='px-3 py-3 text-center font-black text-sm transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgEmotional, -2, 2)'
+                    [style.color]='getTextColor(item.avgEmotional, -2, 2)'>
+                  {{ (item.avgEmotional > 0 ? "+" : "") + item.avgEmotional.toFixed(1) }}
+                </td>
+
+                <!-- Disruption (1-5, Inverted) -->
+                <td class='px-3 py-3 text-center font-black text-sm rounded-r-lg transition-transform hover:scale-105 cursor-default'
+                    [style.backgroundColor]='getHeatmapColor(item.avgDisruption, 1, 5, true)'
+                    [style.color]='getTextColor(item.avgDisruption, 1, 5, true)'>
+                  {{ item.avgDisruption.toFixed(1) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class='flex flex-wrap gap-4 mt-6 pt-4 border-t border-card-line justify-center'>
+        <div class='flex items-center gap-1.5'>
+          <div class='size-3 rounded-sm' [style.backgroundColor]='CHART_SEMANTIC.step5'></div>
+          <span class='text-[10px] font-bold text-muted-foreground-1 uppercase'>Highest Impact</span>
+        </div>
+        <div class='flex items-center gap-1.5'>
+          <div class='size-3 rounded-sm' [style.backgroundColor]='CHART_SEMANTIC.step3'></div>
+          <span class='text-[10px] font-bold text-muted-foreground-1 uppercase'>Neutral</span>
+        </div>
+        <div class='flex items-center gap-1.5'>
+          <div class='size-3 rounded-sm' [style.backgroundColor]='CHART_SEMANTIC.step1'></div>
+          <span class='text-[10px] font-bold text-muted-foreground-1 uppercase'>Lowest Impact / Disruption</span>
+        </div>
+      </div>
     </app-chart-card>
   `,
 })
 export class ImpactByTimeOfDayComponent {
   data = input.required<ImpactByTime[]>();
-  worstTime = '';
+  CHART_SEMANTIC = CHART_SEMANTIC;
 
-  series: ApexAxisChartSeries = [];
-  chart: ApexChart = { type: 'bar', height: 300, toolbar: { show: false } };
-  xaxis: ApexXAxis = { categories: [] };
-  yaxis: ApexYAxis = { max: 5, min: 0, title: { text: 'Score' } };
-  dataLabels: ApexDataLabels = { enabled: true, style: { fontSize: '10px' } };
-  plotOptions: ApexPlotOptions = { bar: { borderRadius: 4, columnWidth: '60%' } };
-  grid: ApexGrid = { borderColor: CHART_GRID_BORDER, strokeDashArray: 4 };
-  tooltip: ApexTooltip = { theme: 'light' };
-  legend: ApexLegend = { position: 'top', fontSize: '12px' };
-  colors = [CHART_SERIES_PALETTE[0], CHART_SERIES_PALETTE[1], CHART_SERIES_PALETTE[2]];
+  getHeatmapColor(value: number, min: number, max: number, inverted: boolean = false): string {
+    const range = max - min;
+    let normalized = (value - min) / range;
+    if (inverted) normalized = 1 - normalized;
 
-  constructor() {
-    effect(() => {
-      const items = this.data();
-      if (items.length) {
-        this.xaxis = { categories: items.map((d) => d.timeOfDay) };
-        this.series = [
-          { name: 'Worth my time', data: items.map((d) => d.avgEfficiency) },
-          { name: 'Feeling', data: items.map((d) => Math.round((d.avgEmotional + 2) * 12.5) / 10) },
-          { name: 'Disruption', data: items.map((d) => d.avgDisruption) },
-        ];
-        const worst = items.reduce((prev, curr) =>
-          curr.avgDisruption > prev.avgDisruption ? curr : prev,
-        );
-        this.worstTime = worst.timeOfDay;
-      }
-    });
+    if (normalized <= 0.2) return CHART_SEMANTIC.step1;
+    if (normalized <= 0.4) return CHART_SEMANTIC.step2;
+    if (normalized <= 0.6) return CHART_SEMANTIC.step3;
+    if (normalized <= 0.8) return CHART_SEMANTIC.step4;
+    return CHART_SEMANTIC.step5;
+  }
+
+  getTextColor(value: number, min: number, max: number, inverted: boolean = false): string {
+    return '#ffffff';
   }
 }

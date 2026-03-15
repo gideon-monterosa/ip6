@@ -50,9 +50,17 @@ export const SEMANTIC_COLORS = {
 
 /** Standardized semantic colors for charts */
 export const CHART_SEMANTIC = {
-  positive: SEMANTIC_COLORS.success,
-  neutral:  '#d1d5db', // gray-300
-  negative: '#f97316', // orange-500
-  disruption: '#dc2626', // red-600
-  muted:    '#60a5fa', // blue-400 (muted blue)
+  // Matching "Worth my time" distribution
+  step1: '#dc2626', // Deep Red
+  step2: '#f97316', // Orange
+  step3: '#eab308', // Yellow/Neutral
+  step4: '#22c55e', // Light Green
+  step5: '#16a34a', // Deep Green
+  
+  // Aliases for legacy/simple use cases
+  positive: '#16a34a',
+  neutral:  '#eab308', 
+  negative: '#f97316',
+  disruption: '#dc2626',
+  muted:    '#60a5fa', 
 } as const;

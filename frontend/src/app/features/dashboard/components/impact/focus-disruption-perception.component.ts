@@ -15,6 +15,9 @@ import {
   ApexTooltip,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is being phased out in favor of the new Heatmap views.
+ */
 @Component({
   selector: 'app-focus-disruption-perception',
   imports: [NgApexchartsModule, ChartCardComponent],
