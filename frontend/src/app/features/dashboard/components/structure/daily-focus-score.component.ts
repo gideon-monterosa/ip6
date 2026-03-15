@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, ChartCardComponent],
   template: `
-    <app-chart-card title='Daily Flow Potential'>
+    <app-chart-card title='Daily Flow Potential'
+                    subtitle='Displays your meeting distribution and provides deep insights into how fragmented your workday is. See at a glance if your day allows for Large Flow sessions or is limited by frequent interruptions.'>
       @if (scores().length > 0) {
         <div class='flex flex-col gap-8'>
           <!-- Day Selection Grid -->
@@ -37,18 +38,18 @@ import { CommonModule } from '@angular/common';
             <div class='flex flex-col gap-8 animate-in fade-in duration-500'>
               <!-- Hero Section -->
               <div class='flex flex-col items-center justify-center p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 relative overflow-hidden'>
-                <span class='text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2'>Flow Capacity Score</span>
+                <span class='text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2'>Daily Flow Potential</span>
                 <div class='flex items-center gap-3 mb-2'>
                   <div class='text-7xl font-black text-slate-900 dark:text-white'>
                     {{ data()!.score }}%
                   </div>
-                  
+
                   <!-- Info Icon with Hover Card -->
                   <div class="relative group/potential">
                     <button class='p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors cursor-help'>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                     </button>
-                    
+
                     <!-- Hover Card -->
                     <div class="absolute left-full top-1/2 -translate-y-1/2 ml-4 w-72 p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl opacity-0 invisible group-hover/potential:opacity-100 group-hover/potential:visible transition-all duration-300 z-50 pointer-events-none">
                       <div class='flex items-center gap-2 mb-3'>
@@ -57,17 +58,17 @@ import { CommonModule } from '@angular/common';
                         </div>
                         <h4 class='text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white'>Ideal Flow Potential</h4>
                       </div>
-                      
+
                       <p class='text-xs text-slate-600 dark:text-slate-400 leading-relaxed'>
-                        If all meetings today were scheduled as a single continuous block, you could gain 
+                        If all meetings today were scheduled as a single continuous block, you could gain
                         <strong class='text-emerald-600 dark:text-emerald-400'>+{{ improvement() }}%</strong> flow capacity.
                       </p>
-                      
+
                       <div class='mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center'>
                         <span class='text-[10px] font-bold text-slate-400 uppercase'>Potential Gain:</span>
                         <span class='text-sm font-black text-emerald-600 dark:text-emerald-400'>+{{ extraMinutes() }} min</span>
                       </div>
-                      
+
                       <!-- Arrow -->
                       <div class="absolute right-full top-1/2 -translate-y-1/2 border-[8px] border-transparent border-r-white dark:border-r-slate-900 drop-shadow-[-2px_0_2px_rgba(0,0,0,0.05)]"></div>
                     </div>
