@@ -33,48 +33,52 @@
         role="region">
 
         <!-- Desktop Navigation (sm and above) -->
-        <div class="hidden sm:flex flex-row items-center justify-end gap-5 ps-5">
+        <div class="hidden sm:flex flex-row items-center justify-end gap-2 ps-5">
           <!-- Dashboard Link -->
           <a id="tour-nav-dashboard"
             routerLink="/home"
             routerLinkActive="font-medium text-primary-active"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus">
+            class="flex items-center gap-x-2 py-2 px-3 text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition">
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="9" x="3" y="3" rx="1" />
+              <rect width="7" height="5" x="14" y="3" rx="1" />
+              <rect width="7" height="9" x="14" y="12" rx="1" />
+              <rect width="7" height="5" x="3" y="16" rx="1" />
+            </svg>
             Dashboard
           </a>
 
-          <!-- Calendar Icon Button -->
-          <button id="tour-nav-calendar"
-            type="button"
+          <!-- Calendar Link -->
+          <a id="tour-nav-calendar"
             routerLink="/calendar"
-            title="Calendar"
-            class="relative inline-flex items-center justify-center size-9 text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition"
-            aria-label="Calendar">
-            <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            routerLinkActive="font-medium text-primary-active"
+            class="flex items-center gap-x-2 py-2 px-3 text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition">
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
               <line x1="8" y1="2" x2="8" y2="6"/>
               <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-          </button>
+            Calendar
+          </a>
 
-          <!-- Inbox Icon Button -->
-          <button id="tour-nav-inbox"
-            type="button"
+          <!-- Inbox Link -->
+          <a id="tour-nav-inbox"
             routerLink="/feedback"
-            title="Inbox"
-            class="relative inline-flex items-center justify-center size-9 text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition"
-            aria-label="Inbox">
-            <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            routerLinkActive="font-medium text-primary-active"
+            class="flex items-center gap-x-2 py-2 px-3 text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus transition">
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
               <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
             </svg>
+            <span>Inbox</span>
             @if (pendingCount() > 0) {
-              <span class="absolute top-0 right-0 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+              <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
                 {{ pendingCount() }}
               </span>
             }
-          </button>
+          </a>
 
           <!-- Profile Menu Dropdown -->
           <div class="hs-dropdown relative inline-flex">
@@ -142,8 +146,10 @@
             [routerLinkActiveOptions]="{ exact: true }"
             class="flex items-center gap-3 px-4 py-3 text-base text-layer-foreground hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus border-b border-layer-line transition">
             <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
+              <rect width="7" height="9" x="3" y="3" rx="1" />
+              <rect width="7" height="5" x="14" y="3" rx="1" />
+              <rect width="7" height="9" x="14" y="12" rx="1" />
+              <rect width="7" height="5" x="3" y="16" rx="1" />
             </svg>
             <span class="flex-1">Dashboard</span>
           </a>
