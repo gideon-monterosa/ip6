@@ -7,7 +7,6 @@ import { ImpactByMeetingTypeComponent } from './components/impact/impact-by-meet
 import { ImpactByTimeOfDayComponent } from './components/impact/impact-by-time-of-day.component';
 import { FocusDisruptionPerceptionComponent } from './components/impact/focus-disruption-perception.component';
 import { QualitativeThemesComponent } from './components/impact/qualitative-themes.component';
-import { DurationRotiScatterplotComponent } from './components/impact/duration-roti-scatterplot.component';
 import {
   ImpactSummaryWeek,
   SentimentBucket,
@@ -16,9 +15,11 @@ import {
   ImpactByTime,
   DisruptionDay,
   ThemeFrequency,
-  DurationEfficiency,
 } from './models/dashboard.model';
 
+/**
+ * @deprecated This component is being phased out in favor of more streamlined dashboard views.
+ */
 @Component({
   selector: 'app-impact-dashboard',
   imports: [
@@ -29,7 +30,6 @@ import {
     ImpactByTimeOfDayComponent,
     FocusDisruptionPerceptionComponent,
     QualitativeThemesComponent,
-    DurationRotiScatterplotComponent,
   ],
   template: `
     <div class="flex flex-col gap-6">
@@ -96,11 +96,6 @@ import {
           <app-qualitative-themes [data]='themes()' />
         </div>
       }
-
-      <!-- Row 6: Duration vs ROTI Scatterplot -->
-      @if (durationEfficiency().length) {
-        <app-duration-roti-scatterplot [data]='durationEfficiency()' />
-      }
     </div>
   `,
 })
@@ -117,7 +112,6 @@ export class ImpactDashboardComponent {
   impactByTime = signal<ImpactByTime[]>([]);
   focusDisruption = signal<DisruptionDay[]>([]);
   themes = signal<ThemeFrequency[]>([]);
-  durationEfficiency = signal<DurationEfficiency[]>([]);
 
   constructor() {
     effect(() => {
@@ -131,7 +125,6 @@ export class ImpactDashboardComponent {
       this.service.getImpactByTime(start, end).subscribe((d) => this.impactByTime.set(d));
       this.service.getFocusDisruption(start, end).subscribe((d) => this.focusDisruption.set(d));
       this.service.getQualitativeThemes(start, end).subscribe((d) => this.themes.set(d));
-      this.service.getDurationEfficiency(start, end).subscribe((d) => this.durationEfficiency.set(d));
     });
   }
 }

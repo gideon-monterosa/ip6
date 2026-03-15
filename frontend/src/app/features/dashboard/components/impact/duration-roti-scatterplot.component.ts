@@ -13,6 +13,9 @@ import {
   ApexMarkers,
 } from 'ng-apexcharts';
 
+/**
+ * @deprecated This component is being phased out in favor of more streamlined dashboard views.
+ */
 @Component({
   selector: 'app-duration-roti-scatterplot',
   imports: [NgApexchartsModule, ChartCardComponent],
