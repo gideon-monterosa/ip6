@@ -12,7 +12,7 @@ import { parseLocal } from '../../../core/utils/date.utils';
       <div class="bg-card border shadow-lg rounded-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
         <div class="flex items-center justify-between p-4 border-b">
           <h3 class="text-lg font-bold text-foreground">
-            {{ meeting() ? 'Edit Event' : 'Add Manual Event' }}
+            {{ meeting() ? 'Edit Event' : 'Add Event' }}
           </h3>
           <button (click)="close.emit()" class="text-muted-foreground-1 hover:text-foreground transition-colors">
             <svg class="size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
