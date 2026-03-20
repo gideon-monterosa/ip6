@@ -11,7 +11,7 @@
         @if (meeting(); as m) {
           <p class="text-sm text-muted-foreground-1 mt-0.5 truncate">{{ m.title }}</p>
           <p class="text-xs text-muted-foreground-1 mt-0.5">
-            {{ m.start | date:'MMM d, y, h:mm a' }} - {{ m.end | date:'h:mm a' }}
+            {{ m.start | date:'dd.MM.yyyy, HH:mm' }} - {{ m.end | date:'HH:mm' }}
           </p>
         }
       </div>

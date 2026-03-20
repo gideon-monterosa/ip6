@@ -1,8 +1,11 @@
 <app-auth-layout>
-  <h2 class="text-2xl font-bold text-center mb-6 text-foreground">Register</h2>
+  <div class="flex flex-col items-center mb-8">
+    <img src="img/logo.png" alt="Meetings Logo" class="h-16 w-auto mb-4 drop-shadow-sm">
+    <h2 class="text-3xl font-bold text-center text-foreground tracking-tight">Register</h2>
+  </div>
 
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="mb-4">
+    <div class="space-y-4 mb-6">
       <app-input
         label="Username"
         type="text"
@@ -10,10 +13,9 @@
         formControlName="username"
         [control]="registerForm.get('username')!"
         [required]="true"
+        placeholder="Choose a username"
       />
-    </div>
 
-    <div class="mb-4">
       <app-input
         label="Email"
         type="email"
@@ -21,10 +23,9 @@
         formControlName="email"
         [control]="registerForm.get('email')!"
         [required]="true"
+        placeholder="example@domain.com"
       />
-    </div>
 
-    <div class="mb-4">
       <app-input
         label="Password"
         type="password"
@@ -32,11 +33,13 @@
         formControlName="password"
         [control]="registerForm.get('password')!"
         [required]="true"
+        placeholder="Choose a secure password"
       />
     </div>
 
     @if (error) {
-      <div class="text-destructive text-sm mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+      <div class="text-destructive text-sm mb-6 p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         {{ error }}
       </div>
     }
@@ -48,13 +51,13 @@
       [loading]="loading"
       [fullWidth]="true"
     >
-      {{ loading ? 'Registering...' : 'Register' }}
+      {{ loading ? 'Registering...' : 'Create account' }}
     </app-button>
   </form>
 
-  <div class="text-center mt-6 text-sm text-muted-foreground">
+  <div class="text-center mt-8 pt-6 border-t border-border text-sm text-muted-foreground">
     Already have an account?
-    <a routerLink="/login" class="text-primary hover:text-primary-hover font-medium transition-colors">
+    <a routerLink="/login" class="text-primary hover:text-primary-hover font-semibold transition-colors">
       Login here
     </a>
   </div>
