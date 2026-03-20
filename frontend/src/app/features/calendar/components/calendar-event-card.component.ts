@@ -37,7 +37,7 @@ import { parseLocal } from '../../../core/utils/date.utils';
       </div>
 
       <div class="truncate text-[10px] opacity-85 font-medium">
-        {{ event().start | date:'shortTime' }} - {{ event().end | date:'shortTime' }}
+        {{ event().start | date:'HH:mm' }} - {{ event().end | date:'HH:mm' }}
       </div>
 
     </div>
@@ -133,7 +133,10 @@ export class CalendarEventCardComponent {
 
   tooltip = computed(() => {
     const e = this.event();
-    return `${e.title} (${parseLocal(e.start).toLocaleTimeString()} - ${parseLocal(e.end).toLocaleTimeString()})`;
+    const start = parseLocal(e.start);
+    const end = parseLocal(e.end);
+    const formatTime = (d: Date) => d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+    return `${e.title} (${formatTime(start)} - ${formatTime(end)})`;
   });
 
   isSubmitted = computed(() => this.event().feedbackStatus === FeedbackStatus.SUBMITTED);

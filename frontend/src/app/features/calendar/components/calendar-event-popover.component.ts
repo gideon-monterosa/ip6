@@ -18,7 +18,7 @@ import { parseLocal } from '../../../core/utils/date.utils';
           <div>
             <h3 class="font-semibold text-gray-900 text-lg leading-tight">{{ event().title }}</h3>
             <div class="flex items-center gap-2 mt-1 text-sm text-gray-500">
-              <span>{{ event().start | date:'shortTime' }} - {{ event().end | date:'shortTime' }}</span>
+              <span>{{ event().start | date:'HH:mm' }} - {{ event().end | date:'HH:mm' }}</span>
               <span>•</span>
               <span>{{ duration() }} min</span>
             </div>

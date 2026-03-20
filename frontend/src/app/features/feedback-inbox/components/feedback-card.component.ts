@@ -29,11 +29,11 @@ import { Meeting, FeedbackStatus, MeetingType } from '../../../shared/models/mee
           <div class="flex items-center gap-3 text-sm text-muted-foreground-1 flex-wrap">
             <span class="inline-flex items-center gap-1">
               <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              {{ meeting().start | date:'MMM d, y' }}
+              {{ meeting().start | date:'dd.MM.yyyy' }}
             </span>
             <span class="inline-flex items-center gap-1">
               <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              {{ meeting().start | date:'h:mm a' }} - {{ meeting().end | date:'h:mm a' }}
+              {{ meeting().start | date:'HH:mm' }} - {{ meeting().end | date:'HH:mm' }}
             </span>
             <span class="inline-flex items-center gap-1 font-medium">
               {{ meeting().durationMinutes }} min

@@ -346,11 +346,11 @@ export class StructureDashboardService {
 
               blocks.push({
                 type: type,
-                startTime: new Date(currentTime).toLocaleTimeString([], {
+                startTime: new Date(currentTime).toLocaleTimeString('de-CH', {
                   hour: '2-digit',
                   minute: '2-digit',
                 }),
-                endTime: m.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                endTime: m.start.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }),
                 durationMinutes: gapDuration,
                 factor: 1.0,
                 effectiveMinutes: effective,
@@ -363,8 +363,8 @@ export class StructureDashboardService {
             const meetingDuration = (m.end.getTime() - m.start.getTime()) / (1000 * 60);
             blocks.push({
               type: 'MEETING',
-              startTime: m.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              endTime: m.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              startTime: m.start.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }),
+              endTime: m.end.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }),
               durationMinutes: meetingDuration,
               factor: 0,
               effectiveMinutes: 0,
@@ -387,11 +387,11 @@ export class StructureDashboardService {
 
             blocks.push({
               type: type,
-              startTime: new Date(currentTime).toLocaleTimeString([], {
+              startTime: new Date(currentTime).toLocaleTimeString('de-CH', {
                 hour: '2-digit',
                 minute: '2-digit',
               }),
-              endTime: workEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              endTime: workEnd.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }),
               durationMinutes: gapDuration,
               factor: 1.0,
               effectiveMinutes: effective,
