@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { AuthProvider, CalendarStatusResponse } from '../calendar/models/calendar.model';
 import { CalendarIntegrationService } from '../../shared/services/calendar-integration.service';
@@ -18,9 +19,11 @@ export class SettingsComponent implements OnInit {
   private userService = inject(UserService);
   private firebaseService = inject(FirebaseService);
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
 
   AuthProvider = AuthProvider;
   isLoading = signal(false);
+  syncStarted = signal(false);
 
   calendarStatus = signal<CalendarStatusResponse>({
     googleConnected: false,
@@ -54,6 +57,7 @@ export class SettingsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.syncStarted.set(this.route.snapshot.queryParams['syncStarted'] === 'true');
     this.initForm();
     this.loadStatus();
     this.loadUserSettings();

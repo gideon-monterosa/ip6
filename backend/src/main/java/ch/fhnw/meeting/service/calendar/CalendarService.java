@@ -228,7 +228,6 @@ public class CalendarService {
         return provider.getAuthorizationUrl();
     }
 
-    @Transactional
     public void connect(AuthProvider providerType, String code, String username) throws IOException {
         CalendarProvider provider = providers.get(providerType);
         if (provider == null) {
@@ -240,7 +239,13 @@ public class CalendarService {
                 .orElseThrow(() -> new RuntimeException("User nicht gefunden: " + username));
 
         log.info("Verbindung erfolgreich. Starte initialen Sync für {}", username);
-        syncNextMonth(user);
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                syncNextMonth(user);
+            } catch (Exception e) {
+                log.error("Fehler beim initialen Sync für {}", username, e);
+            }
+        });
     }
 
     public CalendarStatusResponse getConnectionStatus(String username) {

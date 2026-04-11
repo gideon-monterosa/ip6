@@ -25,10 +25,10 @@ export class CalendarCallbackComponent implements OnInit {
       this.calendarService.connect(code, provider).subscribe({
         next: () => {
           localStorage.removeItem('pending_calendar_provider');
-          this.router.navigate(['/calendar']);
+          this.router.navigate(['/settings'], { queryParams: { syncStarted: true } });
         },
         error: () => {
-          this.router.navigate(['/settings']);
+          this.router.navigate(['/settings'], { queryParams: { error: true } });
         },
       });
     } else {
