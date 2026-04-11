@@ -21,8 +21,17 @@ export class TourService {
       }
     });
 
-    this.tour.on('complete', () => this.markAsSeen());
-    this.tour.on('cancel', () => this.markAsSeen());
+    this.tour.on('start', () => document.body.classList.add('tour-active'));
+    
+    this.tour.on('complete', () => {
+      document.body.classList.remove('tour-active');
+      this.markAsSeen();
+    });
+    
+    this.tour.on('cancel', () => {
+      document.body.classList.remove('tour-active');
+      this.markAsSeen();
+    });
 
     this.tour.addSteps([
       {

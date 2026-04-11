@@ -16,3 +16,8 @@
 }
 
 @custom-variant hover (&:hover);
+
+/* Block UI interaction while Shepherd tour is active */
+body.tour-active app-root {
+  pointer-events: none;
+}
