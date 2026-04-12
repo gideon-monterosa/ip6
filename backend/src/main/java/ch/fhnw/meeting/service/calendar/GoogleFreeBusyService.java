@@ -165,8 +165,8 @@ public class GoogleFreeBusyService implements CalendarProvider{
     public List<EventDto> getEventsInRange(String username, LocalDateTime start, LocalDateTime end) throws IOException {
         Calendar calendarClient = getCalendarClient(username);
 
-        DateTime timeMin = new DateTime(java.util.Date.from(start.atZone(ZoneId.systemDefault()).toInstant()));
-        DateTime timeMax = new DateTime(java.util.Date.from(end.atZone(ZoneId.systemDefault()).toInstant()));
+        DateTime timeMin = new DateTime(java.util.Date.from(start.atZone(ZoneId.of("Europe/Zurich")).toInstant()));
+        DateTime timeMax = new DateTime(java.util.Date.from(end.atZone(ZoneId.of("Europe/Zurich")).toInstant()));
 
         FreeBusyRequest request = new FreeBusyRequest()
                 .setTimeMin(timeMin)
@@ -188,9 +188,9 @@ public class GoogleFreeBusyService implements CalendarProvider{
 
     private EventDto mapTimePeriodToDto(TimePeriod period) {
         LocalDateTime startTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(period.getStart().getValue()), ZoneId.systemDefault());
+                Instant.ofEpochMilli(period.getStart().getValue()), ZoneId.of("Europe/Zurich"));
         LocalDateTime endTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(period.getEnd().getValue()), ZoneId.systemDefault());
+                Instant.ofEpochMilli(period.getEnd().getValue()), ZoneId.of("Europe/Zurich"));
 
         return EventDto.builder()
                 .id(java.util.UUID.randomUUID().toString())

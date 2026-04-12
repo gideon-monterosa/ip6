@@ -237,23 +237,21 @@ public class DashboardService {
         
         LocalDateTime workdayStart = LocalDateTime.of(date, workStart);
         LocalDateTime workdayEnd = LocalDateTime.of(date, workEnd);
-        
-        // 1. Filter and crop events
+
         List<long[]> periods = events.stream()
                 .map(e -> {
                     LocalDateTime start = e.getStartTime().isBefore(workdayStart) ? workdayStart : e.getStartTime();
                     LocalDateTime end = e.getEndTime().isAfter(workdayEnd) ? workdayEnd : e.getEndTime();
                     if (start.isAfter(end) || start.equals(end)) return null;
                     return new long[]{
-                        start.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                        end.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
+                        start.atZone(java.time.ZoneId.of("Europe/Zurich")).toInstant().toEpochMilli(),
+                        end.atZone(java.time.ZoneId.of("Europe/Zurich")).toInstant().toEpochMilli()
                     };
                 })
                 .filter(java.util.Objects::nonNull)
                 .sorted(java.util.Comparator.comparingLong(a -> a[0]))
                 .collect(Collectors.toList());
-        
-        // 2. Merge overlapping events
+
         List<long[]> merged = new ArrayList<>();
         if (!periods.isEmpty()) {
             long[] current = periods.get(0);
@@ -271,7 +269,7 @@ public class DashboardService {
         
         // 3. Calculate gaps
         List<Long> gaps = new ArrayList<>();
-        long lastEnd = workdayStart.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long lastEnd = workdayStart.atZone(java.time.ZoneId.of("Europe/Zurich")).toInstant().toEpochMilli();
         long totalMeetingMillis = 0;
         
         for (long[] m : merged) {
@@ -280,7 +278,7 @@ public class DashboardService {
             totalMeetingMillis += (m[1] - m[0]);
             lastEnd = m[1];
         }
-        long finalGap = workdayEnd.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() - lastEnd;
+        long finalGap = workdayEnd.atZone(java.time.ZoneId.of("Europe/Zurich")).toInstant().toEpochMilli() - lastEnd;
         if (finalGap > 0) gaps.add(finalGap);
         
         // 4. Categorize gaps

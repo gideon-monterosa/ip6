@@ -194,19 +194,17 @@ public class GoogleCalendarService implements CalendarProvider{
         UserOAuthToken tokenEntity = tokenRepository.findByUserIdAndProvider(user.getId(), AuthProvider.GOOGLE)
             .orElseThrow(() -> new IllegalStateException("No Google Calendar connected"));
 
-        Calendar calendarClient = getCalendarClient(username); // Nutzt intern createCredentialFromToken
+        Calendar calendarClient = getCalendarClient(username);
 
-        // Wichtig: Umwandlung von LocalDateTime (Java) zu DateTime (Google)
-        // Wir nehmen die System-Zone an. In Produktion ggf. User-Timezone beachten.
-        DateTime timeMin = new DateTime(java.util.Date.from(start.atZone(java.time.ZoneId.systemDefault()).toInstant()));
-        DateTime timeMax = new DateTime(java.util.Date.from(end.atZone(java.time.ZoneId.systemDefault()).toInstant()));
+        DateTime timeMin = new DateTime(java.util.Date.from(start.atZone(java.time.ZoneId.of("Europe/Zurich")).toInstant()));
+        DateTime timeMax = new DateTime(java.util.Date.from(end.atZone(java.time.ZoneId.of("Europe/Zurich")).toInstant()));
 
         Events events = calendarClient.events().list("primary")
-            .setMaxResults(500) // Genug Puffer für einen Monat
+            .setMaxResults(500)
             .setTimeMin(timeMin)
             .setTimeMax(timeMax)
             .setOrderBy("startTime")
-            .setSingleEvents(true) // Wichtig: Löst wiederkehrende Termine in Einzeltermine auf!
+            .setSingleEvents(true)
             .execute();
 
         List<com.google.api.services.calendar.model.Event> items = events.getItems();

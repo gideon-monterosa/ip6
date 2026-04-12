@@ -44,19 +44,19 @@ public class GoogleEventFactory {
             return null;
         }
 
-        // 1. Fall: Es ist ein Termin mit Start- und Enduhrzeit
+        ZoneId targetZone = ZoneId.of("Europe/Zurich");
+
         if (eventDateTime.getDateTime() != null) {
             return LocalDateTime.ofInstant(
                     Instant.ofEpochMilli(eventDateTime.getDateTime().getValue()),
-                    ZoneId.systemDefault()
+                    targetZone
             );
         }
 
-        // 2. Fall: Es ist ein ganztägiger Termin (ohne spezifische Uhrzeit)
         if (eventDateTime.getDate() != null) {
             return LocalDateTime.ofInstant(
                     Instant.ofEpochMilli(eventDateTime.getDate().getValue()),
-                    ZoneId.systemDefault()
+                    targetZone
             );
         }
 
